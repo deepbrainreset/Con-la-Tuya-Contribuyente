@@ -49,17 +49,22 @@ export default function Inflacion() {
           <LineChartIcon className="w-4 h-4" />
           <span>Serie histórica y contraste de fuentes</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Inflación Argentina: 2003–actualidad</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Inflación Argentina: 1983–actualidad</h1>
         <p className="text-sm text-slate-400 max-w-4xl leading-relaxed">
-          Comparación entre los índices publicados por INDEC y mediciones alternativas documentadas. La visualización no fuerza un empalme ficticio: identifica cambios de base, cobertura, discontinuidades y el período 2007–2015 que el propio INDEC indica que debe ser considerado con reservas.
+          Serie histórica desde el retorno democrático, incluyendo la aceleración inflacionaria de los años 80, la hiperinflación, la Convertibilidad, la crisis de 2001-2002 y el período contemporáneo. Se usan variaciones diciembre contra diciembre cuando corresponde y se señalan cambios de base, cobertura y discontinuidades para evitar empalmes engañosos.
         </p>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-black">Último año completo</span>
-          <div className="text-3xl font-black text-white mt-2">31,5%</div>
-          <div className="text-xs text-emerald-400 mt-1">IPC 2025 — INDEC</div>
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-black">Inicio de la serie</span>
+          <div className="text-3xl font-black text-white mt-2">1983</div>
+          <div className="text-xs text-slate-400 mt-1">Retorno democrático</div>
+        </div>
+        <div className="bg-slate-900/40 border border-rose-500/20 rounded-2xl p-5">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-rose-400 font-black">Pico histórico de la serie</span>
+          <div className="text-3xl font-black text-white mt-2">4.923,3%</div>
+          <div className="text-xs text-rose-300 mt-1">1989 · diciembre/diciembre</div>
         </div>
         <div className="bg-slate-900/40 border border-amber-500/20 rounded-2xl p-5">
           <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-black">Período bajo reserva</span>
@@ -78,11 +83,12 @@ export default function Inflacion() {
         <div className="space-y-2">
           <h2 className="font-bold text-amber-200 text-sm">Advertencia metodológica imprescindible</h2>
           <p className="text-xs text-slate-300 leading-relaxed">
-            INDEC advierte que las series estadísticas publicadas con posterioridad a enero de 2007 y hasta diciembre de 2015 deben ser consideradas con reservas, salvo aquellas revisadas posteriormente. Además, los IPC de distintas bases no deben tratarse como si fueran una única serie homogénea. Por eso esta página presenta las fuentes lado a lado y señala 2016 como transición.
+            La serie 1983–actualidad atraviesa distintas bases y metodologías. INDEC documenta que hasta mayo de 1989 regía la serie base 1974=100 y que desde junio de 1989 comenzó una nueva serie. Además, las estadísticas publicadas con posterioridad a enero de 2007 y hasta diciembre de 2015 deben considerarse con reservas salvo revisiones posteriores. Por eso los valores se presentan con su fuente y contexto, no como una única serie perfectamente homogénea.
           </p>
           <div className="flex flex-wrap gap-3 pt-1">
+            <a href={INFLATION_METHODOLOGY_LINKS.indecHistoricalArchive} target="_blank" rel="noreferrer" className="text-[11px] font-mono text-amber-300 hover:underline inline-flex items-center gap-1">Archivo histórico INDEC <ExternalLink className="w-3 h-3" /></a>
             <a href={INFLATION_METHODOLOGY_LINKS.indecHistoricalWarning} target="_blank" rel="noreferrer" className="text-[11px] font-mono text-amber-300 hover:underline inline-flex items-center gap-1">Advertencia histórica INDEC <ExternalLink className="w-3 h-3" /></a>
-            <a href={INFLATION_METHODOLOGY_LINKS.indecFaq} target="_blank" rel="noreferrer" className="text-[11px] font-mono text-amber-300 hover:underline inline-flex items-center gap-1">Preguntas frecuentes / cambios de base <ExternalLink className="w-3 h-3" /></a>
+            <a href={INFLATION_METHODOLOGY_LINKS.indecFaq} target="_blank" rel="noreferrer" className="text-[11px] font-mono text-amber-300 hover:underline inline-flex items-center gap-1">Cambios de base / FAQ <ExternalLink className="w-3 h-3" /></a>
           </div>
         </div>
       </section>
@@ -91,7 +97,7 @@ export default function Inflacion() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-white flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-400" /> Variación anual (%)</h2>
-            <p className="text-xs text-slate-500 mt-1">Diciembre contra diciembre cuando corresponde. Pasá el cursor sobre un año para ver el detalle.</p>
+            <p className="text-xs text-slate-500 mt-1">Diciembre contra diciembre cuando corresponde. El pico de 1989 comprime visualmente los años de inflación baja; consultá la tabla para valores exactos.</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs">
             <button onClick={() => setShowOfficial(v => !v)} className={`px-3 py-2 rounded-lg border cursor-pointer ${showOfficial ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : 'border-slate-800 text-slate-500'}`}>Serie oficial/publicada</button>
@@ -103,12 +109,12 @@ export default function Inflacion() {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 12, right: 22, left: 0, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="year" stroke="#64748b" tick={{ fontSize: 10 }} interval={1} />
+              <XAxis dataKey="year" stroke="#64748b" tick={{ fontSize: 10 }} interval={2} />
               <YAxis stroke="#64748b" tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}%`} />
               <Tooltip
                 contentStyle={{ background: '#020617', border: '1px solid #334155', borderRadius: 12, fontSize: 12 }}
                 labelStyle={{ color: '#fff', fontWeight: 700 }}
-                formatter={(value: number, name: string) => [`${Number(value).toLocaleString('es-AR')}%`, name === 'oficial' ? 'Oficial / publicada' : 'Privada / alternativa']}
+                formatter={(value: any, name: any) => [`${Number(value).toLocaleString('es-AR')}%`, name === 'oficial' ? 'Oficial / publicada' : 'Privada / alternativa']}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Line type="monotone" dataKey="oficial" name="Oficial / publicada" stroke="#10b981" strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false} />
@@ -122,7 +128,7 @@ export default function Inflacion() {
         <button onClick={() => setShowTable(v => !v)} className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer hover:bg-slate-900/60 transition">
           <div>
             <h2 className="font-bold text-white text-sm">Tabla completa y fuentes por año</h2>
-            <p className="text-[11px] text-slate-500 mt-0.5">Cada observación conserva su procedencia y nivel metodológico.</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">1983–2025: cada observación conserva su procedencia y nivel metodológico.</p>
           </div>
           <span className="font-mono text-xs text-emerald-400">{showTable ? 'Ocultar' : 'Mostrar'}</span>
         </button>
@@ -186,7 +192,7 @@ export default function Inflacion() {
         <div className="border border-slate-800 rounded-2xl p-5 bg-slate-900/20 space-y-3">
           <div className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-emerald-400" /><h3 className="font-bold text-white text-sm">Cómo leer “privada / alternativa”</h3></div>
           <p className="text-xs text-slate-400 leading-relaxed">
-            No existe una única “inflación privada” continua desde 2003. En distintos años hubo consultoras, IPC Congreso y estadísticas subnacionales con metodologías distintas. Esta plataforma sólo dibuja valores alternativos cuando puede identificar una referencia documental concreta; los espacios vacíos son deliberados y no se rellenan por inferencia.
+            No existe una única “inflación privada” continua desde 1983. En distintos períodos hubo consultoras, IPC Congreso y estadísticas subnacionales con metodologías distintas. Esta plataforma sólo dibuja valores alternativos cuando puede identificar una referencia documental concreta; los espacios vacíos son deliberados y no se rellenan por inferencia.
           </p>
           <div className="flex items-start gap-2 text-[10px] text-slate-500"><Info className="w-3.5 h-3.5 shrink-0 mt-0.5" /><span>La ausencia de un valor es preferible a fabricar una comparabilidad que la fuente no garantiza.</span></div>
         </div>
