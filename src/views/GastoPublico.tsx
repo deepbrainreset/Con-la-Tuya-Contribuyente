@@ -5,21 +5,17 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Landmark,
-  PieChart,
-  Search,
-  ExternalLink,
-  ShoppingCart,
-  AlertTriangle,
-  FileText,
-  BadgeDollarSign,
-  Layers3,
-  Scale,
-  ReceiptText,
-  MapPin,
-  ShieldCheck
+  Landmark, PieChart, Search, ExternalLink, ShoppingCart, AlertTriangle, FileText,
+  BadgeDollarSign, Layers3, Scale, ReceiptText, MapPin, ShieldCheck, Tv
 } from 'lucide-react';
-import { PUBLIC_PURCHASES, SPENDING_JURISDICTIONS, SpendingJurisdiction, SpendingCategory } from '../data/gastoPublico';
+import {
+  PUBLIC_ADVERTISING_ALLOCATIONS,
+  PUBLIC_ADVERTISING_STATUS,
+  PUBLIC_PURCHASES,
+  SPENDING_JURISDICTIONS,
+  SpendingJurisdiction,
+  SpendingCategory
+} from '../data/gastoPublico';
 import { CENSUS_PROVINCES_2022, CENSUS_POPULATION_THRESHOLD } from '../data/censo2022Territorial';
 
 type ScopeLevel = 'nacion' | 'provincia' | 'municipio';
@@ -37,13 +33,7 @@ const formatMoney = (value: number | null) => {
   return `$${Math.round(value).toLocaleString('es-AR')}`;
 };
 
-const macroIds = new Set([
-  'servicios-sociales',
-  'deuda-publica',
-  'servicios-economicos',
-  'administracion-gubernamental',
-  'defensa-seguridad'
-]);
+const macroIds = new Set(['servicios-sociales','deuda-publica','servicios-economicos','administracion-gubernamental','defensa-seguridad']);
 
 const STANDARD_SPENDING_CATEGORIES: Array<Pick<SpendingCategory, 'id' | 'name' | 'description'>> = [
   { id: 'servicios-sociales', name: 'Servicios sociales', description: 'Gasto social agregado: salud, educación, seguridad social, asistencia, vivienda, agua y saneamiento, cultura y otras políticas sociales.' },
@@ -69,18 +59,8 @@ const STANDARD_SPENDING_CATEGORIES: Array<Pick<SpendingCategory, 'id' | 'name' |
 
 function standardCategories(level: 'Provincia' | 'Municipio'): SpendingCategory[] {
   const sourceUrl = level === 'Provincia' ? PROVINCIAL_SPENDING_SOURCE : CONSOLIDATED_SPENDING_SOURCE;
-  const sourceLabel = level === 'Provincia'
-    ? 'Dirección Nacional de Asuntos Provinciales — gasto por finalidad y función'
-    : 'Gasto Público Consolidado — nivel municipal / fuente local pendiente';
-
-  return STANDARD_SPENDING_CATEGORIES.map(item => ({
-    ...item,
-    amount: null,
-    share: null,
-    sourceUrl,
-    sourceLabel,
-    period: 'Último dato oficial disponible / pendiente de carga individual'
-  }));
+  const sourceLabel = level === 'Provincia' ? 'Dirección Nacional de Asuntos Provinciales — gasto por finalidad y función' : 'Gasto Público Consolidado — nivel municipal / fuente local pendiente';
+  return STANDARD_SPENDING_CATEGORIES.map(item => ({ ...item, amount: null, share: null, sourceUrl, sourceLabel, period: 'Último dato oficial disponible / pendiente de carga individual' }));
 }
 
 function emptyJurisdiction(name: string, level: 'Provincia' | 'Municipio', sourceUrl?: string): SpendingJurisdiction {
@@ -89,20 +69,12 @@ function emptyJurisdiction(name: string, level: 'Provincia' | 'Municipio', sourc
         { label: 'Ejecución presupuestaria provincial — gastos por finalidad y función', url: PROVINCIAL_SPENDING_SOURCE, official: true, retrievedAt: '2026-09-13' },
         { label: 'Ejecuciones presupuestarias provinciales', url: PROVINCIAL_EXECUTION_SOURCE, official: true, retrievedAt: '2026-09-13' }
       ]
-    : [
-        { label: 'Gasto Público Consolidado — nivel municipal', url: CONSOLIDATED_SPENDING_SOURCE, official: true, retrievedAt: '2026-09-13' }
-      ];
+    : [{ label: 'Gasto Público Consolidado — nivel municipal', url: CONSOLIDATED_SPENDING_SOURCE, official: true, retrievedAt: '2026-09-13' }];
   if (sourceUrl) sources.push({ label: `Portal oficial / fuente base de ${name}`, url: sourceUrl, official: true, retrievedAt: '2026-09-13' });
-
   return {
     id: `missing-${level.toLowerCase()}-${name}`,
-    name,
-    level,
-    period: 'Último dato oficial disponible',
-    approvedBudget: null,
-    executedBudget: null,
-    categories: standardCategories(level),
-    sources,
+    name, level, period: 'Último dato oficial disponible', approvedBudget: null, executedBudget: null,
+    categories: standardCategories(level), sources,
     evidenceNote: `La jurisdicción está incluida en la cobertura nacional y se muestran todos los rubros de gasto exigidos por la plataforma. Los importes y porcentajes se completan sólo cuando existe una fuente oficial específica y comparable para ${name}; un campo sin monto no significa gasto cero.`
   };
 }
@@ -123,33 +95,17 @@ export default function GastoPublico() {
   useEffect(() => {
     if (scopeLevel !== 'municipio') return;
     let cancelled = false;
-    setLoadingLocalities(true);
-    setLocalityError('');
-    setSelectedLocalityId('');
+    setLoadingLocalities(true); setLocalityError(''); setSelectedLocalityId('');
     fetch(`/api/censo/localidades?provinceId=${encodeURIComponent(selectedProvinceId)}`)
-      .then(async response => {
-        const payload = await response.json();
-        if (!response.ok) throw new Error(payload?.error || 'No se pudieron cargar las localidades.');
-        return payload;
-      })
-      .then(payload => {
-        if (cancelled) return;
-        const rows = Array.isArray(payload?.localities) ? payload.localities : [];
-        setLocalities(rows);
-        if (rows[0]?.id) setSelectedLocalityId(rows[0].id);
-      })
-      .catch(error => {
-        if (cancelled) return;
-        setLocalities([]);
-        setLocalityError(error instanceof Error ? error.message : 'Sin datos verificables para esta provincia.');
-      })
+      .then(async response => { const payload = await response.json(); if (!response.ok) throw new Error(payload?.error || 'No se pudieron cargar las localidades.'); return payload; })
+      .then(payload => { if (cancelled) return; const rows = Array.isArray(payload?.localities) ? payload.localities : []; setLocalities(rows); if (rows[0]?.id) setSelectedLocalityId(rows[0].id); })
+      .catch(error => { if (!cancelled) { setLocalities([]); setLocalityError(error instanceof Error ? error.message : 'Sin datos verificables para esta provincia.'); } })
       .finally(() => { if (!cancelled) setLoadingLocalities(false); });
     return () => { cancelled = true; };
   }, [scopeLevel, selectedProvinceId]);
 
   const jurisdiction = useMemo<SpendingJurisdiction>(() => {
     if (scopeLevel === 'nacion') return SPENDING_JURISDICTIONS.find(item => item.id === 'nacion') || SPENDING_JURISDICTIONS[0];
-
     if (scopeLevel === 'provincia') {
       const exact = SPENDING_JURISDICTIONS.find(item => item.id === selectedProvinceId);
       if (exact) {
@@ -159,7 +115,6 @@ export default function GastoPublico() {
       }
       return emptyJurisdiction(selectedProvince.name, 'Provincia');
     }
-
     const localityName = selectedLocality?.name || 'Gobierno local pendiente de selección';
     const exact = selectedLocality ? SPENDING_JURISDICTIONS.find(item => item.id === selectedLocality.id) : undefined;
     if (exact) {
@@ -172,28 +127,15 @@ export default function GastoPublico() {
 
   const visibleCategories = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return jurisdiction.categories
-      .filter(item => detailMode === 'detalle' || macroIds.has(item.id))
-      .filter(item => !normalized || `${item.name} ${item.description}`.toLowerCase().includes(normalized));
+    return jurisdiction.categories.filter(item => detailMode === 'detalle' || macroIds.has(item.id)).filter(item => !normalized || `${item.name} ${item.description}`.toLowerCase().includes(normalized));
   }, [jurisdiction, detailMode, query]);
 
-  const purchaseJurisdictionId = scopeLevel === 'nacion'
-    ? 'nacion'
-    : scopeLevel === 'provincia'
-      ? selectedProvinceId
-      : selectedLocality?.id || '';
+  const jurisdictionId = scopeLevel === 'nacion' ? 'nacion' : scopeLevel === 'provincia' ? selectedProvinceId : selectedLocality?.id || '';
+  const purchases = useMemo(() => PUBLIC_PURCHASES.filter(item => item.jurisdictionId === jurisdictionId), [jurisdictionId]);
+  const advertisingStatus = PUBLIC_ADVERTISING_STATUS.find(item => item.jurisdictionId === jurisdictionId);
+  const advertisingAllocations = useMemo(() => PUBLIC_ADVERTISING_ALLOCATIONS.filter(item => item.jurisdictionId === jurisdictionId).sort((a, b) => b.amount - a.amount), [jurisdictionId]);
 
-  const purchases = useMemo(
-    () => PUBLIC_PURCHASES.filter(item => item.jurisdictionId === purchaseJurisdictionId),
-    [purchaseJurisdictionId]
-  );
-
-  const hierarchyLabel = scopeLevel === 'nacion'
-    ? 'Nación Argentina'
-    : scopeLevel === 'provincia'
-      ? `Nación → ${selectedProvince.name}`
-      : `Nación → ${selectedProvince.name} → ${selectedLocality?.name || 'seleccionar localidad'}`;
-
+  const hierarchyLabel = scopeLevel === 'nacion' ? 'Nación Argentina' : scopeLevel === 'provincia' ? `Nación → ${selectedProvince.name}` : `Nación → ${selectedProvince.name} → ${selectedLocality?.name || 'seleccionar localidad'}`;
   const verifiedCategoryCount = jurisdiction.categories.filter(item => item.amount !== null || item.share !== null).length;
 
   return (
@@ -207,9 +149,7 @@ export default function GastoPublico() {
       <section className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
         <div className="flex items-center gap-2 text-xs text-emerald-300 font-mono"><MapPin className="w-4 h-4" /><span>{hierarchyLabel}</span></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Selector label="Nivel" value={scopeLevel} onChange={value => { setScopeLevel(value as ScopeLevel); setQuery(''); }}>
-            <option value="nacion">Nación</option><option value="provincia">Provincia</option><option value="municipio">Municipio / gobierno local</option>
-          </Selector>
+          <Selector label="Nivel" value={scopeLevel} onChange={value => { setScopeLevel(value as ScopeLevel); setQuery(''); }}><option value="nacion">Nación</option><option value="provincia">Provincia</option><option value="municipio">Municipio / gobierno local</option></Selector>
           {scopeLevel !== 'nacion' && <Selector label="Provincia" value={selectedProvinceId} onChange={value => { setSelectedProvinceId(value); setQuery(''); }}>{CENSUS_PROVINCES_2022.map(province => <option key={province.id} value={province.id}>{province.name}</option>)}</Selector>}
           {scopeLevel === 'municipio' && <Selector label={`Localidad ≥ ${CENSUS_POPULATION_THRESHOLD.toLocaleString('es-AR')} hab.`} value={selectedLocalityId} onChange={setSelectedLocalityId} disabled={loadingLocalities || localities.length === 0}>{loadingLocalities && <option value="">Cargando localidades...</option>}{!loadingLocalities && localities.length === 0 && <option value="">Sin localidades disponibles</option>}{localities.map(locality => <option key={locality.id} value={locality.id}>{locality.name} · {locality.population2022.toLocaleString('es-AR')} hab.</option>)}</Selector>}
         </div>
@@ -232,13 +172,7 @@ export default function GastoPublico() {
       <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-2xl text-sm text-sky-50 leading-relaxed"><AlertTriangle className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" /><p>{jurisdiction.evidenceNote}</p></div>
 
       <a href="#/transparencia" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-emerald-300 shrink-0 mt-0.5" />
-          <div>
-            <strong className="text-white block">Ver transparencia documental de esta jurisdicción</strong>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">Distingue dato publicado, publicación parcial, dato aún no verificado por la plataforma y dato cuya no publicación fue confirmada.</p>
-          </div>
-        </div>
+        <div className="flex items-start gap-3"><ShieldCheck className="w-5 h-5 text-emerald-300 shrink-0 mt-0.5" /><div><strong className="text-white block">Ver transparencia documental de esta jurisdicción</strong><p className="text-xs text-slate-300 mt-1 leading-relaxed">Distingue dato publicado, publicación parcial, dato aún no verificado por la plataforma y dato cuya no publicación fue confirmada.</p></div></div>
         <span className="text-xs font-semibold text-emerald-300">Abrir Transparencia del Estado →</span>
       </a>
 
@@ -252,6 +186,26 @@ export default function GastoPublico() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-slate-800 text-[11px]"><span className="text-slate-400 font-mono">{category.period} · {category.sourceLabel}</span><a href={category.sourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-emerald-300 hover:underline font-semibold">Ver fuente / base oficial <ExternalLink className="w-3.5 h-3.5" /></a></div>
           </article>
         ))}</div>
+      </section>
+
+      <section className="space-y-4 pt-2" id="pauta-publicitaria">
+        <div className="flex items-start gap-3"><Tv className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" /><div><h2 className="text-lg font-bold text-white">Pauta / publicidad oficial por medio</h2><p className="text-sm text-slate-300 mt-1 max-w-4xl leading-relaxed">Muestra cuánto dinero público recibió cada medio/canal cuando existe una publicación oficial suficientemente desagregada. La existencia de pauta, por sí sola, no prueba una contraprestación editorial, censura ni una instrucción para “decir o dejar de decir” contenidos.</p></div></div>
+        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-300 leading-relaxed">
+          {advertisingStatus ? <><strong className="text-white block mb-1">Estado {advertisingStatus.period}: {advertisingStatus.status === 'suspended' ? 'suspensión normativa' : advertisingStatus.status === 'partial' ? 'publicación parcial' : advertisingStatus.status}</strong><span>{advertisingStatus.summary}</span>{advertisingStatus.sourceUrl && <a href={advertisingStatus.sourceUrl} target="_blank" rel="noreferrer" className="mt-2 flex w-fit items-center gap-1 text-emerald-300 text-xs hover:underline">{advertisingStatus.sourceLabel || 'Ver fuente oficial'} <ExternalLink className="w-3.5 h-3.5" /></a>}</> : <><strong className="text-white block mb-1">Estado 2026: no verificado por la plataforma</strong><span>No se atribuye “gasto cero” ni “no publicación” hasta revisar la fuente oficial específica de esta jurisdicción.</span></>}
+        </div>
+        {advertisingAllocations.length > 0 ? (
+          <div className="space-y-3">
+            <p className="text-xs text-amber-100 bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 leading-relaxed">Los montos de la tabla son una <strong>serie histórica oficial</strong> del período indicado y son nominales, sin ajuste por inflación. No representan gasto 2026.</p>
+            <div className="overflow-x-auto rounded-2xl border border-slate-800">
+              <table className="w-full min-w-[760px] text-sm">
+                <thead className="bg-slate-900 text-slate-300 text-[10px] uppercase font-mono"><tr><th className="p-3 text-left">Medio / canal</th><th className="p-3 text-left">Tipo</th><th className="p-3 text-left">Período</th><th className="p-3 text-right">Monto oficial</th><th className="p-3 text-right">Fuente</th></tr></thead>
+                <tbody className="divide-y divide-slate-800 bg-slate-950/40">
+                  {advertisingAllocations.map(item => <tr key={item.id}><td className="p-3 text-white font-semibold">{item.mediumName}<span className="block text-[10px] text-slate-400 font-normal">{item.province} · {item.locality}</span></td><td className="p-3 text-slate-300">{item.mediumType}</td><td className="p-3 text-slate-300 font-mono text-xs">{item.period}</td><td className="p-3 text-right text-white font-mono">{formatMoney(item.amount)}</td><td className="p-3 text-right"><a href={item.sourceUrl} target="_blank" rel="noreferrer" className="text-emerald-300 text-xs hover:underline">Ver informe <ExternalLink className="inline w-3 h-3" /></a></td></tr>)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl text-sm text-slate-300">No hay todavía una distribución por canal/medio cargada y verificable para <strong className="text-white">{jurisdiction.name}</strong>. La ausencia en esta tabla no significa que no exista pauta; consultá el estado documental arriba y la sección Transparencia.</div>}
       </section>
 
       <section className="space-y-4 pt-2">
