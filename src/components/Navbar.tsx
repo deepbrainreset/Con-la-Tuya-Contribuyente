@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Menu, X, Landmark, FileText, Calculator, ShoppingCart, Users, Award, BookOpen, Heart, TrendingUp, Layers, LineChart, Vote, Scale } from 'lucide-react';
+import { Menu, X, Landmark, FileText, Calculator, ShoppingCart, Users, Award, BookOpen, Heart, TrendingUp, Layers, LineChart, Vote, Scale, ShieldCheck } from 'lucide-react';
 
 interface NavbarProps {
   currentTab: string;
@@ -27,6 +27,7 @@ export default function Navbar({ currentTab, onNavigate, visits }: NavbarProps) 
     { id: 'politicos', label: 'Registro Político', icon: Users },
     { id: 'partidos', label: 'Partidos', icon: Scale },
     { id: 'gasto', label: 'Gasto', icon: TrendingUp },
+    { id: 'transparencia', label: 'Transparencia', icon: ShieldCheck },
     { id: 'metodologia', label: 'Metodología', icon: BookOpen },
     { id: 'contribucion', label: 'Gobernanza', icon: Landmark },
     { id: 'donacion', label: 'Sostener', icon: Heart }
