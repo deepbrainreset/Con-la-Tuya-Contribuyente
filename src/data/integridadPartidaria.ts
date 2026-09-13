@@ -37,9 +37,10 @@ export const PARTY_REGISTRY_SOURCES = {
 };
 
 /**
- * Registro inicial de partidos nacionales con carta orgánica publicada por el Estado.
- * NO equivale a un padrón histórico completo desde 1983. Partidos disueltos, alianzas,
- * cambios de denominación y partidos de distrito se incorporan sólo con fuente verificable.
+ * Registro inicial de entidades con carta orgánica publicada por el Estado.
+ * La CNE es la fuente de vigencia: al 30/04/2026 informaba 44 partidos nacionales.
+ * Como la página de cartas orgánicas contiene más entradas, cada una queda en estado
+ * "pendiente" hasta cotejarla individualmente con el listado vigente de la CNE.
  */
 export const PARTY_REGISTRY: PartyRegistryEntry[] = [
   ['mid','Movimiento de Integración y Desarrollo (MID)',1],
@@ -92,12 +93,12 @@ export const PARTY_REGISTRY: PartyRegistryEntry[] = [
   name: String(name),
   aliases: [],
   nationalOrder: Number(nationalOrder),
-  status: 'vigente_nacional' as const,
+  status: 'pendiente' as const,
   sourceUrl: PARTY_REGISTRY_SOURCES.nationalCharters,
   sourceLabel: 'Argentina.gob.ar — cartas orgánicas de partidos de orden nacional',
   coverageFrom: 1983,
   coverageTo: 2026,
-  coverageNote: 'Registro partidario base. La nómina histórica de personas desde 1983 se completa progresivamente a partir de autoridades partidarias, candidaturas y cargos públicos con fuente oficial.'
+  coverageNote: 'Carta orgánica publicada. La vigencia nacional 2026 debe cotejarse individualmente con el listado de agrupaciones vigentes de la Cámara Nacional Electoral. La nómina histórica de personas desde 1983 se completa sólo con fuentes oficiales.'
 }));
 
 export const HISTORICAL_PARTY_FAMILIES: PartyRegistryEntry[] = [
