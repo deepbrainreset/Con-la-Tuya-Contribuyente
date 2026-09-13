@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { ExternalLink, Search, Scale, Landmark, WalletCards, ReceiptText, AlertTriangle, ShieldCheck, Vote } from 'lucide-react';
 import { POLITICAL_TRANSPARENCY, calculateAssetChange } from '../data/transparenciaPolitica';
+import { EXECUTIVE_AUTHORITIES_2026 } from '../data/autoridadesEjecutivas2026';
+
+const ALL_POLITICAL_RECORDS = [
+  ...POLITICAL_TRANSPARENCY,
+  ...EXECUTIVE_AUTHORITIES_2026.filter(exec => !POLITICAL_TRANSPARENCY.some(base => base.name === exec.name))
+];
 
 const money = (value: number | null | undefined) => typeof value === 'number' ? `$${Math.round(value).toLocaleString('es-AR')}` : 'Sin datos oficiales verificados';
 const pct = (value: number | null | undefined) => typeof value === 'number' ? `${value.toFixed(2)}%` : 'No calculable';
@@ -8,16 +14,17 @@ const pct = (value: number | null | undefined) => typeof value === 'number' ? `$
 export default function RegistroPolitico() {
   const [query, setQuery] = useState('');
   const [level, setLevel] = useState('all');
-  const [selectedId, setSelectedId] = useState(POLITICAL_TRANSPARENCY[0]?.id || '');
+  const [selectedId, setSelectedId] = useState(ALL_POLITICAL_RECORDS[0]?.id || '');
 
-  const filtered = useMemo(() => POLITICAL_TRANSPARENCY.filter(record => {
+  const filtered = useMemo(() => ALL_POLITICAL_RECORDS.filter(record => {
     const q = query.trim().toLowerCase();
     const text = `${record.name} ${record.role} ${record.jurisdiction} ${record.party}`.toLowerCase();
     return (!q || text.includes(q)) && (level === 'all' || record.level === level);
   }), [query, level]);
 
-  const selected = POLITICAL_TRANSPARENCY.find(p => p.id === selectedId) || filtered[0] || POLITICAL_TRANSPARENCY[0];
+  const selected = ALL_POLITICAL_RECORDS.find(p => p.id === selectedId) || filtered[0] || ALL_POLITICAL_RECORDS[0];
   const assetChange = selected ? calculateAssetChange(selected) : null;
+  const executiveCount = ALL_POLITICAL_RECORDS.filter(r => ['Nacion', 'Provincia', 'CABA'].includes(r.level)).length;
 
   return (
     <div className="space-y-7 py-4 text-left" id="registro-politico-view">
@@ -27,9 +34,16 @@ export default function RegistroPolitico() {
         <p className="text-sm text-slate-400 max-w-5xl leading-relaxed">Registro basado en fuentes públicas oficiales. Se separan cargo, partido, remuneración, declaraciones juradas, evolución patrimonial, situación judicial y decisiones tributarias. La ausencia de una fuente no se reemplaza por prensa, rumores ni inferencias.</p>
       </header>
 
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Mini label="Ejecutivos nacionales/provinciales" value={String(executiveCount)} />
+        <Mini label="Cobertura jurisdiccional" value="Nación + 23 provincias + CABA" />
+        <Mini label="Fuente base de cargos" value="Sitios oficiales" />
+        <Mini label="Datos faltantes" value="Se muestran, no se estiman" />
+      </section>
+
       <div className="border border-amber-500/20 bg-amber-500/5 rounded-2xl p-4 flex gap-3 text-xs text-amber-100/80 leading-relaxed">
         <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-        <p><strong>Regla de publicación:</strong> “sin expediente oficial verificado cargado” no significa “sin causas”. Del mismo modo, una DDJJ publicada no permite afirmar un incremento patrimonial hasta contar con al menos dos declaraciones comparables y una metodología homogénea.</p>
+        <p><strong>Regla de publicación:</strong> “sin expediente oficial verificado cargado” no significa “sin causas”. Del mismo modo, una DDJJ publicada no permite afirmar un incremento patrimonial hasta contar con al menos dos declaraciones comparables y una metodología homogénea. Los partidos/alianzas se identifican como contexto político; cuando falta fuente electoral individual enlazada, el perfil queda en cobertura parcial.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -39,7 +53,7 @@ export default function RegistroPolitico() {
             <select value={level} onChange={e => setLevel(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300">
               <option value="all">Todos los niveles</option><option value="Nacion">Nación</option><option value="Provincia">Provincia</option><option value="CABA">CABA</option><option value="Municipio">Municipio</option><option value="Legislativo">Legislativo</option>
             </select>
-            <div className="text-[10px] font-mono text-slate-500">{filtered.length} perfiles actualmente cargados con trazabilidad individual.</div>
+            <div className="text-[10px] font-mono text-slate-500">{filtered.length} perfiles visibles · sólo hechos individualmente trazables se presentan como verificados.</div>
           </div>
 
           <div className="space-y-2 max-h-[680px] overflow-y-auto pr-1">
