@@ -24,7 +24,7 @@ export default function Navbar({ currentTab, onNavigate, visits }: NavbarProps) 
     { id: 'mapa', label: 'Mapa', icon: Award },
     { id: 'calculadora', label: 'Presión', icon: Calculator },
     { id: 'simulador', label: 'Precio Final', icon: ShoppingCart },
-    { id: 'politicos', label: 'Políticos', icon: Users },
+    { id: 'politicos', label: 'Registro Político', icon: Users },
     { id: 'gasto', label: 'Gasto', icon: TrendingUp },
     { id: 'metodologia', label: 'Metodología', icon: BookOpen },
     { id: 'contribucion', label: 'Gobernanza', icon: Landmark },
