@@ -3,131 +3,86 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo } from 'react';
-import { ShoppingBag, ChevronRight, FileText, BarChart, Info, HelpCircle, ShieldCheck, AlertCircle, ShoppingCart } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { ShoppingBag, ChevronRight, Info, AlertTriangle, Layers3, ReceiptText } from 'lucide-react';
 import { PRODUCTS } from '../data/productos';
-import { ProductSustance } from '../types';
+import { PRODUCT_TAX_CHAINS, TaxChainItem } from '../data/cadenaTributaria';
+
+const money = (value: number) => `$${Math.round(value).toLocaleString('es-AR')}`;
+const pct = (value: number) => `${value.toFixed(2)}%`;
 
 export default function SimuladorPrecios() {
-  const [selectedProductId, setSelectedProductId] = useState<string>(PRODUCTS[0].id);
-  const [activeTab, setActiveTab] = useState<'calculable' | 'inventory'>('calculable');
-  
-  // Custom interactive final price adjustment factor
-  // Lets the user slide the total price up and down to see how values scale proportionally
-  const [userPriceMultiplier, setUserPriceMultiplier] = useState<number>(1);
+  const [selectedProductId, setSelectedProductId] = useState(PRODUCTS[0].id);
+  const [userPriceMultiplier, setUserPriceMultiplier] = useState(1);
 
-  const selectedProduct = PRODUCTS.find(p => p.id === selectedProductId) || PRODUCTS[0];
+  const product = PRODUCTS.find(p => p.id === selectedProductId) || PRODUCTS[0];
+  const chain = PRODUCT_TAX_CHAINS.find(c => c.productId === selectedProductId);
 
-  // Recalculated values based on multiplier
-  const currentValues = useMemo(() => {
-    const rawSum = selectedProduct.basePrice + selectedProduct.logistics + selectedProduct.taxNational + selectedProduct.taxProvincial + selectedProduct.taxMunicipal + selectedProduct.margin;
-    
+  const values = useMemo(() => {
+    const totalBase = product.basePrice + product.logistics + product.taxNational + product.taxProvincial + product.taxMunicipal + product.margin;
     return {
-      rawSum,
-      base: selectedProduct.basePrice * userPriceMultiplier,
-      logistics: selectedProduct.logistics * userPriceMultiplier,
-      national: selectedProduct.taxNational * userPriceMultiplier,
-      provincial: selectedProduct.taxProvincial * userPriceMultiplier,
-      municipal: selectedProduct.taxMunicipal * userPriceMultiplier,
-      margin: selectedProduct.margin * userPriceMultiplier,
-      total: rawSum * userPriceMultiplier
+      total: totalBase * userPriceMultiplier,
+      base: product.basePrice * userPriceMultiplier,
+      logistics: product.logistics * userPriceMultiplier,
+      national: product.taxNational * userPriceMultiplier,
+      provincial: product.taxProvincial * userPriceMultiplier,
+      municipal: product.taxMunicipal * userPriceMultiplier,
+      margin: product.margin * userPriceMultiplier
     };
-  }, [selectedProduct, userPriceMultiplier]);
+  }, [product, userPriceMultiplier]);
 
-  const percentValues = useMemo(() => {
-    const sum = currentValues.total;
-    return {
-      base: (currentValues.base / sum) * 100,
-      logistics: (currentValues.logistics / sum) * 100,
-      national: (currentValues.national / sum) * 100,
-      provincial: (currentValues.provincial / sum) * 100,
-      municipal: (currentValues.municipal / sum) * 100,
-      margin: (currentValues.margin / sum) * 100,
-      totalTaxes: ((currentValues.national + currentValues.provincial + currentValues.municipal) / sum) * 105 // rounded factor
-    };
-  }, [currentValues]);
+  const totalTaxes = values.national + values.provincial + values.municipal;
+  const taxShare = values.total > 0 ? (totalTaxes / values.total) * 100 : 0;
 
-  // Inventory specifications - list of all applicable laws, codes on these industries for completeness
-  // Even those with complex rates or varying fractions, to provide transparency
-  const productInventoryList: { [key: string]: { name: string; level: string; desc: string; source: string; score: string }[] } = {
-    leche: [
-      { name: 'IVA Alimentos Diferenciado (10.5%)', level: 'Nación', desc: 'Ley de Impuesto al Valor Agregado exención parcial para lácteos.', source: 'InfoLEG Ley 20.631', score: 'A' },
-      { name: 'Impuesto sobre los Ingresos Brutos (ARBA/Agip)', level: 'Provincia', desc: 'Gravamen acumulativo sobre la facturación industrial y agropecuaria.', source: 'Dirección Provincial de Rentas', score: 'B' },
-      { name: 'Tasa de Seguridad e Higiene Industrial', level: 'Municipio', desc: 'Inspección municipal sobre plantas embotelladores y centros de acopio.', source: 'Ordenanzas Tarifarias Locales', score: 'C' },
-      { name: 'Aporte de Control SENASA de Sanidad Animal', level: 'Nación', desc: 'Control de sanidad láctea sobre rodeos, tasa de control fitosanitario.', source: 'Portal Ejecutivo Nacional de Sanidad', score: 'B' }
-    ],
-    pan: [
-      { name: 'IVA Pan Común Exento / Tasa General de Harinas', level: 'Nación', desc: 'Tasa general sobre insumos mecánicos y moliendas primarias de trigo.', source: 'Alícuota reducida AFIP', score: 'A' },
-      { name: 'Ingresos Brutos Agrícola y Panificación', level: 'Provincia', desc: 'Carga impositiva provincial que grava la compraventa de grano y harina.', source: 'Código Fiscal Provincial', score: 'B' },
-      { name: 'Tasa por Control Bromatológico de Locales Gastronómicos', level: 'Municipio', desc: 'Inspección microbiológica obligatoria regular aplicada a panaderías.', source: 'Ordenanza de Salubridad Municipal', score: 'C' },
-      { name: 'Impuesto de Sellos sobre Contratos de Entrega Tecnológica', level: 'Provincia', desc: 'Encuadre sobre maquinarias de amasado importadas.', source: 'Rentas Provinciales', score: 'C' }
-    ],
-    combustible: [
-      { name: 'Impuesto sobre los Combustibles Líquidos (ICL)', level: 'Nación', desc: 'Suma fija indexada por trimestre sobre surtidores de nafta y diesel.', source: 'Ley Nacional 23.966', score: 'A' },
-      { name: 'Impuesto al Dióxido de Carbono (IDC)', level: 'Nación', desc: 'Gravamen nacional ambiental sobre emisiones de hidrocarburos fósiles.', source: 'InfoLEG Ley de Combustibles', score: 'A' },
-      { name: 'Tasa Vial Municipal sobre Hidrocarburos', level: 'Municipio', desc: 'Adicional por litro cargado para recomposición de calzadas viales locales.', source: 'Concejos Deliberantes Municipales', score: 'B' },
-      { name: 'Ingresos Brutos Mayoristas sobre Surtidor', level: 'Provincia', desc: 'Fraccional impositivo sobre reventa mayorista ex-refinería.', source: 'ARBA / AGIP', score: 'B' }
-    ],
-    celular: [
-      { name: 'Derecho Adicional por Ensamblado en Región Especial', level: 'Nación', desc: 'Tasa diferencial de industria integrada sobre Tierra del Fuego.', source: 'Ley de Promoción Industrial 19.640', score: 'A' },
-      { name: 'Impuestos Internos Tecnológicos', level: 'Nación', desc: 'Sobretasa por productos suntuarios o electrónicos importados.', source: 'InfoLEG Impuestos Internos', score: 'A' },
-      { name: 'Impuesto sobre los Débitos y Créditos Bancarios', level: 'Nación', desc: 'Impuesto al cheque acumulado en toda la cadena de distribución mayorista.', source: 'Régimen de Bancos Retenedores', score: 'A' },
-      { name: 'Ingresos Brutos Minorista de Electrónica', level: 'Provincia', desc: 'Percepción impositiva del comercio final de venta.', source: 'API / Agip Retenciones', score: 'B' }
-    ],
-    auto: [
-      { name: 'Impuesto Interno Suntuario a Motores (Impuesto al Lujo)', level: 'Nación', desc: 'Gravamen progresivo si el coche supera escalas básicas de venta.', source: 'AFIP Decretos Trimestrales', score: 'A' },
-      { name: 'Impuesto de Sellos sobre Inscripción Inicial (Patentamiento)', level: 'Provincia', desc: 'Tasa obligatoria para el egreso del vehículo del registro nacional.', source: 'Códigos Fiscales de Rentas', score: 'A' },
-      { name: 'Derecho de Inscripción y Tasas Administrativas', level: 'Municipio', desc: 'Tasa o cargo del municipio para dar de alta las patentes del coche.', source: 'Gacetas de Dirección del Automotor', score: 'C' },
-      { name: 'Tasa de Importación Arancelaria Extrazona', level: 'Nación', desc: '35% de recargo sobre autopartes del exterior (fuera del Mercosur).', source: 'Aduana Argentina', score: 'A' }
-    ],
-    alquiler: [
-      { name: 'Impuesto de Sellos sobre Contrato Comercial / Vivienda', level: 'Provincia', desc: 'Habilitación provincial obligatoria (se liquida por escribanía).', source: 'Código Fiscal Local de Contratos', score: 'B' },
-      { name: 'Tasa General por Alumbrado, Barrido y Limpieza', level: 'Municipio', desc: 'Cargos de mantenimiento urbano del frente de la propiedad.', source: 'Boletín de Rentas Inmobiliarias', score: 'B' },
-      { name: 'Impuesto a las Ganancias sobre Rentas Inmuebles', level: 'Nación', desc: 'Piso de liquidación para propietarios con varias unidades.', source: 'Escalas AFIP', score: 'A' }
-    ],
-    servicios: [
-      { name: 'Contribución Especial Ley 24.065 Factura Luz', level: 'Nación', desc: 'Cargo nacional para financiamiento de entes reguladores de energía.', source: 'Boletín del ENRE', score: 'A' },
-      { name: 'Fondo Provincial de Desarrollo Energético Luz', level: 'Provincia', desc: 'Sobrecargo provincial en el AMBA dedicado a subestaciones rurales.', source: 'Leyes Especiales de Luz GBA', score: 'B' },
-      { name: 'Tasa de Alumbrado Público Directa en Boleta Energetica', level: 'Municipio', desc: 'Tasa municipal cargada de prepo en la luz del hogar.', source: 'Municipalidad Conurbana Ordinaria', score: 'B' }
-    ]
+  const taxAmountForItem = (tax: TaxChainItem) => {
+    const bucket = tax.level === 'Nación' ? values.national : tax.level === 'Provincia' ? values.provincial : values.municipal;
+    return bucket * tax.amountShare;
   };
 
-  const currentInventory = productInventoryList[selectedProduct.id] || [];
+  const stageRows = useMemo(() => {
+    if (!chain) return [];
+    return chain.stages.map(stage => {
+      const taxes = stage.taxes.map(tax => {
+        const amount = taxAmountForItem(tax);
+        return { ...tax, amount, shelfPercent: values.total > 0 ? (amount / values.total) * 100 : 0 };
+      });
+      const stageTaxAmount = taxes.reduce((sum, tax) => sum + tax.amount, 0);
+      return { ...stage, taxes, stageTaxAmount, stageShelfPercent: values.total > 0 ? (stageTaxAmount / values.total) * 100 : 0 };
+    });
+  }, [chain, values]);
+
+  const repeatedTaxes = useMemo(() => {
+    const map = new Map<string, { name: string; mechanism: string; count: number; amount: number }>();
+    stageRows.forEach(stage => stage.taxes.forEach(tax => {
+      const key = `${tax.taxName}-${tax.mechanism}`;
+      const prev = map.get(key) || { name: tax.taxName, mechanism: tax.mechanism, count: 0, amount: 0 };
+      prev.count += 1;
+      prev.amount += tax.amount;
+      map.set(key, prev);
+    }));
+    return Array.from(map.values()).filter(item => item.count > 1).sort((a, b) => b.amount - a.amount);
+  }, [stageRows]);
 
   return (
     <div className="space-y-8 py-4 text-left" id="simulador-precios-view">
       <div className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Estructura Impositiva de Precios Comerciales</h1>
-        <p className="text-xs text-slate-400 mt-1 max-w-3xl leading-relaxed">
-          ¿Cuánto de lo que pagás va para impuestos? Simulá el desglose científico del precio final estimado de productos básicos del día a día 
-          y descubrí el peso impositivo nacional, provincial y municipal que altera los precios de góndola.
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Cadena Impositiva hasta la Góndola</h1>
+        <p className="text-xs text-slate-400 mt-1 max-w-4xl leading-relaxed">
+          Visualizá en qué etapas aparecen impuestos y tasas, cuánto representan en pesos y qué porcentaje explican del precio final de góndola. El modelo distingue tributos acumulativos de impuestos con crédito fiscal para evitar contar dos veces la misma carga.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* SELECTOR COLUMN (Left - 4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          <span className="text-[10px] text-slate-500 font-mono tracking-wider block uppercase pl-1">Bienes y Servicios Analizados</span>
-          
+        <aside className="lg:col-span-4 space-y-4">
+          <span className="text-[10px] text-slate-500 font-mono tracking-wider block uppercase pl-1">Producto analizado</span>
           <div className="space-y-2">
-            {PRODUCTS.map((prod) => {
-              const matchesSelected = prod.id === selectedProductId;
+            {PRODUCTS.map(prod => {
+              const selected = prod.id === selectedProductId;
               return (
-                <button
-                  key={prod.id}
-                  onClick={() => {
-                    setSelectedProductId(prod.id);
-                    setUserPriceMultiplier(1); // reset slider factor
-                  }}
-                  className={`w-full flex items-center justify-between p-3.5 text-left rounded-xl border transition-all duration-205 cursor-pointer ${
-                    matchesSelected
-                      ? 'bg-emerald-500/10 border-emerald-500/35 text-white'
-                      : 'bg-slate-900 border-slate-850 text-slate-400 hover:text-slate-200 hover:border-slate-800'
-                  }`}
-                >
+                <button key={prod.id} onClick={() => { setSelectedProductId(prod.id); setUserPriceMultiplier(1); }} className={`w-full flex items-center justify-between p-3.5 text-left rounded-xl border transition cursor-pointer ${selected ? 'bg-emerald-500/10 border-emerald-500/35 text-white' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}>
                   <div className="flex items-center gap-3">
-                    <ShoppingBag className={`w-4 h-4 ${matchesSelected ? 'text-emerald-400' : 'text-slate-500'}`} />
-                    <span className="font-bold text-xs text-slate-100">{prod.name}</span>
+                    <ShoppingBag className={`w-4 h-4 ${selected ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    <span className="font-bold text-xs">{prod.name}</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-600" />
                 </button>
@@ -135,261 +90,65 @@ export default function SimuladorPrecios() {
             })}
           </div>
 
-          {/* Price Adjuster Slider Option */}
-          <div className="p-4 bg-slate-900 border border-slate-850 rounded-xl space-y-3">
-            <div className="flex justify-between items-center text-[10px] font-mono text-slate-400">
-              <span>Simular Ajuste en Góndola</span>
-              <span className="text-white font-bold">{Math.round(userPriceMultiplier * 100)}% del Base</span>
-            </div>
-            
-            <input
-              type="range"
-              min="0.5"
-              max="2.5"
-              step="0.1"
-              value={userPriceMultiplier}
-              onChange={(e) => setUserPriceMultiplier(Number(e.target.value))}
-              className="w-full accent-emerald-500 h-1 bg-slate-950 rounded-lg cursor-pointer"
-            />
-            <p className="text-[10px] text-slate-500 leading-snug">
-              Desplazá el valor para simular aumentos o rebajas comerciales e inspeccionar cómo escala la porción proporcional de impuestos.
-            </p>
+          <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-3">
+            <div className="flex justify-between text-[10px] font-mono text-slate-400"><span>Escala del precio</span><span className="text-white font-bold">{Math.round(userPriceMultiplier * 100)}%</span></div>
+            <input type="range" min="0.5" max="2.5" step="0.1" value={userPriceMultiplier} onChange={e => setUserPriceMultiplier(Number(e.target.value))} className="w-full accent-emerald-500" />
+            <p className="text-[10px] text-slate-500 leading-relaxed">Escala el ejemplo completo manteniendo las proporciones del caso base.</p>
           </div>
-        </div>
+        </aside>
 
-        {/* DETAILS AND GRAPHS COLUMN (Right - 8 cols) */}
-        <div className="lg:col-span-8 bg-slate-900 border border-slate-850 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl">
-          {/* Header detail */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-800 text-left">
-            <div>
-              <h2 className="text-xl font-extrabold text-white tracking-tight">{selectedProduct.name}</h2>
-              <p className="text-xs text-slate-400 mt-1">Estimación de componentes e impuestos integrales acumulados en cadena.</p>
-            </div>
-            <div className="text-right shrink-0">
-              <span className="text-[10px] text-slate-500 font-mono tracking-widest block uppercase">Precio Final Estimado</span>
-              <span className="text-2xl font-black text-emerald-400 font-mono">${Math.round(currentValues.total).toLocaleString('es-AR')}</span>
-            </div>
+        <section className="lg:col-span-8 space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Precio góndola</span><strong className="text-xl text-emerald-400 font-mono">{money(values.total)}</strong></div>
+            <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Impuestos + tasas</span><strong className="text-xl text-white font-mono">{money(totalTaxes)}</strong></div>
+            <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Carga sobre góndola</span><strong className="text-xl text-white font-mono">{pct(taxShare)}</strong></div>
+            <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Precio sin carga identificada</span><strong className="text-xl text-white font-mono">{money(values.total - totalTaxes)}</strong></div>
           </div>
 
-          {/* Tabs switch: Calculable and Inventory */}
-          <div className="flex border-b border-slate-800 text-xs">
-            <button
-              onClick={() => setActiveTab('calculable')}
-              className={`pb-2 px-4 font-bold border-b-2 tracking-wide cursor-pointer transition ${
-                activeTab === 'calculable' ? 'border-emerald-500 text-emerald-400' : 'border-transparent text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              <span className="flex items-center gap-1.5">
-                <BarChart className="w-3.5 h-3.5" />
-                <span>Casificación de Costos / Gráfico</span>
-              </span>
-            </button>
-            <button
-              onClick={() => setActiveTab('inventory')}
-              className={`pb-2 px-4 font-bold border-b-2 tracking-wide cursor-pointer transition ${
-                activeTab === 'inventory' ? 'border-emerald-500 text-emerald-400' : 'border-transparent text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              <span className="flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5" />
-                <span>Inventario Completo de Regulaciones ({currentInventory.length})</span>
-              </span>
-            </button>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center gap-2"><ReceiptText className="w-4 h-4 text-emerald-400" /><h2 className="font-bold text-white">Carga total por nivel del Estado</h2></div>
+            {[['Nación', values.national], ['Provincia', values.provincial], ['Municipio', values.municipal]].map(([label, amount]) => {
+              const val = Number(amount);
+              const share = values.total > 0 ? val / values.total * 100 : 0;
+              return <div key={String(label)} className="grid grid-cols-12 gap-3 items-center text-xs"><span className="col-span-3 text-slate-300 font-semibold">{label}</span><div className="col-span-5 h-2 bg-slate-950 rounded overflow-hidden"><div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, share * 2)}%` }} /></div><span className="col-span-2 text-right font-mono text-white">{money(val)}</span><span className="col-span-2 text-right font-mono text-slate-400">{pct(share)}</span></div>;
+            })}
           </div>
 
-          {/* TAB CONTENT A — CALCULABLE GRAPH WATERFALL */}
-          {activeTab === 'calculable' ? (
-            <div className="space-y-6">
-              {/* Stacked visually clean receipt bar */}
-              <div className="space-y-1.5">
-                <div className="flex text-[10px] text-slate-500 font-mono justify-between">
-                  <span>Esquema de Góndola (Suma de Componentes)</span>
-                  <span>Total Neto: 100%</span>
-                </div>
-                
-                <div className="w-full h-8 rounded-xl bg-slate-950 overflow-hidden flex shadow-inner border border-slate-900">
-                  <div
-                    style={{ width: `${percentValues.base}%` }}
-                    className="bg-slate-300 h-full hover:opacity-85 transition"
-                    title={`Materia Prima / Costo Base: ${percentValues.base.toFixed(1)}%`}
-                  />
-                  <div
-                    style={{ width: `${percentValues.logistics}%` }}
-                    className="bg-amber-400/90 h-full hover:opacity-85 transition"
-                    title={`Logística / Flete: ${percentValues.logistics.toFixed(1)}%`}
-                  />
-                  <div
-                    style={{ width: `${percentValues.national}%` }}
-                    className="bg-emerald-500 h-full hover:opacity-85 transition"
-                    title={`Impuestos Nacionales (IVA / Internos): ${percentValues.national.toFixed(1)}%`}
-                  />
-                  <div
-                    style={{ width: `${percentValues.provincial}%` }}
-                    className="bg-blue-500 h-full hover:opacity-85 transition"
-                    title={`Impuestos Provinciales (IIBB): ${percentValues.provincial.toFixed(1)}%`}
-                  />
-                  <div
-                    style={{ width: `${percentValues.municipal}%` }}
-                    className="bg-purple-500 h-full hover:opacity-85 transition"
-                    title={`Tasas Municipales (TISH / Vial): ${percentValues.municipal.toFixed(1)}%`}
-                  />
-                  <div
-                    style={{ width: `${percentValues.margin}%` }}
-                    className="bg-slate-600 h-full hover:opacity-85 transition"
-                    title={`Margen Minorista / Comercial: ${percentValues.margin.toFixed(1)}%`}
-                  />
-                </div>
-              </div>
-
-              {/* Legend Bento Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                {/* Costo de origen */}
-                <div className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between text-left">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded bg-slate-300" />
-                      <span className="font-bold text-slate-300">Costo Base / Origen</span>
+          {chain ? (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2"><Layers3 className="w-4 h-4 text-emerald-400" /><h2 className="text-base font-bold text-white">Etapas de producción, distribución y venta</h2></div>
+                {stageRows.map((stage, index) => (
+                  <div key={stage.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+                    <div className="p-4 bg-slate-950/40 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div><span className="text-[9px] text-emerald-400 font-mono uppercase tracking-wider">Etapa {index + 1}</span><h3 className="font-bold text-white">{stage.name}</h3><p className="text-[11px] text-slate-500">{stage.description}</p></div>
+                      <div className="text-right"><span className="text-[9px] uppercase font-mono text-slate-500 block">Carga atribuida a etapa</span><strong className="font-mono text-white">{money(stage.stageTaxAmount)} · {pct(stage.stageShelfPercent)}</strong></div>
                     </div>
-                    <span className="text-[10px] text-slate-500 block">Producción primaria e industriales</span>
-                  </div>
-                  <div className="text-right font-mono">
-                    <span className="font-bold text-white block">${Math.round(currentValues.base).toLocaleString('es-AR')}</span>
-                    <span className="text-[10px] text-slate-500 block">{percentValues.base.toFixed(1)}%</span>
-                  </div>
-                </div>
-
-                {/* Logística */}
-                <div className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between text-left">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded bg-amber-400" />
-                      <span className="font-bold text-slate-300">Combustibles y Logística</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 block">Distribución de flete nacional</span>
-                  </div>
-                  <div className="text-right font-mono">
-                    <span className="font-bold text-white block">${Math.round(currentValues.logistics).toLocaleString('es-AR')}</span>
-                    <span className="text-[10px] text-slate-500 block">{percentValues.logistics.toFixed(1)}%</span>
-                  </div>
-                </div>
-
-                {/* Nacionales */}
-                <div className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between text-left">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded bg-emerald-500" />
-                      <span className="font-bold text-slate-300 font-mono">Impuestos Nacionales</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 block">IVA, Imp. Internos, cheque acumulado</span>
-                  </div>
-                  <div className="text-right font-mono">
-                    <span className="font-bold text-emerald-400 block">${Math.round(currentValues.national).toLocaleString('es-AR')}</span>
-                    <span className="text-[10px] text-slate-500 block">{percentValues.national.toFixed(1)}%</span>
-                  </div>
-                </div>
-
-                {/* Provinciales */}
-                <div className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between text-left">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded bg-blue-500" />
-                      <span className="font-bold text-slate-300 font-mono">Impuestos Provinciales</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 block">Ingresos Brutos en cadena, Sellos</span>
-                  </div>
-                  <div className="text-right font-mono">
-                    <span className="font-bold text-blue-400 block">${Math.round(currentValues.provincial).toLocaleString('es-AR')}</span>
-                    <span className="text-[10px] text-slate-500 block">{percentValues.provincial.toFixed(1)}%</span>
-                  </div>
-                </div>
-
-                {/* Municipales */}
-                <div className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between text-left">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded bg-purple-500" />
-                      <span className="font-bold text-slate-300 font-mono">Tasas Municipales</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 block">TISH municipal, Tasa vial, patentes de reparto</span>
-                  </div>
-                  <div className="text-right font-mono">
-                    <span className="font-bold text-purple-400 block">${Math.round(currentValues.municipal).toLocaleString('es-AR')}</span>
-                    <span className="text-[10px] text-slate-500 block">{percentValues.municipal.toFixed(1)}%</span>
-                  </div>
-                </div>
-
-                {/* Margen */}
-                <div className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between text-left">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded bg-slate-600" />
-                      <span className="font-bold text-slate-300">Margen Comercial Neto</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 block">Reposo del retail minorista</span>
-                  </div>
-                  <div className="text-right font-mono">
-                    <span className="font-bold text-white block">${Math.round(currentValues.margin).toLocaleString('es-AR')}</span>
-                    <span className="text-[10px] text-slate-500 block">{percentValues.margin.toFixed(1)}%</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Total aggregated tax burden card */}
-              <div className="p-4 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-2xl flex justify-between items-center text-left">
-                <div className="space-y-1">
-                  <span className="font-extrabold text-sm text-slate-200 block">Presión Impositiva Total Combinada</span>
-                  <p className="text-[11px] text-slate-400 leading-normal max-w-lg">
-                    Suma total de tributación nacional, provincial y municipal acumulada sobre el bien. 
-                    Por cada unidad de compra, el Estado recauda un índice del precio final al consumidor.
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <span className="text-[10px] text-slate-500 font-mono uppercase block">Suma Fiscal Real</span>
-                  <span className="text-xl font-black text-emerald-400 font-mono">${Math.round(currentValues.national + currentValues.provincial + currentValues.municipal).toLocaleString('es-AR')}</span>
-                  <span className="text-xs text-slate-400 font-bold font-mono block">
-                    {((currentValues.national + currentValues.provincial + currentValues.municipal) / currentValues.total * 100).toFixed(1)}% del Total
-                  </span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* TAB CONTENT B — INVENTORY OF LEGISLATIVE RULES */
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-950/40 border border-slate-850 rounded-xl text-xs flex gap-3 text-left">
-                <AlertCircle className="w-5 h-5 text-slate-500 shrink-0 select-none mt-0.5" />
-                <p className="text-slate-400 leading-relaxed">
-                  A continuación se listan **todas las normas tributarias vigentes** que capturan o gravan la cadena de molienda, 
-                  suministro, flete, y empaquetamiento comercial de este producto. Aunque la tasa fraccional individual varíe, 
-                  esta lista representa de manera documental cada ley nacional o decreto que interviene.
-                </p>
-              </div>
-
-              <div className="space-y-2.5">
-                {currentInventory.map((item, idx) => (
-                  <div key={idx} className="p-4 bg-slate-950/60 border border-slate-850 rounded-xl flex items-start justify-between gap-4 text-left">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 text-[9px] text-slate-400 uppercase font-mono font-bold rounded">
-                          {item.level}
-                        </span>
-                        <h4 className="font-bold text-xs text-slate-200">{item.name}</h4>
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-normal">{item.desc}</p>
-                      <div className="text-[10px] text-slate-500 font-mono">
-                        Registro: <span className="text-emerald-400">{item.source}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 shrink-0 bg-slate-900/60 px-2 py-1 rounded-lg border border-slate-800 text-[10px] font-mono">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Evidencia {item.score}</span>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead className="text-[9px] uppercase font-mono text-slate-500 border-b border-slate-800"><tr><th className="p-3 text-left">Impuesto / tasa</th><th className="p-3 text-left">Nivel</th><th className="p-3 text-left">Tipo de incidencia</th><th className="p-3 text-right">Monto</th><th className="p-3 text-right">% góndola</th></tr></thead>
+                        <tbody className="divide-y divide-slate-800/60">
+                          {stage.taxes.map(tax => (
+                            <tr key={tax.id} className="align-top"><td className="p-3"><span className="font-bold text-slate-200 block">{tax.taxName}</span><span className="text-[10px] text-slate-500 leading-relaxed block mt-1">{tax.note}</span>{tax.nominalRate && <span className="text-[9px] text-emerald-400 font-mono">Alícuota/criterio: {tax.nominalRate}</span>}</td><td className="p-3 text-slate-400">{tax.level}</td><td className="p-3"><span className={`px-2 py-1 rounded text-[9px] font-mono ${tax.mechanism === 'acumulativo' ? 'bg-rose-500/10 text-rose-300' : tax.mechanism === 'credito_fiscal' ? 'bg-sky-500/10 text-sky-300' : 'bg-amber-500/10 text-amber-300'}`}>{tax.mechanism.replace('_', ' ')}</span></td><td className="p-3 text-right font-mono text-white">{money(tax.amount)}</td><td className="p-3 text-right font-mono text-emerald-400">{pct(tax.shelfPercent)}</td></tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <h2 className="text-sm font-bold text-white">Tributos que aparecen en más de una etapa</h2>
+                {repeatedTaxes.length === 0 ? <p className="text-xs text-slate-500">No hay tributos repetidos identificados en este modelo.</p> : <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{repeatedTaxes.map(item => <div key={`${item.name}-${item.mechanism}`} className="p-3 bg-slate-950/50 border border-slate-800 rounded-xl"><div className="flex justify-between gap-3"><strong className="text-xs text-white">{item.name}</strong><span className="text-[9px] font-mono text-emerald-400">{item.count} etapas</span></div><div className="mt-2 flex justify-between text-[10px] font-mono text-slate-400"><span>{item.mechanism.replace('_', ' ')}</span><span>{money(item.amount)} · {pct(values.total > 0 ? item.amount / values.total * 100 : 0)}</span></div></div>)}</div>}
+              </div>
+
+              <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl text-xs text-sky-100/80 leading-relaxed"><Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" /><p><strong className="text-sky-300">Importante:</strong> que IVA aparezca en varias etapas no significa que se sume íntegramente en cada una. El sistema de débito y crédito fiscal netea parte de esa carga. En cambio, tributos sobre facturación como Ingresos Brutos pueden producir efecto cascada. Los montos por etapa son una asignación explicativa del total estimado del ejemplo.</p></div>
+            </>
+          ) : (
+            <div className="flex gap-3 p-5 bg-amber-500/5 border border-amber-500/20 rounded-2xl text-xs text-amber-100/80 leading-relaxed"><AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" /><p>Este producto todavía no tiene una cadena por etapas suficientemente documentada en la base. Se mantiene el desglose agregado por Nación, Provincia y Municipio hasta incorporar fuentes específicas de cada eslabón.</p></div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );
