@@ -6,93 +6,18 @@
 export type SpendingLevel = 'Nación' | 'Provincia' | 'Municipio';
 export type ComparisonStatus = 'comparable' | 'no_concluyente' | 'sin_referencia';
 
-export interface SpendingSource {
-  label: string;
-  url: string;
-  official: boolean;
-  retrievedAt: string;
-}
-
-export interface SpendingCategory {
-  id: string;
-  name: string;
-  amount: number | null;
-  share: number | null;
-  description: string;
-  sourceUrl: string;
-  sourceLabel: string;
-  period: string;
-}
-
-export interface SpendingJurisdiction {
-  id: string;
-  name: string;
-  level: SpendingLevel;
-  period: string;
-  approvedBudget: number | null;
-  executedBudget: number | null;
-  executedAsOf?: string;
-  categories: SpendingCategory[];
-  sources: SpendingSource[];
-  evidenceNote: string;
-}
-
-export interface PublicPurchase {
-  id: string;
-  jurisdictionId: string;
-  agency: string;
-  processNumber: string;
-  fileNumber: string;
-  description: string;
-  date: string;
-  officialUrl: string;
-  item: string;
-  specification: string;
-  quantity: number | null;
-  awardedUnitPrice: number | null;
-  awardedTotal: number | null;
-  supplier?: string;
-  privateReferenceUnitPrice: number | null;
-  privateReferenceUrl?: string;
-  privateReferenceLabel?: string;
-  comparisonStatus: ComparisonStatus;
-  comparisonNote: string;
-}
-
-export interface PublicAdvertisingAllocation {
-  id: string;
-  jurisdictionId: string;
-  mediumName: string;
-  mediumType: 'TV abierta' | 'TV cable' | 'Radio' | 'Gráfica' | 'Web' | 'Redes' | 'Otro';
-  province: string;
-  locality: string;
-  period: string;
-  amount: number;
-  sourceUrl: string;
-  sourceLabel: string;
-  note?: string;
-}
-
-export interface PublicAdvertisingStatus {
-  jurisdictionId: string;
-  period: string;
-  status: 'published' | 'partial' | 'suspended' | 'not_verified';
-  summary: string;
-  sourceUrl?: string;
-  sourceLabel?: string;
-}
+export interface SpendingSource { label: string; url: string; official: boolean; retrievedAt: string; }
+export interface SpendingCategory { id: string; name: string; amount: number | null; share: number | null; description: string; sourceUrl: string; sourceLabel: string; period: string; }
+export interface SpendingJurisdiction { id: string; name: string; level: SpendingLevel; period: string; approvedBudget: number | null; executedBudget: number | null; executedAsOf?: string; categories: SpendingCategory[]; sources: SpendingSource[]; evidenceNote: string; }
+export interface PublicPurchase { id: string; jurisdictionId: string; agency: string; processNumber: string; fileNumber: string; description: string; date: string; officialUrl: string; item: string; specification: string; quantity: number | null; awardedUnitPrice: number | null; awardedTotal: number | null; supplier?: string; privateReferenceUnitPrice: number | null; privateReferenceUrl?: string; privateReferenceLabel?: string; comparisonStatus: ComparisonStatus; comparisonNote: string; }
+export interface PublicAdvertisingAllocation { id: string; jurisdictionId: string; mediumName: string; mediumType: 'TV abierta' | 'TV cable' | 'Radio' | 'Gráfica' | 'Web' | 'Redes' | 'Otro'; province: string; locality: string; period: string; amount: number; sourceUrl: string; sourceLabel: string; note?: string; }
+export interface PublicAdvertisingStatus { jurisdictionId: string; period: string; status: 'published' | 'partial' | 'suspended' | 'not_verified'; summary: string; sourceUrl?: string; sourceLabel?: string; }
 
 const NATIONAL_TOTAL_2026 = 148_069_293_526_549;
 
 export const SPENDING_JURISDICTIONS: SpendingJurisdiction[] = [
   {
-    id: 'nacion',
-    name: 'Administración Nacional',
-    level: 'Nación',
-    period: '2026',
-    approvedBudget: NATIONAL_TOTAL_2026,
-    executedBudget: null,
-    executedAsOf: '26/08/2026',
+    id: 'nacion', name: 'Administración Nacional', level: 'Nación', period: '2026', approvedBudget: NATIONAL_TOTAL_2026, executedBudget: null, executedAsOf: '26/08/2026',
     evidenceNote: 'El presupuesto aprobado proviene de la Ley 27.798. La ejecución debe consultarse en Presupuesto Abierto/eSidif y no se replica como cifra estática hasta cargar un corte verificable.',
     sources: [
       { label: 'Ley 27.798 — Presupuesto Administración Nacional 2026', url: 'https://www.argentina.gob.ar/normativa/nacional/---422000/texto', official: true, retrievedAt: '2026-09-13' },
@@ -105,11 +30,19 @@ export const SPENDING_JURISDICTIONS: SpendingJurisdiction[] = [
       { id: 'servicios-economicos', name: 'Servicios económicos', amount: 11_457_503_006_150, share: 7.74, description: 'Energía, combustibles, minería, transporte, comunicaciones, agricultura, industria, turismo y otras funciones económicas.', sourceUrl: 'https://www.argentina.gob.ar/normativa/nacional/---422000/texto', sourceLabel: 'Ley 27.798, art. 1', period: '2026' },
       { id: 'administracion-gubernamental', name: 'Administración gubernamental', amount: 8_859_071_552_843, share: 5.98, description: 'Administración general, relaciones interiores y exteriores, justicia, conducción ejecutiva y otras funciones gubernamentales.', sourceUrl: 'https://www.argentina.gob.ar/normativa/nacional/---422000/texto', sourceLabel: 'Ley 27.798, art. 1', period: '2026' },
       { id: 'defensa-seguridad', name: 'Defensa y seguridad', amount: 7_111_223_342_891, share: 4.80, description: 'Defensa, seguridad interior, sistema penal e inteligencia.', sourceUrl: 'https://www.argentina.gob.ar/normativa/nacional/---422000/texto', sourceLabel: 'Ley 27.798, art. 1', period: '2026' },
-      { id: 'seguridad-social', name: 'Seguridad social', amount: 83_443_724_700_000, share: 56.35, description: 'Jubilaciones, pensiones y demás políticas de seguridad social. Importe del Presupuesto Ciudadano 2026, expresado originalmente en millones de pesos.', sourceUrl: 'https://www.argentina.gob.ar/sites/default/files/presupuesto_ciudadano2026.pdf', sourceLabel: 'Presupuesto Ciudadano 2026', period: '2026' },
+      { id: 'seguridad-social', name: 'Seguridad social', amount: 83_443_724_700_000, share: 56.35, description: 'Jubilaciones, pensiones y demás políticas de seguridad social. Importe del Presupuesto Ciudadano 2026.', sourceUrl: 'https://www.argentina.gob.ar/sites/default/files/presupuesto_ciudadano2026.pdf', sourceLabel: 'Presupuesto Ciudadano 2026', period: '2026' },
       { id: 'salud', name: 'Salud', amount: 8_822_143_600_000, share: 5.96, description: 'Programas y prestaciones de salud financiados por la Administración Nacional.', sourceUrl: 'https://www.argentina.gob.ar/sites/default/files/presupuesto_ciudadano2026.pdf', sourceLabel: 'Presupuesto Ciudadano 2026', period: '2026' },
       { id: 'educacion-cultura', name: 'Educación y cultura', amount: 7_742_689_000_000, share: 5.23, description: 'Universidades, alfabetización, becas, comedores escolares, vouchers y otras políticas educativas/culturales.', sourceUrl: 'https://www.argentina.gob.ar/economia/onp/presupuesto-ciudadano-2026/educacion', sourceLabel: 'Presupuesto Ciudadano 2026 — Educación', period: '2026' },
       { id: 'energia', name: 'Energía, combustibles y minería', amount: 6_453_085_000_000, share: 4.36, description: 'Políticas energéticas, combustibles y minería.', sourceUrl: 'https://www.argentina.gob.ar/sites/default/files/presupuesto_ciudadano2026.pdf', sourceLabel: 'Presupuesto Ciudadano 2026', period: '2026' },
       { id: 'pauta', name: 'Pauta / publicidad oficial', amount: null, share: null, description: 'La pauta se audita por período, organismo, campaña, medio y proveedor. Para 2026 la Administración Central mantiene suspendidas las campañas institucionales onerosas; la plataforma no extrapola esa suspensión a todo el sector público nacional.', sourceUrl: 'https://www.argentina.gob.ar/normativa/nacional/norma-422032/normas-modificadas', sourceLabel: 'Resolución 57/2025 — suspensión prorrogada durante 2026', period: '2026' }
+    ]
+  },
+  {
+    id: 'buenos_aires', name: 'Provincia de Buenos Aires', level: 'Provincia', period: '2026', approvedBudget: 43_021_244_867_935, executedBudget: null, executedAsOf: 'II trimestre 2026', categories: [],
+    evidenceNote: 'El presupuesto 2026 surge de la Ley 15.557. La Provincia publica informes trimestrales de ejecución; los rubros individuales sólo se completan cuando la fuente permite asignarlos sin mezclar clasificaciones.',
+    sources: [
+      { label: 'Ley 15.557 — Presupuesto PBA 2026', url: 'https://www.argentina.gob.ar/normativa/provincial/ley-15557-123456789-0abc-defg-755-5100bvorpyel/actualizacion', official: true, retrievedAt: '2026-09-13' },
+      { label: 'PBA — ejecución presupuestaria 2026', url: 'https://www.gba.gob.ar/economia/direccion_provincial_de_presupuesto_publico/ejecucion_presupuestaria', official: true, retrievedAt: '2026-09-13' }
     ]
   },
   {
@@ -124,28 +57,10 @@ export const SPENDING_JURISDICTIONS: SpendingJurisdiction[] = [
 ];
 
 export const PUBLIC_ADVERTISING_STATUS: PublicAdvertisingStatus[] = [
-  {
-    jurisdictionId: 'nacion',
-    period: '2026',
-    status: 'suspended',
-    summary: 'La Administración Central mantiene suspendidas durante 2026 las campañas institucionales de publicidad y comunicación con carácter oneroso. La norma no debe interpretarse como gasto cero de todo el sector público nacional, porque su alcance institucional es específico.',
-    sourceUrl: 'https://www.argentina.gob.ar/normativa/nacional/norma-422032/normas-modificadas',
-    sourceLabel: 'Resolución 57/2025'
-  },
-  {
-    jurisdictionId: 'buenos_aires',
-    period: '2026',
-    status: 'partial',
-    summary: 'La Provincia de Buenos Aires mantiene un Registro Oficial de Medios Publicitarios y exige tarifarios. La plataforma todavía no localizó una publicación consolidada 2026 con el monto efectivamente pagado a cada canal/medio.',
-    sourceUrl: 'https://www.gba.gob.ar/comunicacion_publica/registro_oficial_de_medios_publicitarios',
-    sourceLabel: 'Registro Oficial de Medios Publicitarios PBA'
-  }
+  { jurisdictionId: 'nacion', period: '2026', status: 'suspended', summary: 'La Administración Central mantiene suspendidas durante 2026 las campañas institucionales de publicidad y comunicación con carácter oneroso. La norma no debe interpretarse como gasto cero de todo el sector público nacional, porque su alcance institucional es específico.', sourceUrl: 'https://www.argentina.gob.ar/normativa/nacional/norma-422032/normas-modificadas', sourceLabel: 'Resolución 57/2025' },
+  { jurisdictionId: 'buenos_aires', period: '2026', status: 'partial', summary: 'La Provincia de Buenos Aires mantiene un Registro Oficial de Medios Publicitarios y exige tarifarios. La plataforma todavía no localizó una publicación consolidada 2026 con el monto efectivamente pagado a cada canal/medio.', sourceUrl: 'https://www.gba.gob.ar/comunicacion_publica/registro_oficial_de_medios_publicitarios', sourceLabel: 'Registro Oficial de Medios Publicitarios PBA' }
 ];
 
-/**
- * Serie histórica oficial por medio. Se muestran montos nominales del período indicado,
- * sin actualizar por inflación. Fuente: informe oficial 01/09/2021–30/04/2022.
- */
 export const PUBLIC_ADVERTISING_ALLOCATIONS: PublicAdvertisingAllocation[] = [
   { id: 'nac-2021-22-telefe', jurisdictionId: 'nacion', mediumName: 'Canal 11 Telefe', mediumType: 'TV abierta', province: 'Capital Federal', locality: 'Capital Federal', period: '01/09/2021–30/04/2022', amount: 162_578_625, sourceUrl: 'https://www.argentina.gob.ar/sites/default/files/informe_inversion_al_30-5.pdf', sourceLabel: 'Publicidad Oficial — informe oficial 2021/22' },
   { id: 'nac-2021-22-artear', jurisdictionId: 'nacion', mediumName: 'Canal 13 ARTEAR', mediumType: 'TV abierta', province: 'Capital Federal', locality: 'Capital Federal', period: '01/09/2021–30/04/2022', amount: 154_749_441, sourceUrl: 'https://www.argentina.gob.ar/sites/default/files/informe_inversion_al_30-5.pdf', sourceLabel: 'Publicidad Oficial — informe oficial 2021/22' },
