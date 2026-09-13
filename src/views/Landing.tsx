@@ -65,7 +65,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
         <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl shadow-black/30">
           <img
             src={HERO_IMAGE}
-            alt="Con La Tuya Contribuyente — auditoría cívica y fiscal de Argentina"
+            alt="Con La Tuya Contribuyente — auditoría cívica, fiscal y de transparencia del Estado argentino"
             className="block w-full h-auto max-h-[640px] object-cover object-center"
             loading="eager"
             fetchPriority="high"
@@ -80,12 +80,11 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
-            Seguí la ruta de tus <span className="text-emerald-400">impuestos</span>
+            Seguí la ruta de cada <span className="text-emerald-400">peso público</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
-            Una plataforma de auditoría cívica y fiscal independiente para entender qué te cobra el Estado,
-            quién lo aprobó, quién lo ejecuta y qué evidencia documental lo respalda.
+          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
+            Una plataforma independiente para entender cuánto te cobra el Estado, cómo impactan los impuestos en tu bolsillo y en los precios, cómo evolucionó la inflación, quién tomó cada decisión y en qué gastan Nación, provincias y municipios. También podés auditar presupuestos, ejecución, compras, proveedores, pauta oficial y el nivel de transparencia documental de cada jurisdicción.
           </p>
 
           <div className="max-w-2xl mx-auto relative mb-6">
@@ -190,16 +189,28 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
             <button
               onClick={() => onNavigate('mapa')}
-              className="w-full sm:w-auto px-8 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all"
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all"
             >
               Explorar Mapa Nacional
             </button>
             <button
+              onClick={() => onNavigate('gasto')}
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all"
+            >
+              Ver Gasto Público
+            </button>
+            <button
+              onClick={() => onNavigate('transparencia')}
+              className="w-full sm:w-auto px-6 py-3.5 bg-emerald-500/10 text-emerald-300 font-bold text-sm tracking-wide rounded-xl border border-emerald-500/25 hover:bg-emerald-500/15 cursor-pointer transition-all"
+            >
+              Transparencia del Estado
+            </button>
+            <button
               onClick={() => onNavigate('metodologia')}
-              className="w-full sm:w-auto px-8 py-3.5 bg-transparent text-slate-400 font-bold text-sm tracking-wide rounded-xl hover:text-white hover:bg-slate-900/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              className="w-full sm:w-auto px-6 py-3.5 bg-transparent text-slate-300 font-bold text-sm tracking-wide rounded-xl hover:text-white hover:bg-slate-900/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
               <BookOpen className="w-4 h-4" />
               <span>Ver Metodología</span>
@@ -216,22 +227,39 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
             <p className="text-xs text-slate-300 leading-relaxed">
               La plataforma reorganiza información pública oficial y estimaciones metodológicas con fines educativos y de auditoría.
               Las responsabilidades políticas, judiciales y fiscales se muestran únicamente cuando existe evidencia trazable y se distingue
-              entre propuesta, voto, promulgación, denuncia, procesamiento, sentencia, absolución y sobreseimiento.
+              entre propuesta, voto, promulgación, denuncia, procesamiento, sentencia, absolución y sobreseimiento. Cuando una jurisdicción no publica un dato, sólo se marca como tal si la ausencia fue verificada; si la plataforma todavía no pudo comprobarlo, figura como pendiente de verificación.
             </p>
           </div>
         </div>
       </div>
 
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <FeatureCard icon={<Coins className="w-5 h-5" />} tone="emerald" title="1. Transparencia Radical">
-          Unificamos boletines, leyes, decretos y ordenanzas fiscales nacionales, provinciales y municipales en un registro consultable y trazable.
-        </FeatureCard>
-        <FeatureCard icon={<Scale className="w-5 h-5" />} tone="blue" title="2. Auditoría de Responsabilidad">
-          Identificamos qué autoridades, legisladores y espacios institucionales participaron de la creación, aprobación, modificación o ejecución de cada tributo.
-        </FeatureCard>
-        <FeatureCard icon={<Calculator className="w-5 h-5" />} tone="purple" title="3. Impacto Económico">
-          Mostramos cómo la carga nacional, provincial y municipal puede modificar el precio final y diferenciamos datos observados de estimaciones.
-        </FeatureCard>
+      <section className="max-w-7xl mx-auto px-4 space-y-6">
+        <div className="max-w-3xl">
+          <h2 className="text-2xl font-extrabold text-white tracking-tight">Todo lo que podés auditar en un solo lugar</h2>
+          <p className="text-sm text-slate-300 mt-2 leading-relaxed">
+            La web cruza impuestos, territorio, precios, inflación, responsabilidad política, gasto público y transparencia documental para que puedas pasar de un dato general a su fuente y, cuando exista, al expediente, compra o decisión concreta.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <FeatureCard icon={<Coins className="w-5 h-5" />} tone="emerald" title="Impuestos y mapa tributario">
+            Consultá tributos nacionales, provinciales y municipales, quién los cobra, su norma de origen, cambios históricos y distribución territorial.
+          </FeatureCard>
+          <FeatureCard icon={<Calculator className="w-5 h-5" />} tone="purple" title="Presión fiscal y precio final">
+            Estimá cuánto de tus ingresos y del precio de un producto corresponde a impuestos, diferenciando Nación, provincia y municipio y evitando atribuir porcentajes no verificados.
+          </FeatureCard>
+          <FeatureCard icon={<Scale className="w-5 h-5" />} tone="blue" title="Inflación y responsabilidad política">
+            Revisá la evolución de la inflación desde 1983 y el contexto político, institucional y fiscal asociado a decisiones documentadas.
+          </FeatureCard>
+          <FeatureCard icon={<ShieldCheck className="w-5 h-5" />} tone="emerald" title="Gasto público y compras del Estado">
+            Seguí presupuesto, ejecución y gasto por rubro —incluida pauta oficial— y bajá hasta compras, proveedores, expedientes y comparaciones de precios cuando sean realmente homogéneas.
+          </FeatureCard>
+          <FeatureCard icon={<Search className="w-5 h-5" />} tone="blue" title="Transparencia de cada jurisdicción">
+            Compará qué publica Nación, cada provincia y cada gobierno local: presupuesto, ejecución, compras, proveedores, personal, pauta, deuda, obra pública y datos abiertos.
+          </FeatureCard>
+          <FeatureCard icon={<BookOpen className="w-5 h-5" />} tone="purple" title="Registro político, partidos y evidencia">
+            Explorá autoridades, partidos, participación en decisiones fiscales, información patrimonial o judicial verificable y la fuente documental que respalda cada afirmación.
+          </FeatureCard>
+        </div>
       </section>
 
       <section className="bg-slate-900/40 border-y border-slate-900 py-12 px-4">
@@ -239,7 +267,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
           <h2 className="text-xl font-bold text-white tracking-tight border-l-2 border-emerald-500 pl-3">
             Trazabilidad de la información y niveles de evidencia
           </h2>
-          <p className="text-xs text-slate-400 leading-relaxed max-w-3xl">
+          <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
             Cada afirmación debe poder volver a su fuente. Si un dato no está verificado, la plataforma lo indica explícitamente en lugar de completarlo por inferencia.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -270,7 +298,7 @@ function ResultButton({ title, subtitle, action, tone, onClick }: { key?: React.
     <button onClick={onClick} className="w-full p-2.5 bg-slate-950/60 hover:bg-slate-950 rounded-xl border border-slate-850 flex justify-between items-center transition text-left cursor-pointer group">
       <div className="truncate pr-4">
         <span className="font-bold text-slate-200 block text-xs">{title}</span>
-        <span className="text-[10px] text-slate-500 truncate block">{subtitle}</span>
+        <span className="text-[10px] text-slate-400 truncate block">{subtitle}</span>
       </div>
       <span className={`text-[9px] font-mono border px-1.5 py-0.5 rounded uppercase shrink-0 ${toneClass}`}>{action}</span>
     </button>
@@ -283,7 +311,7 @@ function FeatureCard({ icon, tone, title, children }: { icon: React.ReactNode; t
     <div className="p-6 bg-slate-900/60 border border-slate-800/80 rounded-2xl text-left hover:border-slate-700 transition">
       <div className={`p-2.5 border rounded-xl inline-block mb-4 ${toneClass}`}>{icon}</div>
       <h3 className="text-base font-bold text-white mb-2 tracking-tight">{title}</h3>
-      <p className="text-xs text-slate-400 leading-relaxed">{children}</p>
+      <p className="text-xs text-slate-300 leading-relaxed">{children}</p>
     </div>
   );
 }
