@@ -12,3 +12,76 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
 }
+
+/* Mobile resilience: the price simulator contains dense desktop grids with
+   monetary values and percentages. On narrow screens they must reflow instead
+   of compressing text into overlapping columns. */
+@media (max-width: 639px) {
+  #simulador-precios-core-view {
+    min-width: 0;
+  }
+
+  #simulador-precios-core-view .grid.grid-cols-12 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.55rem 0.75rem !important;
+    min-width: 0;
+  }
+
+  #simulador-precios-core-view .grid.grid-cols-12 > * {
+    min-width: 0;
+    grid-column: auto !important;
+  }
+
+  #simulador-precios-core-view .grid.grid-cols-12 > :first-child,
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(2) {
+    grid-column: 1 / -1 !important;
+  }
+
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(n+3) {
+    text-align: left !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(n+3)::before {
+    display: block;
+    font-size: 0.55rem;
+    line-height: 1rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Five-cell rows are the State burden rows: amount / shelf share / uplift. */
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(3):nth-last-child(3)::before {
+    content: 'Monto';
+  }
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(4):nth-last-child(2)::before {
+    content: '% góndola';
+  }
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(5):last-child::before {
+    content: 'Sobre costo';
+  }
+
+  /* Four-cell composition rows: amount and share stay legible side by side. */
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(3):nth-last-child(2),
+  #simulador-precios-core-view .grid.grid-cols-12 > :nth-child(4):last-child {
+    grid-column: span 1 !important;
+  }
+
+  #simulador-precios-core-view .grid.grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  #simulador-precios-core-view .p-6 {
+    padding: 1rem;
+  }
+
+  #simulador-precios-core-view table {
+    min-width: 680px;
+  }
+
+  #simulador-precios-core-view .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
