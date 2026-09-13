@@ -14,6 +14,7 @@ import RegistroTributosAuditado from './views/RegistroTributosAuditado';
 import CalculadoraFiscal from './views/CalculadoraFiscal';
 import SimuladorPrecios from './views/SimuladorPrecios';
 import RegistroPolitico from './views/RegistroPolitico';
+import IntegridadPartidaria from './views/IntegridadPartidaria';
 import GastoPublico from './views/GastoPublico';
 import MethodologyPage from './views/MethodologyPage';
 import Donaciones from './views/Donaciones';
@@ -73,6 +74,7 @@ function AppContent() {
     else if (path === '/calculadora') title = 'Calculadora de Presión Fiscal | Con La Tuya, Contribuyente';
     else if (path === '/simulador') title = 'Simulador de Precio Final | Con La Tuya, Contribuyente';
     else if (path === '/politicos') title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
+    else if (path === '/partidos') title = 'Integridad Partidaria desde 1983 | Con La Tuya, Contribuyente';
     else if (path === '/gasto') title = 'Gasto Público | Con La Tuya, Contribuyente';
     else if (path === '/metodologia') title = 'Metodología | Con La Tuya, Contribuyente';
     else if (path === '/contribucion') title = 'Propuestas y Gobernanza | Con La Tuya, Contribuyente';
@@ -104,6 +106,7 @@ function AppContent() {
             <Route path="/calculadora" element={<CalculadoraFiscal />} />
             <Route path="/simulador" element={<SimuladorPrecios />} />
             <Route path="/politicos" element={<RegistroPolitico />} />
+            <Route path="/partidos" element={<IntegridadPartidaria />} />
             <Route path="/mapa-tributario" element={<MapaTributarioDashboard />} />
             <Route path="/mapa-tributario/buscador" element={<MapaTributarioDashboard />} />
             <Route path="/mapa-tributario/tributo/:id" element={<MapaTributarioDashboard />} />
