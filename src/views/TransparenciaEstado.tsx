@@ -8,6 +8,7 @@ import { AlertTriangle, CheckCircle2, CircleHelp, ExternalLink, Eye, MapPin, Shi
 import { CENSUS_POPULATION_THRESHOLD, CENSUS_PROVINCES_2022 } from '../data/censo2022Territorial';
 import {
   makePendingTransparencyProfile,
+  makeProvincialTransparencyProfile,
   NATIONAL_TRANSPARENCY_PROFILE,
   StateTransparencyProfile,
   TRANSPARENCY_DIMENSIONS,
@@ -55,9 +56,14 @@ export default function TransparenciaEstado() {
 
   const profile = useMemo<StateTransparencyProfile>(() => {
     if (scope === 'nacion') return NATIONAL_TRANSPARENCY_PROFILE;
-    if (scope === 'provincia') return makePendingTransparencyProfile(province.id, province.name, 'Provincia');
+    if (scope === 'provincia') return makeProvincialTransparencyProfile(province.id, province.name);
     return makePendingTransparencyProfile(locality?.id || `pending-${province.id}`, locality?.name || 'Gobierno local pendiente', 'Municipio');
   }, [scope, province, locality]);
+
+  const provinceProfiles = useMemo(
+    () => CENSUS_PROVINCES_2022.map(item => makeProvincialTransparencyProfile(item.id, item.name)),
+    []
+  );
 
   const score = transparencyScore(profile);
   const published = profile.evidence.filter(item => item.status === 'published').length;
@@ -71,12 +77,18 @@ export default function TransparenciaEstado() {
       ? `Nación → ${province.name}`
       : `Nación → ${province.name} → ${locality?.name || 'seleccionar localidad'}`;
 
+  const selectProvince = (id: string) => {
+    setScope('provincia');
+    setProvinceId(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="space-y-8 py-4 text-left">
       <header className="space-y-3 border-b border-slate-800 pb-5">
         <div className="flex items-center gap-2 text-emerald-400 text-[10px] font-mono uppercase tracking-widest"><ShieldCheck className="w-4 h-4" />Transparencia del Estado</div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Qué publica cada jurisdicción y qué no</h1>
-        <p className="text-sm text-slate-300 max-w-4xl leading-relaxed">La plataforma separa ausencia de evidencia propia de ausencia de publicación oficial. Sólo se marca “no publicado por la jurisdicción” cuando existe verificación suficiente de los portales oficiales revisados; de lo contrario se muestra “no verificado por la plataforma”.</p>
+        <p className="text-sm text-slate-300 max-w-4xl leading-relaxed">Cobertura federal explícita: Nación, las 23 provincias, CABA y gobiernos locales. La plataforma separa ausencia de evidencia propia de ausencia de publicación oficial. Sólo se marca “no publicado por la jurisdicción” cuando existe verificación suficiente de los portales oficiales revisados; de lo contrario se muestra “no verificado por la plataforma”.</p>
       </header>
 
       <section className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
@@ -91,7 +103,7 @@ export default function TransparenciaEstado() {
       </section>
 
       <section className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <Metric title="Índice documental" value={`${score}%`} note="Sólo publicaciones verificadas/partial suman al índice." />
+        <Metric title="Índice documental" value={`${score}%`} note="Sólo publicaciones verificadas/parciales suman al índice." />
         <Metric title="Publicados" value={String(published)} note="Con fuente oficial localizada." />
         <Metric title="Parciales" value={String(partial)} note="Existe publicación pero falta desagregación o cobertura." />
         <Metric title="No publicados confirmados" value={String(confirmedMissing)} note="Sólo tras revisión oficial suficiente." />
@@ -120,6 +132,33 @@ export default function TransparenciaEstado() {
             </article>
           );
         })}
+      </section>
+
+      <section className="space-y-4 pt-2">
+        <div>
+          <h2 className="text-xl font-bold text-white">Cobertura provincial completa</h2>
+          <p className="text-sm text-slate-300 mt-1 max-w-4xl leading-relaxed">Las 24 jurisdicciones aparecen de forma explícita. La ejecución 2026, el gasto por finalidad/función y el gasto por objeto se apoyan en series oficiales federales desagregadas por jurisdicción. Los demás ítems se completan únicamente cuando se localiza evidencia oficial específica.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {provinceProfiles.map(item => {
+            const provinceScore = transparencyScore(item);
+            const provincePublished = item.evidence.filter(evidence => evidence.status === 'published').length;
+            const provincePartial = item.evidence.filter(evidence => evidence.status === 'partial').length;
+            return (
+              <button key={item.jurisdictionId} type="button" onClick={() => selectProvince(item.jurisdictionId)} className="text-left p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 hover:bg-slate-900/80 transition">
+                <div className="flex items-start justify-between gap-3">
+                  <strong className="text-white text-sm">{item.jurisdictionName}</strong>
+                  <span className="font-mono text-emerald-300 text-sm">{provinceScore}%</span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-mono">
+                  <span className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-300">{provincePublished} publicados</span>
+                  <span className="px-2 py-1 rounded bg-amber-500/10 text-amber-200">{provincePartial} parciales</span>
+                  <span className="px-2 py-1 rounded bg-slate-800 text-slate-300">{item.evidence.length - provincePublished - provincePartial} pendientes</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </section>
 
       <section className="p-5 rounded-2xl border border-sky-500/20 bg-sky-500/5 text-sm text-sky-50 leading-relaxed">
