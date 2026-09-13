@@ -240,8 +240,10 @@ export const PUBLIC_PURCHASES: PublicPurchase[] = [
     quantity: 250,
     awardedUnitPrice: null,
     awardedTotal: null,
-    privateReferenceUnitPrice: null,
+    privateReferenceUnitPrice: 2800,
+    privateReferenceUrl: 'https://origamilibreria.mitiendanube.com/productos/cuaderno-espiralado-a4-asamblea-80-hojas-rayadas-coleccion-ciudades-del-mundo-1gjvn/',
+    privateReferenceLabel: 'Referencia minorista visible: cuaderno A4 espiralado, 80 hojas rayadas — $2.800 (consulta 13/09/2026)',
     comparisonStatus: 'no_concluyente',
-    comparisonNote: 'COMPR.AR publica el proceso, especificaciones, cantidades y órdenes de compra, pero en la ficha consolidada disponible no queda asociado un precio unitario adjudicado a estos renglones. No se calcula sobreprecio hasta vincular orden de compra + renglón + precio unitario exacto.'
+    comparisonNote: 'La referencia privada es orientativa y no alcanza para afirmar sobreprecio: falta asociar el precio unitario adjudicado del renglón y verificar equivalencia de tapa, gramaje, marca/calidad, volumen, entrega e impuestos. Hasta entonces el resultado permanece como comparación no concluyente.'
   }
 ];
