@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, Search, Scale, Landmark, WalletCards, ReceiptText, AlertTriangle, ShieldCheck, Vote } from 'lucide-react';
+import { ExternalLink, Search, Scale, Landmark, WalletCards, ReceiptText, AlertTriangle, ShieldCheck, Vote, Users, Image as ImageIcon } from 'lucide-react';
 import { POLITICAL_TRANSPARENCY, calculateAssetChange } from '../data/transparenciaPolitica';
 import { EXECUTIVE_AUTHORITIES_2026 } from '../data/autoridadesEjecutivas2026';
 
@@ -31,7 +31,7 @@ export default function RegistroPolitico() {
       <header className="border-b border-slate-800 pb-5 space-y-2">
         <div className="flex items-center gap-2 text-emerald-400 text-[10px] font-mono uppercase tracking-[0.2em]"><ShieldCheck className="w-4 h-4"/>Registro auditable</div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Autoridades, patrimonio y responsabilidad fiscal</h1>
-        <p className="text-sm text-slate-400 max-w-5xl leading-relaxed">Registro basado en fuentes públicas oficiales. Se separan cargo, partido, remuneración, declaraciones juradas, evolución patrimonial, situación judicial y decisiones tributarias. La ausencia de una fuente no se reemplaza por prensa, rumores ni inferencias.</p>
+        <p className="text-sm text-slate-400 max-w-5xl leading-relaxed">Registro basado en fuentes públicas oficiales. Se separan cargo, partido, remuneración, declaraciones juradas, evolución patrimonial, situación judicial, decisiones tributarias, foto institucional y canales públicos oficiales. La ausencia de una fuente no se reemplaza por prensa, rumores ni inferencias.</p>
       </header>
 
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -43,7 +43,7 @@ export default function RegistroPolitico() {
 
       <div className="border border-amber-500/20 bg-amber-500/5 rounded-2xl p-4 flex gap-3 text-xs text-amber-100/80 leading-relaxed">
         <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-        <p><strong>Regla de publicación:</strong> “sin expediente oficial verificado cargado” no significa “sin causas”. Del mismo modo, una DDJJ publicada no permite afirmar un incremento patrimonial hasta contar con al menos dos declaraciones comparables y una metodología homogénea. Los partidos/alianzas se identifican como contexto político; cuando falta fuente electoral individual enlazada, el perfil queda en cobertura parcial.</p>
+        <p><strong>Regla de publicación:</strong> “sin expediente oficial verificado cargado” no significa “sin causas”. Una DDJJ no permite afirmar incremento patrimonial sin al menos dos declaraciones comparables. Foto y redes se publican sólo si corresponden a perfiles públicos oficiales/verificados.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -67,12 +67,19 @@ export default function RegistroPolitico() {
 
         {selected && <main className="lg:col-span-8 space-y-5">
           <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-              <div><h2 className="text-2xl font-extrabold text-white">{selected.name}</h2><p className="text-sm text-slate-300 mt-1">{selected.role}</p><p className="text-xs text-slate-500">{selected.party} · {selected.jurisdiction}</p></div>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div className="flex gap-4 items-start">
+                {selected.photoUrl ? <img src={selected.photoUrl} alt={selected.name} className="w-20 h-20 rounded-xl object-cover border border-slate-800"/> : <div className="w-20 h-20 rounded-xl border border-slate-800 bg-slate-950 flex items-center justify-center"><ImageIcon className="w-6 h-6 text-slate-600"/></div>}
+                <div><h2 className="text-2xl font-extrabold text-white">{selected.name}</h2><p className="text-sm text-slate-300 mt-1">{selected.role}</p><p className="text-xs text-slate-500">{selected.party} · {selected.jurisdiction}</p><p className="text-[9px] text-slate-600 mt-2">{selected.photoUrl ? 'Foto institucional verificada' : 'Sin foto institucional verificada cargada'}</p></div>
+              </div>
               <a href={selected.roleSource.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:underline">Fuente oficial del cargo <ExternalLink className="w-3.5 h-3.5"/></a>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Mini label="Nivel" value={selected.level}/><Mini label="Estado del perfil" value={selected.profileStatus === 'verified' ? 'Verificado' : selected.profileStatus === 'partial' ? 'Cobertura parcial' : 'Sin verificar'}/><Mini label="Remuneración actual" value={selected.salary.length && selected.salary[0].grossMonthlyArs !== null ? money(selected.salary[0].grossMonthlyArs) : 'Sin dato oficial cargado'}/><Mini label="Variación patrimonial" value={assetChange ? pct(assetChange.percent) : 'No calculable'}/>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-slate-950/50 border border-slate-800 rounded-xl p-3"><div className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-emerald-400"/><span className="text-[9px] uppercase font-mono text-slate-600">Historial partidario</span></div><p className="text-[10px] text-slate-300 mt-2">{(selected.memberships || []).length ? selected.memberships!.map(m => `${m.party}${m.from ? ` (${m.from}${m.to ? `–${m.to}` : ''})` : ''}`).join(' · ') : 'Sin historial adicional verificado cargado.'}</p></div>
+              <div className="bg-slate-950/50 border border-slate-800 rounded-xl p-3"><span className="text-[9px] uppercase font-mono text-slate-600">Canales públicos oficiales</span>{(selected.officialSocials || []).length ? <div className="flex flex-wrap gap-2 mt-2">{selected.officialSocials!.map((social,i)=><a key={i} href={social.url} target="_blank" rel="noreferrer" className="px-2 py-1 rounded border border-slate-800 text-[9px] text-emerald-400 hover:underline">{social.network}</a>)}</div> : <p className="text-[10px] text-amber-300 mt-2">Sin redes oficiales verificadas cargadas.</p>}</div>
             </div>
           </section>
 
@@ -88,7 +95,7 @@ export default function RegistroPolitico() {
           </section>
 
           <Panel icon={<Scale className="w-4 h-4 text-rose-400"/>} title="Situación judicial documentada">
-            {selected.judicial.length ? selected.judicial.map((j, i) => <div key={i} className="border-t border-slate-800 first:border-t-0 py-3 first:pt-0"><div className="flex flex-wrap justify-between gap-2"><strong className="text-xs text-white">{j.title}</strong><span className="text-[9px] font-mono px-2 py-1 rounded bg-rose-500/10 text-rose-300">{j.status}</span></div><p className="text-[10px] text-slate-400 mt-1">{j.courtOrBody} · {j.date}</p><p className="text-[10px] text-slate-500 mt-1 leading-relaxed">{j.note}</p><Source source={j.source}/></div>) : <Missing text={selected.judicialCoverageNote}/>} 
+            {selected.judicial.length ? selected.judicial.map((j, i) => <div key={i} className="border-t border-slate-800 first:border-t-0 py-3 first:pt-0"><div className="flex flex-wrap justify-between gap-2"><strong className="text-xs text-white">{j.title}</strong><span className="text-[9px] font-mono px-2 py-1 rounded bg-rose-500/10 text-rose-300">{j.status}</span></div><p className="text-[10px] text-slate-400 mt-1">{j.caseNumber ? `Expte. ${j.caseNumber} · ` : ''}{j.courtOrBody} · {j.date}</p><p className="text-[10px] text-slate-500 mt-1 leading-relaxed">{j.note}</p><Source source={j.source}/></div>) : <Missing text={selected.judicialCoverageNote}/>} 
           </Panel>
 
           <Panel icon={<ReceiptText className="w-4 h-4 text-emerald-400"/>} title="Impuestos, tasas, decretos y votos vinculados">
