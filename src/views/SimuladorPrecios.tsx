@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { ShoppingBag, ChevronRight, Info, AlertTriangle, Layers3, ReceiptText } from 'lucide-react';
+import { ShoppingBag, ChevronRight, Info, AlertTriangle, Layers3, ReceiptText, Repeat2 } from 'lucide-react';
 import { PRODUCTS } from '../data/productos';
 import { PRODUCT_TAX_CHAINS, TaxChainItem } from '../data/cadenaTributaria';
 
@@ -54,14 +54,32 @@ export default function SimuladorPrecios() {
   const repeatedTaxes = useMemo(() => {
     const map = new Map<string, { name: string; mechanism: string; count: number; amount: number }>();
     stageRows.forEach(stage => stage.taxes.forEach(tax => {
-      const key = `${tax.taxName}-${tax.mechanism}`;
-      const prev = map.get(key) || { name: tax.taxName, mechanism: tax.mechanism, count: 0, amount: 0 };
+      const normalizedName = tax.taxName.toLowerCase().includes('ingresos brutos')
+        ? 'Ingresos Brutos'
+        : tax.taxName.toLowerCase().includes('débitos') || tax.taxName.toLowerCase().includes('creditos') || tax.taxName.toLowerCase().includes('créditos')
+          ? 'Débitos y Créditos Bancarios'
+          : tax.taxName;
+      const key = `${normalizedName}-${tax.mechanism}`;
+      const prev = map.get(key) || { name: normalizedName, mechanism: tax.mechanism, count: 0, amount: 0 };
       prev.count += 1;
       prev.amount += tax.amount;
       map.set(key, prev);
     }));
     return Array.from(map.values()).filter(item => item.count > 1).sort((a, b) => b.amount - a.amount);
   }, [stageRows]);
+
+  const iibbCascade = useMemo(() => {
+    const entries = stageRows.flatMap(stage => stage.taxes
+      .filter(tax => tax.taxName.toLowerCase().includes('ingresos brutos'))
+      .map(tax => ({ stage: stage.name, amount: tax.amount, shelfPercent: tax.shelfPercent }))
+    );
+    const amount = entries.reduce((sum, item) => sum + item.amount, 0);
+    return {
+      entries,
+      amount,
+      shelfPercent: values.total > 0 ? (amount / values.total) * 100 : 0
+    };
+  }, [stageRows, values.total]);
 
   return (
     <div className="space-y-8 py-4 text-left" id="simulador-precios-view">
@@ -116,6 +134,30 @@ export default function SimuladorPrecios() {
 
           {chain ? (
             <>
+              {iibbCascade.entries.length > 1 && (
+                <div className="bg-rose-500/5 border border-rose-500/25 rounded-2xl p-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Repeat2 className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h2 className="font-bold text-white">Efecto cascada de Ingresos Brutos</h2>
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">Ingresos Brutos puede gravar la facturación de varios eslabones sin un mecanismo general de crédito fiscal equivalente al IVA. Cada etapa alcanzada incorpora ese costo a su precio y el siguiente eslabón compra sobre un valor que ya lo contiene.</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {iibbCascade.entries.map((entry, idx) => (
+                      <div key={`${entry.stage}-${idx}`} className="p-3 bg-slate-950/50 border border-rose-500/10 rounded-xl">
+                        <span className="text-[9px] uppercase font-mono text-slate-500 block">{entry.stage}</span>
+                        <div className="flex justify-between gap-3 mt-1"><strong className="text-xs text-white">IIBB atribuido</strong><span className="font-mono text-rose-300 text-xs">{money(entry.amount)} · {pct(entry.shelfPercent)}</span></div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="pt-3 border-t border-rose-500/10 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                    <div><span className="text-[9px] uppercase font-mono text-slate-500 block">IIBB acumulado estimado incorporado al precio</span><strong className="font-mono text-xl text-rose-300">{money(iibbCascade.amount)}</strong></div>
+                    <strong className="font-mono text-xl text-white">{pct(iibbCascade.shelfPercent)} de góndola</strong>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-4">
                 <div className="flex items-center gap-2"><Layers3 className="w-4 h-4 text-emerald-400" /><h2 className="text-base font-bold text-white">Etapas de producción, distribución y venta</h2></div>
                 {stageRows.map((stage, index) => (
@@ -143,7 +185,13 @@ export default function SimuladorPrecios() {
                 {repeatedTaxes.length === 0 ? <p className="text-xs text-slate-500">No hay tributos repetidos identificados en este modelo.</p> : <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{repeatedTaxes.map(item => <div key={`${item.name}-${item.mechanism}`} className="p-3 bg-slate-950/50 border border-slate-800 rounded-xl"><div className="flex justify-between gap-3"><strong className="text-xs text-white">{item.name}</strong><span className="text-[9px] font-mono text-emerald-400">{item.count} etapas</span></div><div className="mt-2 flex justify-between text-[10px] font-mono text-slate-400"><span>{item.mechanism.replace('_', ' ')}</span><span>{money(item.amount)} · {pct(values.total > 0 ? item.amount / values.total * 100 : 0)}</span></div></div>)}</div>}
               </div>
 
-              <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl text-xs text-sky-100/80 leading-relaxed"><Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" /><p><strong className="text-sky-300">Importante:</strong> que IVA aparezca en varias etapas no significa que se sume íntegramente en cada una. El sistema de débito y crédito fiscal netea parte de esa carga. En cambio, tributos sobre facturación como Ingresos Brutos pueden producir efecto cascada. Los montos por etapa son una asignación explicativa del total estimado del ejemplo.</p></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="p-4 bg-rose-500/5 border border-rose-500/15 rounded-xl"><strong className="text-xs text-rose-300 block">Ingresos Brutos</strong><p className="text-[10px] text-slate-400 mt-1 leading-relaxed">Plurifásico y acumulativo. Puede gravar producción, industria, distribución y comercio según actividad y jurisdicción.</p></div>
+                <div className="p-4 bg-rose-500/5 border border-rose-500/15 rounded-xl"><strong className="text-xs text-rose-300 block">Débitos y Créditos Bancarios</strong><p className="text-[10px] text-slate-400 mt-1 leading-relaxed">Puede repetirse con los movimientos bancarios de los distintos actores de la cadena. Su incidencia neta depende de exenciones y pagos a cuenta.</p></div>
+                <div className="p-4 bg-rose-500/5 border border-rose-500/15 rounded-xl"><strong className="text-xs text-rose-300 block">Sellos y tasas locales</strong><p className="text-[10px] text-slate-400 mt-1 leading-relaxed">Pueden generar costos en contratos u operaciones sucesivas. Su aplicación concreta depende de la jurisdicción y del hecho imponible.</p></div>
+              </div>
+
+              <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl text-xs text-sky-100/80 leading-relaxed"><Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" /><p><strong className="text-sky-300">Importante:</strong> que IVA aparezca en varias etapas no significa que se sume íntegramente en cada una. El sistema de débito y crédito fiscal netea la carga intermedia. En cambio, Ingresos Brutos es un ejemplo clásico de efecto cascada. Los montos por etapa son una asignación explicativa del total estimado del ejemplo y no una liquidación fiscal individual.</p></div>
             </>
           ) : (
             <div className="flex gap-3 p-5 bg-amber-500/5 border border-amber-500/20 rounded-2xl text-xs text-amber-100/80 leading-relaxed"><AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" /><p>Este producto todavía no tiene una cadena por etapas suficientemente documentada en la base. Se mantiene el desglose agregado por Nación, Provincia y Municipio hasta incorporar fuentes específicas de cada eslabón.</p></div>
