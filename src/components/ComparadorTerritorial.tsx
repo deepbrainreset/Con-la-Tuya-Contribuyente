@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Landmark, Loader2, MapPin, Search, Users } from 'lucide-react';
+import { AlertTriangle, ExternalLink, Landmark, Loader2, MapPin, Search, Users } from 'lucide-react';
 import { JURISDICTIONS } from '../data/jurisdictions';
+import { EXECUTIVE_AUTHORITIES_2026 } from '../data/autoridadesEjecutivas2026';
 import { PRODUCTS } from '../data/productos';
 import {
   CENSUS_2022_METHOD_NOTE,
@@ -103,6 +104,12 @@ export default function ComparadorTerritorial() {
     return JURISDICTIONS.find(j => !j.isBaseDemo && (j.level === 'province' || j.level === 'city_autonoma') && normalize(j.name).includes(provinceName));
   }, [selectedLocality, province, provinceId]);
 
+  const provinceAuthority = useMemo(() => {
+    if (provinceId === 'caba') return EXECUTIVE_AUTHORITIES_2026.find(a => a.level === 'CABA');
+    const p = normalize(province.name);
+    return EXECUTIVE_AUTHORITIES_2026.find(a => a.level === 'Provincia' && normalize(a.jurisdiction).includes(p));
+  }, [provinceId, province.name]);
+
   const baseCost = product.basePrice + product.logistics;
   const national = product.taxNational;
   const baselineProvincial = product.taxProvincial;
@@ -125,111 +132,66 @@ export default function ComparadorTerritorial() {
         <div>
           <h2 className="text-lg font-bold text-white">Comparador territorial nacional · Censo 2022</h2>
           <p className="text-xs text-slate-400 mt-1 max-w-4xl leading-relaxed">
-            Cobertura diseñada para las 24 jurisdicciones y todas las localidades censales de al menos {population(CENSUS_POPULATION_THRESHOLD)} habitantes. La población define qué localidades aparecen; la carga fiscal se vincula aparte con la provincia y el gobierno local competente.
+            Cobertura diseñada para las 24 jurisdicciones y todas las localidades censales de al menos {population(CENSUS_POPULATION_THRESHOLD)} habitantes. La población define qué localidades aparecen; la carga fiscal y la autoridad política vigente se verifican por separado.
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <label className="space-y-1">
-          <span className="text-[9px] uppercase font-mono text-slate-500">Producto</span>
-          <select value={productId} onChange={e => setProductId(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
-            {PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-          </select>
-        </label>
-        <label className="space-y-1">
-          <span className="text-[9px] uppercase font-mono text-slate-500">Provincia / CABA</span>
-          <select value={provinceId} onChange={e => setProvinceId(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
-            {CENSUS_PROVINCES_2022.map(item => <option key={item.id} value={item.id}>{item.name} · {population(item.population2022)} hab.</option>)}
-          </select>
-        </label>
-        <label className="space-y-1">
-          <span className="text-[9px] uppercase font-mono text-slate-500">Localidad ≥10.000 habitantes</span>
-          <select value={localityId} onChange={e => setLocalityId(e.target.value)} disabled={loadingLocalities || filteredLocalities.length === 0} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white disabled:opacity-50">
-            {filteredLocalities.map(item => <option key={item.id} value={item.id}>{item.name} · {population(item.population2022)}</option>)}
-          </select>
-        </label>
+        <label className="space-y-1"><span className="text-[9px] uppercase font-mono text-slate-500">Producto</span><select value={productId} onChange={e => setProductId(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">{PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
+        <label className="space-y-1"><span className="text-[9px] uppercase font-mono text-slate-500">Provincia / CABA</span><select value={provinceId} onChange={e => setProvinceId(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">{CENSUS_PROVINCES_2022.map(item => <option key={item.id} value={item.id}>{item.name} · {population(item.population2022)} hab.</option>)}</select></label>
+        <label className="space-y-1"><span className="text-[9px] uppercase font-mono text-slate-500">Localidad ≥10.000 habitantes</span><select value={localityId} onChange={e => setLocalityId(e.target.value)} disabled={loadingLocalities || filteredLocalities.length === 0} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white disabled:opacity-50">{filteredLocalities.map(item => <option key={item.id} value={item.id}>{item.name} · {population(item.population2022)}</option>)}</select></label>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-        <div className="relative flex-1">
-          <Search className="w-3.5 h-3.5 text-slate-600 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar localidad dentro de la provincia…" className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-slate-600" />
-        </div>
-        <div className="text-[10px] font-mono text-slate-500 shrink-0">
-          {loadingLocalities ? <span className="inline-flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Cargando Censo 2022…</span> : `${localities.length} localidades elegibles cargadas`}
-        </div>
+        <div className="relative flex-1"><Search className="w-3.5 h-3.5 text-slate-600 absolute left-3 top-1/2 -translate-y-1/2" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar localidad dentro de la provincia…" className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-slate-600" /></div>
+        <div className="text-[10px] font-mono text-slate-500 shrink-0">{loadingLocalities ? <span className="inline-flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Cargando Censo 2022…</span> : `${localities.length} localidades elegibles cargadas`}</div>
       </div>
 
       {localityError && <div className="flex gap-2 p-3 rounded-xl border border-amber-500/20 bg-amber-500/5 text-[11px] text-amber-200"><AlertTriangle className="w-4 h-4 shrink-0" /><span><strong>Sin datos verificados:</strong> {localityError}</span></div>}
 
-      {selectedLocality && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Card title="Población Censo 2022" value={population(selectedLocality.population2022)} note="Habitantes en la unidad censal seleccionada." icon="users" />
-            <Card title="Costo + logística" value={money(baseCost)} note="Base modelada común del producto." />
-            <Card title="Carga nacional" value={money(national)} note={`${pct(baselineTotal > 0 ? national / baselineTotal * 100 : 0)} del precio base modelado.`} />
-            <Card title="Carga provincial/municipal local" value="Sin datos verificados" note="No se reutiliza la estimación base como si fuera la alícuota oficial de esta localidad." muted />
-          </div>
+      {selectedLocality && <>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <Card title="Población Censo 2022" value={population(selectedLocality.population2022)} note="Habitantes en la unidad censal seleccionada." icon="users" />
+          <Card title="Costo + logística" value={money(baseCost)} note="Base modelada común del producto." />
+          <Card title="Carga nacional" value={money(national)} note={`${pct(baselineTotal > 0 ? national / baselineTotal * 100 : 0)} del precio base modelado.`} />
+          <Card title="Carga provincial/municipal local" value="Sin datos verificados" note="No se reutiliza la estimación base como si fuera la alícuota oficial de esta localidad." muted />
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-            <div className="lg:col-span-2 bg-slate-950/50 border border-slate-800 rounded-xl p-4 space-y-3">
-              <div className="flex items-center gap-2"><Landmark className="w-4 h-4 text-emerald-400" /><h3 className="text-sm font-bold text-white">{selectedLabel}</h3></div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Provincia</span><span className="text-slate-200">{province.name}</span></div>
-                <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Código INDEC prov.</span><span className="text-slate-200 font-mono">{province.indecCode}</span></div>
-                <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Población provincial</span><span className="text-slate-200">{population(province.population2022)}</span></div>
-                <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Año censal</span><span className="text-slate-200">2022</span></div>
-              </div>
-
-              {taxJurisdiction ? (
-                <div className="border-t border-slate-800 pt-3 grid grid-cols-2 gap-3 text-xs">
-                  <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Gobierno con ficha tributaria</span><span className="text-slate-200">{taxJurisdiction.name}</span></div>
-                  <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Autoridad registrada</span><span className="text-slate-200">{taxJurisdiction.authorityName}</span></div>
-                  <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Fuerza política</span><span className="text-slate-200">{taxJurisdiction.authorityParty}</span></div>
-                  <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Evidencia general</span><span className="text-slate-200">{taxJurisdiction.confidenceLevel}</span></div>
-                </div>
-              ) : (
-                <div className="border-t border-slate-800 pt-3 text-[11px] text-amber-300">Sin ficha tributaria verificada todavía para el gobierno local competente de esta localidad.</div>
-              )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="lg:col-span-2 bg-slate-950/50 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div className="flex items-center gap-2"><Landmark className="w-4 h-4 text-emerald-400" /><h3 className="text-sm font-bold text-white">{selectedLabel}</h3></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Provincia</span><span className="text-slate-200">{province.name}</span></div>
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Código INDEC prov.</span><span className="text-slate-200 font-mono">{province.indecCode}</span></div>
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Población provincial</span><span className="text-slate-200">{population(province.population2022)}</span></div>
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Año censal</span><span className="text-slate-200">2022</span></div>
             </div>
 
-            <div className={`border rounded-xl p-4 ${territorialPriceComplete ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-amber-500/5 border-amber-500/20'}`}>
-              <span className="text-[9px] uppercase font-mono text-amber-400 block">Precio territorial final</span>
-              <strong className="text-lg text-white block mt-1">{territorialPriceComplete ? money(baselineTotal) : 'Pendiente de datos verificados'}</strong>
-              <p className="text-[10px] text-slate-400 mt-2 leading-relaxed">
-                {territorialPriceComplete
-                  ? 'Calculado con alícuotas verificadas para Nación, provincia y gobierno local.'
-                  : 'Faltan alícuotas oficiales por actividad, período y jurisdicción. No se inventa una diferencia territorial.'}
-              </p>
+            <div className="border-t border-slate-800 pt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Autoridad provincial vigente verificada</span><span className="text-slate-200">{provinceAuthority?.name || 'Sin datos oficiales verificados'}</span>{provinceAuthority && <a href={provinceAuthority.roleSource.url} target="_blank" rel="noreferrer" className="text-[9px] text-emerald-400 hover:underline inline-flex items-center gap-1 mt-1">Fuente oficial <ExternalLink className="w-3 h-3"/></a>}</div>
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Partido / alianza</span><span className="text-slate-200">{provinceAuthority?.party || 'Sin datos oficiales verificados'}</span></div>
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Gobierno local competente</span><span className="text-slate-200">{taxJurisdiction?.level === 'municipality' ? taxJurisdiction.name : 'Pendiente de vinculación oficial localidad → gobierno local'}</span></div>
+              <div><span className="text-[9px] uppercase font-mono text-slate-500 block">Intendente / máxima autoridad local vigente</span><span className="text-amber-300">Pendiente de verificación oficial individual</span><p className="text-[9px] text-slate-600 mt-1">No se reutiliza automáticamente una autoridad de una base histórica o desactualizada.</p></div>
             </div>
           </div>
-        </>
-      )}
+
+          <div className={`border rounded-xl p-4 ${territorialPriceComplete ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-amber-500/5 border-amber-500/20'}`}>
+            <span className="text-[9px] uppercase font-mono text-amber-400 block">Precio territorial final</span>
+            <strong className="text-lg text-white block mt-1">{territorialPriceComplete ? money(baselineTotal) : 'Pendiente de datos verificados'}</strong>
+            <p className="text-[10px] text-slate-400 mt-2 leading-relaxed">{territorialPriceComplete ? 'Calculado con alícuotas verificadas para Nación, provincia y gobierno local.' : 'Faltan alícuotas oficiales por actividad, período y jurisdicción. No se inventa una diferencia territorial.'}</p>
+          </div>
+        </div>
+      </>}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl text-xs text-sky-100/80 leading-relaxed">
-          <AlertTriangle className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-          <p><strong>Metodología territorial:</strong> {CENSUS_2022_METHOD_NOTE}</p>
-        </div>
-        <div className="p-4 bg-slate-950/50 border border-slate-800 rounded-xl text-[10px] text-slate-500 leading-relaxed">
-          <strong className="text-slate-300 block mb-1">Fuentes demográficas</strong>
-          INDEC Censo 2022 definitivo + nomenclador/REDATAM. Para operar el filtro nacional, el servidor usa un espejo tabular de los resultados 2022 y conserva como referencias primarias INDEC y el dataset de localidades derivado del Censo depositado en CONICET.
-          <div className="flex flex-wrap gap-3 mt-2">
-            <a className="text-emerald-400 hover:underline" href={CENSUS_TERRITORIAL_SOURCES.indecDefinitive} target="_blank" rel="noreferrer">INDEC</a>
-            <a className="text-emerald-400 hover:underline" href={CENSUS_TERRITORIAL_SOURCES.indecRedatam} target="_blank" rel="noreferrer">Códigos REDATAM</a>
-            <a className="text-emerald-400 hover:underline" href={CENSUS_TERRITORIAL_SOURCES.conicetLocalitiesDataset} target="_blank" rel="noreferrer">Dataset CONICET</a>
-          </div>
-        </div>
+        <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl text-xs text-sky-100/80 leading-relaxed"><AlertTriangle className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" /><p><strong>Metodología territorial:</strong> {CENSUS_2022_METHOD_NOTE}</p></div>
+        <div className="p-4 bg-slate-950/50 border border-slate-800 rounded-xl text-[10px] text-slate-500 leading-relaxed"><strong className="text-slate-300 block mb-1">Fuentes demográficas</strong>INDEC Censo 2022 definitivo + nomenclador/REDATAM. Para operar el filtro nacional, el servidor usa un espejo tabular de los resultados 2022 y conserva como referencias primarias INDEC y el dataset de localidades derivado del Censo depositado en CONICET.<div className="flex flex-wrap gap-3 mt-2"><a className="text-emerald-400 hover:underline" href={CENSUS_TERRITORIAL_SOURCES.indecDefinitive} target="_blank" rel="noreferrer">INDEC</a><a className="text-emerald-400 hover:underline" href={CENSUS_TERRITORIAL_SOURCES.indecRedatam} target="_blank" rel="noreferrer">Códigos REDATAM</a><a className="text-emerald-400 hover:underline" href={CENSUS_TERRITORIAL_SOURCES.conicetLocalitiesDataset} target="_blank" rel="noreferrer">Dataset CONICET</a></div></div>
       </div>
     </section>
   );
 }
 
 function Card({ title, value, note, muted = false, icon }: { title: string; value: string; note: string; muted?: boolean; icon?: 'users' }) {
-  return <div className="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
-    <span className="text-[9px] uppercase font-mono text-slate-500 flex items-center gap-1">{icon === 'users' && <Users className="w-3 h-3" />}{title}</span>
-    <strong className={`text-base font-mono block mt-1 ${muted ? 'text-amber-300' : 'text-white'}`}>{value}</strong>
-    <p className="text-[9px] text-slate-500 mt-1 leading-relaxed">{note}</p>
-  </div>;
+  return <div className="bg-slate-950/50 border border-slate-800 rounded-xl p-4"><span className="text-[9px] uppercase font-mono text-slate-500 flex items-center gap-1">{icon === 'users' && <Users className="w-3 h-3" />}{title}</span><strong className={`text-base font-mono block mt-1 ${muted ? 'text-amber-300' : 'text-white'}`}>{value}</strong><p className="text-[9px] text-slate-500 mt-1 leading-relaxed">{note}</p></div>;
 }
