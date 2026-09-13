@@ -10,7 +10,7 @@ import { Landmark, Heart, Github, Mail } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Landing from './views/Landing';
 import MapaNacional from './views/MapaNacional';
-import RegistroTributos from './views/RegistroTributos';
+import RegistroTributosAuditado from './views/RegistroTributosAuditado';
 import CalculadoraFiscal from './views/CalculadoraFiscal';
 import SimuladorPrecios from './views/SimuladorPrecios';
 import RegistroPolitico from './views/RegistroPolitico';
@@ -98,7 +98,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<Landing onNavigate={handleNavigate} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/mapa" element={<MapaNacional onNavigate={handleNavigate} selectedJurisdictionId={selectedJurisdictionId} setSelectedJurisdictionId={setSelectedJurisdictionId} />} />
-            <Route path="/tributos" element={<RegistroTributos searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
+            <Route path="/tributos" element={<RegistroTributosAuditado searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/inflacion" element={<Inflacion />} />
             <Route path="/responsabilidad-politica" element={<ResponsabilidadPolitica />} />
             <Route path="/calculadora" element={<CalculadoraFiscal />} />
