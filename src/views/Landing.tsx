@@ -264,7 +264,7 @@ function SearchGroup({ title, tone, children }: { title: string; tone: 'emerald'
   );
 }
 
-function ResultButton({ title, subtitle, action, tone, onClick }: { title: string; subtitle: string; action: string; tone: 'emerald' | 'blue' | 'purple'; onClick: () => void }) {
+function ResultButton({ title, subtitle, action, tone, onClick }: { key?: React.Key; title: string; subtitle: string; action: string; tone: 'emerald' | 'blue' | 'purple'; onClick: () => void }) {
   const toneClass = tone === 'emerald' ? 'text-emerald-400 border-emerald-500/25' : tone === 'blue' ? 'text-blue-400 border-blue-500/25' : 'text-purple-400 border-purple-500/25';
   return (
     <button onClick={onClick} className="w-full p-2.5 bg-slate-950/60 hover:bg-slate-950 rounded-xl border border-slate-850 flex justify-between items-center transition text-left cursor-pointer group">
