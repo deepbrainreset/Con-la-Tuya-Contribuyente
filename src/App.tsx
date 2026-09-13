@@ -13,7 +13,7 @@ import MapaNacional from './views/MapaNacional';
 import RegistroTributos from './views/RegistroTributos';
 import CalculadoraFiscal from './views/CalculadoraFiscal';
 import SimuladorPrecios from './views/SimuladorPrecios';
-import PerfilPolitico from './views/PerfilPolitico';
+import RegistroPolitico from './views/RegistroPolitico';
 import GastoPublico from './views/GastoPublico';
 import MethodologyPage from './views/MethodologyPage';
 import Donaciones from './views/Donaciones';
@@ -72,7 +72,7 @@ function AppContent() {
     else if (path === '/responsabilidad-politica') title = 'Responsabilidad Política | Con La Tuya, Contribuyente';
     else if (path === '/calculadora') title = 'Calculadora de Presión Fiscal | Con La Tuya, Contribuyente';
     else if (path === '/simulador') title = 'Simulador de Precio Final | Con La Tuya, Contribuyente';
-    else if (path === '/politicos') title = 'Perfil de Políticos | Con La Tuya, Contribuyente';
+    else if (path === '/politicos') title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
     else if (path === '/gasto') title = 'Gasto Público | Con La Tuya, Contribuyente';
     else if (path === '/metodologia') title = 'Metodología | Con La Tuya, Contribuyente';
     else if (path === '/contribucion') title = 'Propuestas y Gobernanza | Con La Tuya, Contribuyente';
@@ -103,7 +103,7 @@ function AppContent() {
             <Route path="/responsabilidad-politica" element={<ResponsabilidadPolitica />} />
             <Route path="/calculadora" element={<CalculadoraFiscal />} />
             <Route path="/simulador" element={<SimuladorPrecios />} />
-            <Route path="/politicos" element={<PerfilPolitico selectedPolId={selectedPoliticianId} setSelectedPolId={setSelectedPoliticianId} />} />
+            <Route path="/politicos" element={<RegistroPolitico />} />
             <Route path="/mapa-tributario" element={<MapaTributarioDashboard />} />
             <Route path="/mapa-tributario/buscador" element={<MapaTributarioDashboard />} />
             <Route path="/mapa-tributario/tributo/:id" element={<MapaTributarioDashboard />} />
@@ -141,7 +141,7 @@ function AppContent() {
 
           <div className="space-y-3">
             <span className="font-bold text-white uppercase tracking-wider font-mono text-[10px]">Aviso Legal de Garantías</span>
-            <p className="text-slate-400 leading-relaxed">La plataforma recopila información normativa pública, series estadísticas y estimaciones con fines educativos y de auditoría. No sustituye asesoramiento legal ni contable. Las atribuciones políticas se publican sólo cuando existe documentación verificable y se distingue entre propuesta, promulgación y voto nominal.</p>
+            <p className="text-slate-400 leading-relaxed">La plataforma recopila información normativa pública, series estadísticas y estimaciones con fines educativos y de auditoría. No sustituye asesoramiento legal ni contable. Las atribuciones políticas, patrimoniales y judiciales se publican sólo cuando existe documentación verificable y se distingue entre propuesta, promulgación, voto nominal, denuncia, procesamiento y sentencia.</p>
           </div>
 
           <div className="space-y-3 font-mono text-[11px]">
