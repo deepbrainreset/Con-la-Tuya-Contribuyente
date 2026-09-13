@@ -16,7 +16,8 @@ import {
   Layers3,
   Scale,
   ReceiptText,
-  MapPin
+  MapPin,
+  ShieldCheck
 } from 'lucide-react';
 import { PUBLIC_PURCHASES, SPENDING_JURISDICTIONS, SpendingJurisdiction, SpendingCategory } from '../data/gastoPublico';
 import { CENSUS_PROVINCES_2022, CENSUS_POPULATION_THRESHOLD } from '../data/censo2022Territorial';
@@ -229,6 +230,17 @@ export default function GastoPublico() {
       </section>
 
       <div className="flex gap-3 p-4 bg-sky-500/5 border border-sky-500/20 rounded-2xl text-sm text-sky-50 leading-relaxed"><AlertTriangle className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" /><p>{jurisdiction.evidenceNote}</p></div>
+
+      <a href="#/transparencia" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition">
+        <div className="flex items-start gap-3">
+          <ShieldCheck className="w-5 h-5 text-emerald-300 shrink-0 mt-0.5" />
+          <div>
+            <strong className="text-white block">Ver transparencia documental de esta jurisdicción</strong>
+            <p className="text-xs text-slate-300 mt-1 leading-relaxed">Distingue dato publicado, publicación parcial, dato aún no verificado por la plataforma y dato cuya no publicación fue confirmada.</p>
+          </div>
+        </div>
+        <span className="text-xs font-semibold text-emerald-300">Abrir Transparencia del Estado →</span>
+      </a>
 
       <section className="space-y-4">
         <div className="flex items-center gap-2">{detailMode === 'general' ? <PieChart className="w-5 h-5 text-emerald-400" /> : <Layers3 className="w-5 h-5 text-emerald-400" />}<h2 className="text-lg font-bold text-white">{detailMode === 'general' ? 'Resumen por grandes finalidades' : 'Todos los rubros de gasto'}</h2></div>
