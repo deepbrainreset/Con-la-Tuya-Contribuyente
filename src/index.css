@@ -6,11 +6,53 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
   background-color: #020617; /* Slate 950 */
   color: #f8fafc; /* Slate 50 */
   font-family: var(--font-sans);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Global accessibility/readability pass for the dark interface.
+   Default slate-500/600 text is too subdued over slate-900/950 on many mobile
+   displays. Preserve hierarchy while raising contrast for supporting copy,
+   labels, metadata and form help text across the whole site. */
+.text-slate-300 {
+  color: #e2e8f0 !important;
+}
+
+.text-slate-400 {
+  color: #cbd5e1 !important;
+}
+
+.text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-600 {
+  color: #8291a8 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+.font-mono.text-slate-500,
+.font-mono.text-slate-600 {
+  font-weight: 500;
+}
+
+:disabled,
+[aria-disabled='true'] {
+  opacity: 0.72;
 }
 
 /* Mobile resilience: the price simulator contains dense desktop grids with
@@ -47,7 +89,7 @@ body {
     display: block;
     font-size: 0.55rem;
     line-height: 1rem;
-    color: #64748b;
+    color: #94a3b8;
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
