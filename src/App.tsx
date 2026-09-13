@@ -16,6 +16,7 @@ import SimuladorPrecios from './views/SimuladorPrecios';
 import RegistroPolitico from './views/RegistroPolitico';
 import IntegridadPartidaria from './views/IntegridadPartidaria';
 import GastoPublico from './views/GastoPublico';
+import TransparenciaEstado from './views/TransparenciaEstado';
 import MethodologyPage from './views/MethodologyPage';
 import Donaciones from './views/Donaciones';
 import PropuestasContribucion from './views/PropuestasContribucion';
@@ -76,6 +77,7 @@ function AppContent() {
     else if (path === '/politicos') title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
     else if (path === '/partidos') title = 'Integridad Partidaria desde 1983 | Con La Tuya, Contribuyente';
     else if (path === '/gasto') title = 'Gasto Público | Con La Tuya, Contribuyente';
+    else if (path === '/transparencia') title = 'Transparencia del Estado | Con La Tuya, Contribuyente';
     else if (path === '/metodologia') title = 'Metodología | Con La Tuya, Contribuyente';
     else if (path === '/contribucion') title = 'Propuestas y Gobernanza | Con La Tuya, Contribuyente';
     else if (path === '/donacion') title = 'Sostener la Plataforma | Con La Tuya, Contribuyente';
@@ -117,6 +119,7 @@ function AppContent() {
             <Route path="/mapa-tributario/metodologia" element={<MapaTributarioDashboard />} />
             <Route path="/admin/mapa-tributario" element={<MapaTributarioDashboard />} />
             <Route path="/gasto" element={<GastoPublico />} />
+            <Route path="/transparencia" element={<TransparenciaEstado />} />
             <Route path="/metodologia" element={<MethodologyPage />} />
             <Route path="/contribucion" element={<PropuestasContribucion />} />
             <Route path="/donacion" element={<Donaciones />} />
