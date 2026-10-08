@@ -92,6 +92,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
               <div className="flex-1 flex items-center gap-3 px-3 py-2 bg-slate-950/50 rounded-xl border border-slate-900">
                 <Search className="w-5 h-5 text-slate-500" />
                 <input
+                  aria-label="Buscar provincia, municipio, tributo, partido o autoridad"
                   type="text"
                   placeholder="Buscar provincia, municipio, tributo, partido o autoridad..."
                   value={searchQuery}
@@ -223,7 +224,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
         <div className="bg-amber-950/10 border border-amber-500/20 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-start shadow-sm">
           <AlertCircle className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="space-y-1.5 text-left">
-            <h4 className="text-sm font-semibold text-amber-400 tracking-wide">AVISO DE SEGURIDAD LEGAL Y NEUTRALIDAD</h4>
+            <h2 className="text-sm font-semibold text-amber-400 tracking-wide">AVISO DE SEGURIDAD LEGAL Y NEUTRALIDAD</h2>
             <p className="text-xs text-slate-300 leading-relaxed">
               La plataforma reorganiza información pública oficial y estimaciones metodológicas con fines educativos y de auditoría.
               Las responsabilidades políticas, judiciales y fiscales se muestran únicamente cuando existe evidencia trazable y se distingue
@@ -259,6 +260,24 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
           <FeatureCard icon={<BookOpen className="w-5 h-5" />} tone="purple" title="Registro político, partidos y evidencia">
             Explorá autoridades, partidos, participación en decisiones fiscales, información patrimonial o judicial verificable y la fuente documental que respalda cada afirmación.
           </FeatureCard>
+        </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-4 space-y-6" aria-labelledby="preguntas-frecuentes">
+        <h2 id="preguntas-frecuentes" className="text-2xl font-bold text-white">Preguntas sobre impuestos y gasto público</h2>
+        <div className="space-y-5 text-sm text-slate-300 leading-relaxed">
+          <div>
+            <h3 className="font-semibold text-white mb-2">¿Qué es Con La Tuya Contribuyente?</h3>
+            <p>Es una plataforma independiente de auditoría cívica y fiscal sobre Argentina. Reúne información sobre impuestos, precios, inflación, gasto público y decisiones políticas para facilitar su consulta y contrastación con fuentes. No es un sitio oficial del Estado.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-white mb-2">¿Cómo interpretar las cifras y sus fuentes?</h3>
+            <p>Revisá la fuente, el período, la jurisdicción y la unidad de cada dato. Las estimaciones de las calculadoras dependen de sus supuestos y no equivalen a una liquidación tributaria individual. Un presupuesto aprobado tampoco equivale a gasto ejecutado.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-white mb-2">¿Un dato pendiente significa que el gobierno no lo publica?</h3>
+            <p>No. Pendiente de verificación significa que la plataforma todavía no lo comprobó. Es distinto de información publicada parcialmente o de una ausencia de publicación verificada. No debe interpretarse una falta de datos como prueba de una irregularidad.</p>
+          </div>
         </div>
       </section>
 

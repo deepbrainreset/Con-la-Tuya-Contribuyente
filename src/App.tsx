@@ -3,26 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Landmark, Heart, Github, Mail } from 'lucide-react';
 
 import Navbar from './components/Navbar';
 import Landing from './views/Landing';
-import MapaNacional from './views/MapaNacional';
-import RegistroTributosAuditado from './views/RegistroTributosAuditado';
-import CalculadoraFiscal from './views/CalculadoraFiscal';
-import SimuladorPrecios from './views/SimuladorPrecios';
-import RegistroPolitico from './views/RegistroPolitico';
-import IntegridadPartidaria from './views/IntegridadPartidaria';
-import GastoPublico from './views/GastoPublico';
-import TransparenciaEstado from './views/TransparenciaEstado';
-import MethodologyPage from './views/MethodologyPage';
-import Donaciones from './views/Donaciones';
-import PropuestasContribucion from './views/PropuestasContribucion';
-import MapaTributarioDashboard from './views/MapaTributarioDashboard';
-import Inflacion from './views/Inflacion';
-import ResponsabilidadPolitica from './views/ResponsabilidadPolitica';
+const MapaNacional = lazy(() => import('./views/MapaNacional'));
+const RegistroTributosAuditado = lazy(() => import('./views/RegistroTributosAuditado'));
+const CalculadoraFiscal = lazy(() => import('./views/CalculadoraFiscal'));
+const SimuladorPrecios = lazy(() => import('./views/SimuladorPrecios'));
+const RegistroPolitico = lazy(() => import('./views/RegistroPolitico'));
+const IntegridadPartidaria = lazy(() => import('./views/IntegridadPartidaria'));
+const GastoPublico = lazy(() => import('./views/GastoPublico'));
+const TransparenciaEstado = lazy(() => import('./views/TransparenciaEstado'));
+const MethodologyPage = lazy(() => import('./views/MethodologyPage'));
+const Donaciones = lazy(() => import('./views/Donaciones'));
+const PropuestasContribucion = lazy(() => import('./views/PropuestasContribucion'));
+const MapaTributarioDashboard = lazy(() => import('./views/MapaTributarioDashboard'));
+const Inflacion = lazy(() => import('./views/Inflacion'));
+const ResponsabilidadPolitica = lazy(() => import('./views/ResponsabilidadPolitica'));
 
 export default function App() {
   return (
@@ -32,7 +32,7 @@ export default function App() {
   );
 }
 
-function AppContent() {
+export function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -65,7 +65,7 @@ function AppContent() {
   const currentTab = location.pathname === '/' || location.pathname === '' ? 'landing' : location.pathname.substring(1);
 
   React.useEffect(() => {
-    let title = 'Con La Tuya, Contribuyente';
+    let title = 'Impuestos y gasto público en Argentina | Con La Tuya, Contribuyente';
     const path = location.pathname;
     if (path.startsWith('/mapa-tributario')) title = 'Mapa Tributario | Con La Tuya, Contribuyente';
     else if (path === '/mapa') title = 'Mapa Nacional | Con La Tuya, Contribuyente';
@@ -99,6 +99,7 @@ function AppContent() {
 
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="space-y-6">
+          <Suspense fallback={<p role="status" className="text-slate-300 py-8">Cargando sección…</p>}>
           <Routes>
             <Route path="/" element={<Landing onNavigate={handleNavigate} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/mapa" element={<MapaNacional onNavigate={handleNavigate} selectedJurisdictionId={selectedJurisdictionId} setSelectedJurisdictionId={setSelectedJurisdictionId} />} />
@@ -125,6 +126,7 @@ function AppContent() {
             <Route path="/donacion" element={<Donaciones />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </Suspense>
         </div>
       </main>
 

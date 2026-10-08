@@ -78,3 +78,21 @@ Created by Marcelo Julián Simeoni / Deep Brain Reset.
 Portfolio: https://deepbrainreset.com
 
 This repository is presented as a technical portfolio project demonstrating AI-assisted full-stack product development, React/TypeScript application architecture, interactive mapping and data visualisation.
+
+## Landing SEO and rendering
+
+The production build prerenders the homepage from the same React components used
+by the browser (`scripts/prerender.tsx`). Its text is available in the initial
+HTML without JavaScript; interactive features still need JavaScript. The browser
+hydrates the homepage and renders existing hash deep links separately. Other
+views are loaded on demand, so maps and charts are not part of the initial page
+load. No analytics identifiers or fiscal datasets were changed.
+
+The sitemap intentionally lists only the homepage. Internal hash routes are not
+independent indexable URLs. A future migration must coordinate real paths, hosting
+fallbacks, old-link compatibility, per-page metadata and sitemap entries.
+
+Verification: `npm run lint`, `npm run build`, generated HTML and JSON-LD checks,
+and a DOM simulation of homepage hydration and navigation to methodology and back.
+A real-browser visual check remains pending. This improves content availability;
+it does not guarantee indexing, ranking or inclusion in AI answers.
