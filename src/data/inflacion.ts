@@ -79,11 +79,11 @@ export const INFLATION_SERIES: InflationPoint[] = [
 
 export const CURRENT_INFLATION_2026 = {
   year: 2026,
-  lastMonth: 'mayo',
-  lastMonthlyRate: 2.1,
+  lastMonth: 'septiembre',
+  lastMonthlyRate: 1.9,
   status: 'Año en curso: no existe todavía una inflación anual 2026 cerrada.',
   source: 'https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31',
-  verifiedAt: '2026-06-11'
+  verifiedAt: '2026-10-16'
 };
 
 export const INFLATION_METHODOLOGY_LINKS = {
