@@ -4,11 +4,12 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Calculator, Calendar, Info, ShieldAlert, FileText, ChevronRight, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Calendar, FileText, AlertTriangle, ExternalLink, Scale } from 'lucide-react';
+import { CALCULADORA_FISCAL_PARAMETERS, CALCULADORA_NORMATIVE_SOURCES } from '../data/parametrosCalculadoraFiscal';
 
 export default function CalculadoraFiscal() {
   // Input states
-  const [salarioBruto, setSalarioBruto] = useState<number>(350000); // Pesos
+  const [salarioBruto, setSalarioBruto] = useState<number>(1200000); // Pesos
   const [perfilConsumo, setPerfilConsumo] = useState<'bajo' | 'medio' | 'alto'>('medio');
   const [autoSujeto, setAutoSujeto] = useState<boolean>(true);
   const [propietario, setPropietario] = useState<boolean>(false);
@@ -17,33 +18,29 @@ export default function CalculadoraFiscal() {
   // Calculate taxes
   const fiscalResults = useMemo(() => {
     // 1. Social security (cargas laborales) -> ~17% worker contribution + typical employer wedge estimated
-    const jubilacion = salarioBruto * 0.11;
-    const obraSocial = salarioBruto * 0.03;
-    const ley19032 = salarioBruto * 0.03;
+    const jubilacion = salarioBruto * CALCULADORA_FISCAL_PARAMETERS.jubilacionRate;
+    const obraSocial = salarioBruto * CALCULADORA_FISCAL_PARAMETERS.obraSocialRate;
+    const ley19032 = salarioBruto * CALCULADORA_FISCAL_PARAMETERS.pamiLey19032Rate;
     const totalCargasSociales = jubilacion + obraSocial + ley19032;
 
     const salarioNeto = salarioBruto - totalCargasSociales;
 
     // 2. Direct Taxes -> Impuesto a las ganancias (simplified scales based on updated floor de ganancias 2026)
-    // Floor is around 1.8 million pesos in 2026. If below, Gains tax is 0.
     let impuestoGanancias = 0;
-    if (salarioBruto > 1800000) {
-      const imponible = (salarioBruto - 1800000) * 0.22; // rough flat estimate over floor
+    if (salarioBruto > CALCULADORA_FISCAL_PARAMETERS.gananciasMonthlyFloorArs) {
+      const imponible = (salarioBruto - CALCULADORA_FISCAL_PARAMETERS.gananciasMonthlyFloorArs) * CALCULADORA_FISCAL_PARAMETERS.gananciasMarginalEffectiveEstimate;
       impuestoGanancias = Math.max(0, imponible);
     }
 
     // 3. Indirect Taxes (Consumo - IVA, IIBB, Tasas)
-    // Assume consumption expenditure is 85% of net income for medium profiles
-    const gastoConsumo = salarioNeto * (perfilConsumo === 'bajo' ? 0.75 : perfilConsumo === 'medio' ? 0.90 : 1.0);
-    
-    // Effective tax rates integrated in consumption (IVA + IIBB + Internos cumulative averages)
-    const effectiveConsumptionTaxRate = perfilConsumo === 'bajo' ? 0.22 : perfilConsumo === 'medio' ? 0.31 : 0.40;
+    const gastoConsumo = salarioNeto * CALCULADORA_FISCAL_PARAMETERS.consumptionShareByTier[perfilConsumo];
+    const effectiveConsumptionTaxRate = CALCULADORA_FISCAL_PARAMETERS.effectiveIndirectTaxRateByTier[perfilConsumo];
     const totalImpuestosConsumo = gastoConsumo * effectiveConsumptionTaxRate;
 
     // 4. Patrimonial Taxes (Patentes, ABL / Inmobiliario)
     let totalPatrimoniales = 0;
-    if (autoSujeto) totalPatrimoniales += 18500; // mensual estimado
-    if (propietario) totalPatrimoniales += 22000; // mensual estimado
+    if (autoSujeto) totalPatrimoniales += CALCULADORA_FISCAL_PARAMETERS.patrimonialMonthlyEstimateArs.automotor;
+    if (propietario) totalPatrimoniales += CALCULADORA_FISCAL_PARAMETERS.patrimonialMonthlyEstimateArs.inmueble;
 
     const totalImpuestosMensuales = totalCargasSociales + impuestoGanancias + totalImpuestosConsumo + totalPatrimoniales;
     const totalRecibidoRealNeto = salarioBruto - totalImpuestosMensuales;
@@ -311,6 +308,48 @@ export default function CalculadoraFiscal() {
           </div>
         </div>
       </div>
+
+      {/* NORMATIVE TRACEABILITY SECTION */}
+      <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Scale className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-sm font-bold text-white">Parámetros Normativos y Fuentes Aplicadas en el Cálculo</h3>
+          </div>
+          <span className="text-[10px] font-mono text-slate-400">
+            Período base: {CALCULADORA_FISCAL_PARAMETERS.referencePeriod} · Moneda: {CALCULADORA_FISCAL_PARAMETERS.currency} · Verificado: {CALCULADORA_FISCAL_PARAMETERS.lastVerified}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {CALCULADORA_NORMATIVE_SOURCES.map(param => (
+            <article key={param.id} className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2 text-xs">
+              <div className="flex items-start justify-between gap-2">
+                <strong className="text-white">{param.label}</strong>
+                <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono uppercase shrink-0 border ${
+                  param.epistemicStatus === 'verificado'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                    : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                }`}>
+                  {param.epistemicStatus}
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-slate-300">
+                Norma: {param.normativeReference} ({param.rateOrAmount}{param.unit === 'porcentaje' ? '%' : ' ARS/mes'})
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">{param.methodologyNote}</p>
+              <a
+                href={param.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 hover:underline"
+              >
+                Consultar texto legal oficial <ExternalLink className="w-3 h-3" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -131,6 +131,348 @@ export const JURISDICTIONS: Jurisdiction[] = [
     isBaseDemo: false
   },
   {
+    id: 'catamarca',
+    name: 'Provincia de Catamarca',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Raúl Alejandro Jalil',
+    authorityParty: 'Unión por la Patria / PJ',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/catamarca',
+      'https://portal.catamarca.gob.ar',
+      'https://dgrentas.arca.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción provincial del NOA (429.562 hab. según Censo 2022). Recauda Ingresos Brutos, Sellos, Inmobiliario y Automotores a través de ARCA Catamarca, además de regalías mineras.',
+    isBaseDemo: false
+  },
+  {
+    id: 'chaco',
+    name: 'Provincia del Chaco',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Leandro César Zdero',
+    authorityParty: 'UCR / Chaco Cambia',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/chaco',
+      'https://chaco.gov.ar',
+      'https://atp.chaco.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción provincial del NEA (1.129.606 hab. según Censo 2022). Administra tributos provinciales mediante la Administración Tributaria Provincial (ATP Chaco) y participa del régimen federal de coparticipación Ley 23.548.',
+    isBaseDemo: false
+  },
+  {
+    id: 'chubut',
+    name: 'Provincia del Chubut',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Ignacio Agustín Torres',
+    authorityParty: 'PRO / Despierta Chubut',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/chubut',
+      'https://www.chubut.gov.ar',
+      'https://www.dgrchubut.gov.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción patagónica (592.621 hab. según Censo 2022) con perfil hidrocarburífero, pesquero y energético. Recauda tributos propios vía Dirección General de Rentas (DGR Chubut) y regalías petroleras.',
+    isBaseDemo: false
+  },
+  {
+    id: 'corrientes',
+    name: 'Provincia de Corrientes',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Juan Pablo Valdés',
+    authorityParty: 'Vamos Corrientes / UCR',
+    authorityPeriod: '2025 - 2029',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/corrientes',
+      'https://www.corrientes.gob.ar',
+      'https://www.dgrcorrientes.gov.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción mesopotámica del NEA (1.212.696 hab. según Censo 2022). Administra su sistema tributario provincial a través de la Dirección General de Rentas (DGR Corrientes).',
+    isBaseDemo: false
+  },
+  {
+    id: 'entre_rios',
+    name: 'Provincia de Entre Ríos',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Rogelio Frigerio',
+    authorityParty: 'PRO / Juntos por Entre Ríos',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/entre-rios',
+      'https://www.entrerios.gov.ar',
+      'https://www.ater.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción mesopotámica de la Región Centro (1.425.578 hab. según Censo 2022). Recauda impuestos provinciales mediante la Administradora Tributaria de Entre Ríos (ATER).',
+    isBaseDemo: false
+  },
+  {
+    id: 'formosa',
+    name: 'Provincia de Formosa',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Gildo Insfrán',
+    authorityParty: 'Partido Justicialista',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/formosa',
+      'https://www.formosa.gob.ar',
+      'https://www.dgrformosa.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción del NEA (607.419 hab. según Censo 2022) con alta incidencia de transferencias automáticas de Coparticipación Federal sobre sus recursos totales. Recauda tributos locales vía ATP/DGR Formosa.',
+    isBaseDemo: false
+  },
+  {
+    id: 'jujuy',
+    name: 'Provincia de Jujuy',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Carlos Sadir',
+    authorityParty: 'UCR / Frente Cambia Jujuy',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/jujuy',
+      'https://www.jujuy.gob.ar',
+      'https://www.rentasjujuy.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción del NOA (811.611 hab. según Censo 2022) con actividad minera (litio), agroindustrial y turística. Administra tributos locales a través de la Dirección Provincial de Rentas.',
+    isBaseDemo: false
+  },
+  {
+    id: 'la_pampa',
+    name: 'Provincia de La Pampa',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Sergio Ziliotto',
+    authorityParty: 'Partido Justicialista / FREJUPA',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/lapampa',
+      'https://www.lapampa.gob.ar',
+      'https://dgr.lapampa.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción pampeana-patagónica (361.859 hab. según Censo 2022) de perfil agroganadero. Administra sus recursos tributarios propios mediante la Dirección General de Rentas de La Pampa.',
+    isBaseDemo: false
+  },
+  {
+    id: 'la_rioja',
+    name: 'Provincia de La Rioja',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Ricardo Clemente Quintela',
+    authorityParty: 'Partido Justicialista / Unión por la Patria',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/la-rioja',
+      'https://www.larioja.gov.ar',
+      'https://www.dgrlarioja.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción del NOA/Cuyo (383.865 hab. según Censo 2022). Recauda tributos provinciales vía DGIP La Rioja y recibe recursos de coparticipación federal y transferencias presupuestarias.',
+    isBaseDemo: false
+  },
+  {
+    id: 'mendoza',
+    name: 'Provincia de Mendoza',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Alfredo Víctor Cornejo',
+    authorityParty: 'UCR / Cambia Mendoza',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/mendoza',
+      'https://www.mendoza.gov.ar',
+      'https://www.atm.mendoza.gov.ar'
+    ],
+    confidenceLevel: 'A',
+    summary: 'Principal economía de la Región de Cuyo (2.043.540 hab. según Censo 2022). Administra Ingresos Brutos, Sellos, Inmobiliario, Automotor y regalías mediante la Administración Tributaria Mendoza (ATM).',
+    isBaseDemo: false
+  },
+  {
+    id: 'misiones',
+    name: 'Provincia de Misiones',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Hugo Mario Passalacqua',
+    authorityParty: 'Frente Renovador de la Concordia',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/node/194595',
+      'https://misiones.gob.ar',
+      'https://www.atm.misiones.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción del NEA (1.278.873 hab. según Censo 2022). Cuenta con un régimen de percepción anticipada de Ingresos Brutos administrado por la Agencia Tributaria Misiones (ATM).',
+    isBaseDemo: false
+  },
+  {
+    id: 'neuquen',
+    name: 'Provincia del Neuquén',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Rolando Ceferino Figueroa',
+    authorityParty: 'Comunidad',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/node/204309',
+      'https://www.neuquen.gob.ar',
+      'https://www.dprneuquen.gob.ar'
+    ],
+    confidenceLevel: 'A',
+    summary: 'Jurisdicción patagónica (710.814 hab. según Censo 2022) con alta autonomía de recursos propios por regalías hidrocarburíferas (Vaca Muerta) e Ingresos Brutos vía DPR Neuquén.',
+    isBaseDemo: false
+  },
+  {
+    id: 'rio_negro',
+    name: 'Provincia de Río Negro',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Alberto Edgardo Weretilneck',
+    authorityParty: 'Juntos Somos Río Negro',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/rionegro',
+      'https://rionegro.gov.ar',
+      'https://agencia.rionegro.gov.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción patagónica (750.768 hab. según Censo 2022) con economía frutícola, turística, tecnológica y energética. Recauda tributos provinciales mediante la Agencia de Recaudación Tributaria (ART).',
+    isBaseDemo: false
+  },
+  {
+    id: 'salta',
+    name: 'Provincia de Salta',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Gustavo Adolfo Ruberto Sáenz',
+    authorityParty: 'Alianza Gustavo Gobernador',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/salta',
+      'https://www.salta.gob.ar',
+      'https://www.dgrsalta.gov.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción del NOA (1.441.351 hab. según Censo 2022). Administra tributos sobre actividades económicas, sellos, inmuebles y regalías mineras e hidrocarburíferas vía DGR Salta.',
+    isBaseDemo: false
+  },
+  {
+    id: 'san_juan',
+    name: 'Provincia de San Juan',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Humberto Marcelo Orrego',
+    authorityParty: 'Producción y Trabajo',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/sanjuan',
+      'https://www.sanjuan.gob.ar',
+      'https://www.sanjuandgr.gov.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción cuyana (822.853 hab. según Censo 2022) con perfil minero, vitivinícola y agroindustrial. Administra impuestos provinciales a través de la Dirección General de Rentas (DGR San Juan).',
+    isBaseDemo: false
+  },
+  {
+    id: 'san_luis',
+    name: 'Provincia de San Luis',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Claudio Javier Poggi',
+    authorityParty: 'Avanzar / Cambia San Luis',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/sanluis',
+      'https://www.sanluis.gov.ar',
+      'https://www.rentas.sanluis.gov.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción de la Región de Cuyo (542.069 hab. según Censo 2022). Administra recursos tributarios provinciales mediante la Dirección Provincial de Ingresos Públicos (DPIP).',
+    isBaseDemo: false
+  },
+  {
+    id: 'santa_cruz',
+    name: 'Provincia de Santa Cruz',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Claudio Vidal',
+    authorityParty: 'SER Santa Cruz / Por Santa Cruz',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/santacruz',
+      'https://www.santacruz.gob.ar',
+      'https://www.asip.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción austral patagónica (337.226 hab. según Censo 2022). Recauda tributos provinciales vía Agencia Santacruceña de Ingresos Públicos (ASIP) y regalías hidrocarburíferas y mineras.',
+    isBaseDemo: false
+  },
+  {
+    id: 'tierra_del_fuego',
+    name: 'Provincia de Tierra del Fuego, Antártida e Islas del Atlántico Sur',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Gustavo Adrián Melella',
+    authorityParty: 'Concertación FORJA',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/node/193843',
+      'https://www.tierradelfuego.gob.ar',
+      'https://www.aref.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción austral (185.732 hab. según Censo 2022) alcanzada por el subrégimen de promoción fiscal y aduanera de la Ley 19.640. Administra tributos locales mediante AREF.',
+    isBaseDemo: false
+  },
+  {
+    id: 'tucuman',
+    name: 'Provincia de Tucumán',
+    level: 'province',
+    parentId: 'nacion',
+    authorityName: 'Osvaldo Francisco Jaldo',
+    authorityParty: 'Partido Justicialista',
+    authorityPeriod: '2023 - 2027',
+    activeTaxesCount: 0,
+    sources: [
+      'https://www.argentina.gob.ar/tucuman',
+      'https://www.tucuman.gob.ar',
+      'https://www.rentastucuman.gob.ar'
+    ],
+    confidenceLevel: 'B',
+    summary: 'Jurisdicción más densamente poblada del NOA (1.731.820 hab. según Censo 2022), polo citrícola, azucarero y universitario. Administra impuestos provinciales mediante la DGR Tucumán.',
+    isBaseDemo: false
+  },
+  {
     id: 'la_matanza',
     name: 'La Matanza',
     level: 'municipality',

@@ -71,25 +71,72 @@ export function AppContent() {
 
   React.useEffect(() => {
     let title = 'Impuestos y gasto público en Argentina | Con La Tuya, Contribuyente';
+    let description = 'Observatorio histórico, fiscal y político de Argentina (1946–actualidad): recaudación, impuestos, presupuestos, gastos, votaciones nominales, declaraciones públicas y auditoría ciudadana.';
     const path = location.pathname;
-    if (path.startsWith('/mapa-tributario')) title = 'Mapa Tributario | Con La Tuya, Contribuyente';
-    else if (path === '/observatorio' || path === '/expedientes') title = 'Observatorio Histórico (1946–2026) | Con La Tuya, Contribuyente';
-    else if (path === '/declaraciones') title = 'Archivo de Declaraciones y Comparador | Con La Tuya, Contribuyente';
-    else if (path === '/auditorias') title = 'Auditorías Temáticas Sectoriales | Con La Tuya, Contribuyente';
-    else if (path === '/mapa') title = 'Mapa Nacional | Con La Tuya, Contribuyente';
-    else if (path === '/tributos') title = 'Registro Tributario | Con La Tuya, Contribuyente';
-    else if (path === '/inflacion') title = 'Inflación Histórica | Con La Tuya, Contribuyente';
-    else if (path === '/responsabilidad-politica') title = 'Responsabilidad Política | Con La Tuya, Contribuyente';
-    else if (path === '/calculadora') title = 'Calculadora de Presión Fiscal | Con La Tuya, Contribuyente';
-    else if (path === '/simulador') title = 'Simulador de Precio Final | Con La Tuya, Contribuyente';
-    else if (path === '/politicos') title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
-    else if (path === '/partidos') title = 'Integridad Partidaria desde 1983 | Con La Tuya, Contribuyente';
-    else if (path === '/gasto') title = 'Gasto Público | Con La Tuya, Contribuyente';
-    else if (path === '/transparencia') title = 'Transparencia del Estado | Con La Tuya, Contribuyente';
-    else if (path === '/metodologia') title = 'Metodología | Con La Tuya, Contribuyente';
-    else if (path === '/contribucion' || path === '/consultas') title = 'Consultas Ciudadanas y Gobernanza | Con La Tuya, Contribuyente';
-    else if (path === '/donacion') title = 'Sostener la Plataforma | Con La Tuya, Contribuyente';
+    if (path.startsWith('/mapa-tributario')) {
+      title = 'Mapa Tributario | Con La Tuya, Contribuyente';
+      description = 'Explorador del mapa tributario argentino por jurisdicción, normas legales, alícuotas y trazabilidad política verificada.';
+    } else if (path === '/observatorio' || path === '/expedientes') {
+      title = 'Observatorio Histórico (1946–2026) | Con La Tuya, Contribuyente';
+      description = 'Línea temporal fiscal y política 1946–2026, regímenes monetarios históricos y expedientes interactivos auditados con fuentes primarias.';
+    } else if (path === '/declaraciones') {
+      title = 'Archivo de Declaraciones y Comparador | Con La Tuya, Contribuyente';
+      description = 'Comparador contextual de declaraciones históricas de funcionarios públicos argentinos contrastadas con leyes, decretos y votaciones nominales.';
+    } else if (path === '/auditorias') {
+      title = 'Auditorías Temáticas Sectoriales | Con La Tuya, Contribuyente';
+      description = 'Auditorías sectoriales de jubilaciones (SIPA), universidades nacionales, ciencia y CONICET, educación, salud, subsidios y contrataciones públicas.';
+    } else if (path === '/mapa') {
+      title = 'Mapa Nacional | Con La Tuya, Contribuyente';
+      description = 'Mapa interactivo de las 24 jurisdicciones provinciales, localidades censales y municipios con geometrías oficiales IGN/Georef.';
+    } else if (path === '/tributos') {
+      title = 'Registro Tributario | Con La Tuya, Contribuyente';
+      description = 'Registro auditado de impuestos nacionales, provinciales y tasas municipales con norma de creación y enlaces oficiales.';
+    } else if (path === '/inflacion') {
+      title = 'Inflación Histórica | Con La Tuya, Contribuyente';
+      description = 'Serie histórica de inflación en Argentina desde 1983 hasta la actualidad con fuentes del INDEC y BCRA.';
+    } else if (path === '/responsabilidad-politica') {
+      title = 'Responsabilidad Política | Con La Tuya, Contribuyente';
+      description = 'Trazabilidad parlamentaria y ejecutiva: quién propuso, quién votó nominalmente y quién promulgó cada reforma fiscal y previsional.';
+    } else if (path === '/calculadora') {
+      title = 'Calculadora de Presión Fiscal | Con La Tuya, Contribuyente';
+      description = 'Simulador de carga tributaria directa, previsional e indirecta sobre el ingreso mensual con referencias normativas verificadas.';
+    } else if (path === '/simulador') {
+      title = 'Simulador de Precio Final | Con La Tuya, Contribuyente';
+      description = 'Desglose de impuestos nacionales, provinciales y tasas municipales contenidos en bienes y servicios de consumo en Argentina.';
+    } else if (path === '/politicos') {
+      title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
+      description = 'Fichas de autoridades ejecutivas y legislativas de las 24 jurisdicciones con fuentes oficiales, patrimonio y acciones fiscales.';
+    } else if (path === '/partidos') {
+      title = 'Integridad Partidaria desde 1983 | Con La Tuya, Contribuyente';
+      description = 'Registro de partidos y coaliciones políticas desde 1983 con resoluciones judiciales firmes y cobertura metodológica.';
+    } else if (path === '/gasto') {
+      title = 'Gasto Público | Con La Tuya, Contribuyente';
+      description = 'Análisis de presupuesto aprobado vs. gasto ejecutado por jurisdicción, finalidad, compras públicas COMPR.AR y publicidad oficial.';
+    } else if (path === '/transparencia') {
+      title = 'Transparencia del Estado | Con La Tuya, Contribuyente';
+      description = 'Índice de disponibilidad documental verificada en Nación, las 23 provincias, CABA y municipios.';
+    } else if (path === '/metodologia') {
+      title = 'Metodología | Con La Tuya, Contribuyente';
+      description = 'Manual de neutralidad partidaria, niveles de evidencia, taxonomía epistémica y reglas de verificación documental.';
+    } else if (path === '/contribucion' || path === '/consultas') {
+      title = 'Consultas Ciudadanas y Gobernanza | Con La Tuya, Contribuyente';
+      description = 'Generador de solicitudes de acceso a la información pública (Ley 27.275), propuestas de evidencia y bitácora pública de correcciones.';
+    } else if (path === '/donacion') {
+      title = 'Sostener la Plataforma | Con La Tuya, Contribuyente';
+      description = 'Información para colaborar con el mantenimiento de servidores y preservación documental de Con La Tuya, Contribuyente.';
+    }
     document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', description);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', description);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      const cleanPath = path === '/' ? '' : `/#${path}`;
+      canonical.setAttribute('href', `https://conlatuyacontribuyente.com${cleanPath}`);
+    }
   }, [location.pathname]);
 
   const handleNavigate = (tab: string, param?: string) => {
@@ -105,9 +152,15 @@ export function AppContent() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased" id="main-layout-root">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-emerald-500 focus:text-slate-950 focus:font-bold focus:px-4 focus:py-2 focus:rounded-lg"
+      >
+        Saltar al contenido principal
+      </a>
       <Navbar currentTab={currentTab} onNavigate={handleNavigate} visits={visits} />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <main id="main-content" className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="space-y-6">
           <Suspense fallback={<p role="status" className="text-slate-300 py-8">Cargando sección…</p>}>
           <Routes>

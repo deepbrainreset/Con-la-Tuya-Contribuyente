@@ -11,11 +11,15 @@ import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 
 import { TRIBUTOS } from '../src/data/tributos';
+import { JURISDICTIONS } from '../src/data/jurisdictions';
+import { CENSUS_PROVINCES_2022 } from '../src/data/censo2022Territorial';
 import { INFLATION_SERIES, CURRENT_INFLATION_2026 } from '../src/data/inflacion';
 import { SPENDING_JURISDICTIONS, PUBLIC_PURCHASES } from '../src/data/gastoPublico';
 import { POLITICAL_TRANSPARENCY } from '../src/data/transparenciaPolitica';
 import { EXECUTIVE_AUTHORITIES_2026 } from '../src/data/autoridadesEjecutivas2026';
 import { PRODUCTS } from '../src/data/productos';
+import { VOTING_SESSIONS } from '../src/data/votacionesParlamentarias';
+import { CALCULADORA_NORMATIVE_SOURCES } from '../src/data/parametrosCalculadoraFiscal';
 import {
   PRESIDENTIAL_PERIODS_1946_2026,
   HISTORICAL_FISCAL_SERIES,
@@ -169,6 +173,38 @@ runTest('Arquitectura de navegación en 5 pilares y renderizado SSR sin errores'
   assert.ok(homeHtml.includes('¿De dónde salió el dinero?'), 'SSR de portada debe incluir las 6 preguntas ciudadanas');
   assert.ok(homeHtml.includes('1. Dinero Público'), 'SSR debe incluir los 5 pilares de navegación');
   return '5 pilares de navegación y SSR de portada verificados exitosamente';
+});
+
+// 10. Cobertura Federal Completa (Nación + 23 Provincias + CABA) en JURISDICTIONS
+runTest('Cobertura federal completa (Nación + 23 provincias + CABA + municipios) en JURISDICTIONS', () => {
+  const nation = JURISDICTIONS.filter(j => j.level === 'nation' && !j.isBaseDemo);
+  const provincesAndCaba = JURISDICTIONS.filter(
+    j => (j.level === 'province' || j.level === 'city_autonoma') && !j.isBaseDemo
+  );
+  const municipalities = JURISDICTIONS.filter(j => j.level === 'municipality' && !j.isBaseDemo);
+  assert.equal(nation.length, 1, 'Debe existir la jurisdicción nacional');
+  assert.equal(provincesAndCaba.length, 24, 'Deben estar presentes los 24 distritos federales (23 provincias + CABA)');
+  assert.equal(CENSUS_PROVINCES_2022.length, 24, 'Censo 2022 debe tener 24 distritos');
+  for (const j of provincesAndCaba) {
+    assert.ok(j.authorityName.length > 3, `Jurisdicción ${j.id} sin autoridad verificada`);
+    assert.ok(j.sources.length > 0 && j.sources[0].startsWith('https://'), `Jurisdicción ${j.id} sin fuente HTTPS`);
+  }
+  return `1 Nación + ${provincesAndCaba.length} distritos federales + ${municipalities.length} municipios verificados (${JURISDICTIONS.length} total)`;
+});
+
+// 11. Sesiones de Votación Nominal Parlamentaria y Parámetros Normativos de Calculadora
+runTest('Archivo de votaciones nominales parlamentarias y parámetros normativos de calculadora fiscal', () => {
+  assert.ok(VOTING_SESSIONS.length >= 7, 'Deben existir al menos 7 sesiones parlamentarias documentadas');
+  for (const s of VOTING_SESSIONS) {
+    assert.ok(s.url.startsWith('https://'), `Sesión ${s.traceId} sin URL oficial`);
+    assert.ok(s.votos_favor > 0, `Sesión ${s.traceId} sin conteo de votos afirmativos`);
+    assert.ok(s.voters.length > 0, `Sesión ${s.traceId} sin votos nominales contrastados`);
+  }
+  assert.ok(CALCULADORA_NORMATIVE_SOURCES.length >= 5, 'Deben existir al menos 5 parámetros normativos de calculadora');
+  for (const p of CALCULADORA_NORMATIVE_SOURCES) {
+    assert.ok(p.sourceUrl.startsWith('https://'), `Parámetro ${p.id} sin URL normativa`);
+  }
+  return `${VOTING_SESSIONS.length} sesiones nominales parlamentarias y ${CALCULADORA_NORMATIVE_SOURCES.length} parámetros normativos de calculadora verificados`;
 });
 
 const failed = results.filter(r => !r.passed);

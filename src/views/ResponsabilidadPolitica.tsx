@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, Search, ShieldCheck, Users, Vote, AlertTriangle } from 'lucide-react';
+import { ExternalLink, Search, ShieldCheck, Users, Vote, AlertTriangle, FileText } from 'lucide-react';
 import { TRIBUTOS } from '../data/tributos';
+import { VOTING_SESSIONS } from '../data/votacionesParlamentarias';
 
 interface VerifiedVoterCard {
   name: string;
@@ -46,6 +47,12 @@ const normalizeParty = (party: string) => party.trim() || 'Sin atribución parti
 
 export default function ResponsabilidadPolitica() {
   const [search, setSearch] = useState('');
+  const [selectedSessionId, setSelectedSessionId] = useState<string>(VOTING_SESSIONS[0].traceId);
+
+  const selectedSession = useMemo(
+    () => VOTING_SESSIONS.find(s => s.traceId === selectedSessionId) || VOTING_SESSIONS[0],
+    [selectedSessionId]
+  );
 
   const auditedTributes = useMemo(
     () => TRIBUTOS.filter(t => !t.isBaseDemo && t.status !== 'pendiente_verificacion'),
@@ -113,6 +120,88 @@ export default function ResponsabilidadPolitica() {
           <p className="text-xs text-slate-300 mt-1 leading-relaxed">
             El prototipo anterior contenía nombres cargados manualmente que no coincidían en todos los casos con el padrón real de cada sesión. Esta sección no reutiliza esos registros como evidencia. Los nombres visibles abajo fueron contrastados contra el acta nominal oficial de la Cámara de Diputados. El padrón completo se incorporará únicamente desde actas oficiales, preservando voto, bloque y distrito de la fecha de la votación.
           </p>
+        </div>
+      </section>
+
+      <section className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-emerald-400" />
+              <h2 className="text-lg font-bold text-white">Archivo de Sesiones y Votaciones Nominales Históricas</h2>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Seleccioná una votación parlamentaria histórica para consultar el resultado de la sesión, el enlace oficial y los votos individuales ya verificados.
+            </p>
+          </div>
+          <select
+            value={selectedSessionId}
+            onChange={e => setSelectedSessionId(e.target.value)}
+            aria-label="Seleccionar sesión parlamentaria"
+            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 max-w-md"
+          >
+            {VOTING_SESSIONS.map(session => (
+              <option key={session.traceId} value={session.traceId}>
+                [{session.date}] {session.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <div>
+              <span className="text-[10px] font-mono uppercase text-emerald-400">{selectedSession.chamber} · {selectedSession.date}</span>
+              <h3 className="text-base font-bold text-white mt-0.5">{selectedSession.title}</h3>
+              <p className="text-xs text-slate-300 mt-1 leading-relaxed">{selectedSession.summary}</p>
+            </div>
+            <a
+              href={selectedSession.url}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400 hover:underline shrink-0"
+            >
+              Ver acta / norma oficial <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3">
+              <span className="text-[10px] font-mono uppercase text-emerald-300 block">Afirmativos</span>
+              <strong className="text-xl font-mono text-emerald-300">{selectedSession.votos_favor}</strong>
+            </div>
+            <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-3">
+              <span className="text-[10px] font-mono uppercase text-rose-300 block">Negativos</span>
+              <strong className="text-xl font-mono text-rose-300">{selectedSession.votos_contra}</strong>
+            </div>
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-3">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block">Abstenciones / Ausentes</span>
+              <strong className="text-xl font-mono text-slate-200">{selectedSession.votos_neutral_ausente}</strong>
+            </div>
+          </div>
+
+          <div className="space-y-2 pt-2">
+            <span className="text-[10px] font-mono uppercase text-slate-400 block">Legisladores con voto nominal contrastado en esta sesión:</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              {selectedSession.voters.map(v => (
+                <div key={v.id} className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex items-center justify-between gap-2">
+                  <div>
+                    <strong className="text-xs text-white block">{v.name}</strong>
+                    <span className="text-[10px] text-slate-400">{v.block} · {v.district}</span>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold ${
+                    v.vote === 'afirmativo'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                      : v.vote === 'negativo'
+                        ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                        : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                  }`}>
+                    {v.vote}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
