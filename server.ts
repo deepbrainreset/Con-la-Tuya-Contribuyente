@@ -18,6 +18,29 @@ const provinceGeorefIds: Record<string, string> = { caba: "02", buenos_aires: "0
 type CensusLocalityApiRow = { id: string; name: string; department?: string; population2022: number; unit: "localidad_censal"; lat?: number; lng?: number; georefId?: string };
 const localityCache = new Map<string, { expiresAt: number; rows: CensusLocalityApiRow[] }>();
 const geoCache = new Map<string, { expiresAt: number; value: any }>();
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function createRateLimiter(windowMs: number, maxRequests: number, scope: string) {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0]?.trim();
+    const clientIp = forwarded || req.ip || "unknown";
+    const key = `${scope}:${clientIp}`;
+    const now = Date.now();
+    const current = rateLimitBuckets.get(key);
+    if (!current || current.resetAt <= now) {
+      rateLimitBuckets.set(key, { count: 1, resetAt: now + windowMs });
+      return next();
+    }
+    if (current.count >= maxRequests) {
+      res.setHeader("Retry-After", String(Math.ceil((current.resetAt - now) / 1000)));
+      return res.status(429).json({
+        error: "Demasiadas solicitudes desde esta dirección IP. Intente nuevamente en unos segundos."
+      });
+    }
+    current.count += 1;
+    return next();
+  };
+}
 
 const decodeHtml = (value: string) => value.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&aacute;/g, "á").replace(/&eacute;/g, "é").replace(/&iacute;/g, "í").replace(/&oacute;/g, "ó").replace(/&uacute;/g, "ú").replace(/&Aacute;/g, "Á").replace(/&Eacute;/g, "É").replace(/&Iacute;/g, "Í").replace(/&Oacute;/g, "Ó").replace(/&Uacute;/g, "Ú").replace(/&ntilde;/g, "ñ").replace(/&Ntilde;/g, "Ñ");
 const stripHtml = (value: string) => decodeHtml(value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
@@ -80,14 +103,50 @@ async function getCensusLocalities(provinceId: string): Promise<CensusLocalityAp
 }
 
 async function startServer() {
-  const app = express(); const PORT = 3000; app.use(express.json());
+  const app = express();
+  const PORT = Number(process.env.PORT) || 3000;
+  const allowedOrigin = process.env.ALLOWED_ORIGIN || "https://conlatuyacontribuyente.com";
+
+  app.disable("x-powered-by");
+  app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
+    const origin = req.headers.origin;
+    if (origin && (origin === allowedOrigin || origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:"))) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Vary", "Origin");
+    }
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") return res.sendStatus(204);
+    next();
+  });
+
+  app.use(express.json({ limit: "64kb" }));
+
   const VISITS_FILE = path.join(process.cwd(), "visits.json"); let visitCount = 24153;
   try { if (fs.existsSync(VISITS_FILE)) { const parsed = JSON.parse(fs.readFileSync(VISITS_FILE, "utf-8")); if (typeof parsed.views === "number") visitCount = parsed.views; } else fs.writeFileSync(VISITS_FILE, JSON.stringify({ views: visitCount }), "utf-8"); } catch (error) { console.error("Error al leer/escribir base de visitas, se usa memoria:", error); }
   const saveVisits = () => { try { fs.writeFile(VISITS_FILE, JSON.stringify({ views: visitCount }), "utf-8", err => { if (err) console.error("Error al escribir visitas:", err); }); } catch (error) { console.error("Error al iniciar escritura en disco de visitas:", error); } };
-  app.get("/api/visits", (_req, res) => res.json({ views: visitCount }));
-  app.post("/api/visits/increment", (_req, res) => { visitCount += 1; saveVisits(); res.json({ views: visitCount }); });
 
-  app.get("/api/censo/localidades", async (req, res) => {
+  const visitsRateLimit = createRateLimiter(60_000, 30, "visits");
+  const geoRateLimit = createRateLimiter(60_000, 60, "geo");
+
+  app.get("/api/visits", (_req, res) => res.json({ views: visitCount }));
+  app.post("/api/visits/increment", visitsRateLimit, (_req, res) => { visitCount += 1; saveVisits(); res.json({ views: visitCount }); });
+
+  app.get("/api/observatorio/health", (_req, res) => {
+    res.json({
+      status: "ok",
+      coveragePeriod: "1946-2026",
+      dimensions: ["origen_del_dinero", "distribucion_y_gasto", "resultados", "responsables_publicos", "declaraciones_y_rendicion"],
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get("/api/censo/localidades", geoRateLimit, async (req, res) => {
     const provinceId = String(req.query.provinceId || "");
     if (!provinceId || (provinceId !== "caba" && !provinceSlugs[provinceId])) return res.status(400).json({ error: "provinceId inválido" });
     try {
@@ -96,8 +155,8 @@ async function startServer() {
     } catch (error) { console.error("Error al cargar localidades Censo 2022:", error); return res.status(503).json({ error: "Sin datos verificables disponibles en este momento para la provincia seleccionada.", censusYear: 2022, threshold: CENSUS_THRESHOLD, primarySources: [CENSUS_SOURCE, CONICET_LOCALITIES_SOURCE, GEOREF_SOURCE] }); }
   });
 
-  app.get("/api/georef/provincias", async (_req, res) => { try { res.json(await fetchJsonCached(`${GEOREF_BASE}/provincias.geojson`, 7 * 24 * 60 * 60 * 1000)); } catch (error) { console.error("Error Georef provincias:", error); res.status(503).json({ error: "No se pudo obtener la geometría oficial de provincias." }); } });
-  app.get("/api/georef/municipios", async (req, res) => { const provinceId = String(req.query.provinceId || ""); const georefProvinceId = provinceGeorefIds[provinceId]; if (!georefProvinceId) return res.status(400).json({ error: "provinceId inválido" }); try { res.json(await fetchJsonCached(`${GEOREF_BASE}/municipios.geojson?provincia=${encodeURIComponent(georefProvinceId)}`, 7 * 24 * 60 * 60 * 1000)); } catch (error) { console.error("Error Georef municipios:", error); res.status(503).json({ error: "No se pudo obtener la geometría oficial de municipios." }); } });
+  app.get("/api/georef/provincias", geoRateLimit, async (_req, res) => { try { res.json(await fetchJsonCached(`${GEOREF_BASE}/provincias.geojson`, 7 * 24 * 60 * 60 * 1000)); } catch (error) { console.error("Error Georef provincias:", error); res.status(503).json({ error: "No se pudo obtener la geometría oficial de provincias." }); } });
+  app.get("/api/georef/municipios", geoRateLimit, async (req, res) => { const provinceId = String(req.query.provinceId || ""); const georefProvinceId = provinceGeorefIds[provinceId]; if (!georefProvinceId) return res.status(400).json({ error: "provinceId inválido" }); try { res.json(await fetchJsonCached(`${GEOREF_BASE}/municipios.geojson?provincia=${encodeURIComponent(georefProvinceId)}`, 7 * 24 * 60 * 60 * 1000)); } catch (error) { console.error("Error Georef municipios:", error); res.status(503).json({ error: "No se pudo obtener la geometría oficial de municipios." }); } });
 
   if (process.env.NODE_ENV !== "production") { const vite = await createViteServer({ server: { middlewareMode: true }, appType: "spa" }); app.use(vite.middlewares); }
   else { const distPath = path.join(process.cwd(), "dist"); app.use(express.static(distPath)); app.get("*", (_req, res) => res.sendFile(path.join(distPath, "index.html"))); }

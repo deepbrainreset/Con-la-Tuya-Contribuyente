@@ -97,6 +97,11 @@ export interface ProductSustance {
   taxMunicipal: number; // e.g. TISH
   margin: number;
   isBaseDemo?: boolean;
+  referencePeriod?: string;
+  currency?: 'ARS';
+  epistemicStatus?: 'estimacion' | 'verificado';
+  lastVerified?: string;
+  normativeSourceUrl?: string;
 }
 
 export interface ContributionProposal {

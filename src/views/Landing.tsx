@@ -4,11 +4,28 @@
  */
 
 import React from 'react';
-import { ShieldCheck, Search, Calculator, ArrowRight, BookOpen, Scale, Coins, AlertCircle } from 'lucide-react';
+import {
+  ShieldCheck,
+  Search,
+  Calculator,
+  ArrowRight,
+  BookOpen,
+  Scale,
+  Coins,
+  AlertCircle,
+  History,
+  MessageSquareQuote,
+  Microscope,
+  FileText,
+  HelpCircle
+} from 'lucide-react';
 import { JURISDICTIONS } from '../data/jurisdictions';
 import { TRIBUTOS } from '../data/tributos';
 import { POLITICAL_TRANSPARENCY } from '../data/transparenciaPolitica';
 import { EXECUTIVE_AUTHORITIES_2026 } from '../data/autoridadesEjecutivas2026';
+import { HISTORICAL_DOSSIERS } from '../data/observatorioHistorico';
+import { PUBLIC_STATEMENTS_ARCHIVE } from '../data/declaracionesHistoricas';
+import { THEMATIC_AUDITS } from '../data/auditoriasTematicas';
 
 const HERO_IMAGE = 'https://res.cloudinary.com/dw4k14vmn/image/upload/v1785234604/file_000000004ae0820e906b8ffaf57779d9_kvjwew.png';
 
@@ -17,6 +34,45 @@ const ALL_POLITICAL_RECORDS = [
   ...EXECUTIVE_AUTHORITIES_2026.filter(
     executive => !POLITICAL_TRANSPARENCY.some(base => base.name === executive.name)
   )
+];
+
+const CITIZEN_ENTRY_QUESTIONS = [
+  {
+    question: '¿De dónde salió el dinero?',
+    description: 'Recaudación tributaria, impuestos nacionales, provinciales y tasas municipales, aportes y financiamiento.',
+    targetTab: 'tributos',
+    dimension: 'A. Origen del Dinero'
+  },
+  {
+    question: '¿A dónde fue?',
+    description: 'Coparticipación, presupuestos aprobados vs. devengados, contrataciones y transferencias desde 1946.',
+    targetTab: 'gasto',
+    dimension: 'B. Distribución y Gasto'
+  },
+  {
+    question: '¿Quién decidió?',
+    description: 'Autores de proyectos, votaciones nominales en el Congreso, promulgaciones, firmas y cargos históricos.',
+    targetTab: 'responsabilidad-politica',
+    dimension: 'D. Responsables Públicos'
+  },
+  {
+    question: '¿Qué resultados hubo?',
+    description: 'Auditorías sectoriales de jubilaciones, universidades públicas, CONICET, subsidios e indicadores físicos.',
+    targetTab: 'auditorias',
+    dimension: 'C. Resultados Documentados'
+  },
+  {
+    question: '¿Qué dijo esa persona antes y después?',
+    description: 'Comparador contextual de declaraciones históricas frente a votaciones y leyes sancionadas.',
+    targetTab: 'declaraciones',
+    dimension: 'E. Declaraciones y Contexto'
+  },
+  {
+    question: '¿Cómo puedo solicitar una explicación?',
+    description: 'Generador individual de solicitudes de información pública (Ley 27.275) y curaduría documental.',
+    targetTab: 'contribucion',
+    dimension: 'E. Rendición de Cuentas'
+  }
 ];
 
 interface LandingProps {
@@ -57,7 +113,36 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
       ).slice(0, 3)
     : [];
 
-  const hasMatches = matchingJurisdictions.length > 0 || matchingTributos.length > 0 || matchingPoliticians.length > 0;
+  const matchingDossiers = query.length >= 2
+    ? HISTORICAL_DOSSIERS.filter(d =>
+        d.title.toLowerCase().includes(query) ||
+        d.code.toLowerCase().includes(query) ||
+        d.summaryNeutral.toLowerCase().includes(query)
+      ).slice(0, 3)
+    : [];
+
+  const matchingStatements = query.length >= 2
+    ? PUBLIC_STATEMENTS_ARCHIVE.filter(s =>
+        s.officialName.toLowerCase().includes(query) ||
+        s.topicLabel.toLowerCase().includes(query) ||
+        s.exactQuote.toLowerCase().includes(query)
+      ).slice(0, 2)
+    : [];
+
+  const matchingAudits = query.length >= 2
+    ? THEMATIC_AUDITS.filter(a =>
+        a.title.toLowerCase().includes(query) ||
+        a.sector.toLowerCase().includes(query)
+      ).slice(0, 2)
+    : [];
+
+  const hasMatches =
+    matchingJurisdictions.length > 0 ||
+    matchingTributos.length > 0 ||
+    matchingPoliticians.length > 0 ||
+    matchingDossiers.length > 0 ||
+    matchingStatements.length > 0 ||
+    matchingAudits.length > 0;
 
   return (
     <div className="space-y-16 py-6 sm:py-8" id="landing-view">
@@ -76,7 +161,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
         <div className="max-w-4xl mx-auto text-center mt-8 sm:mt-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/25 rounded-full text-emerald-400 text-xs font-mono mb-6">
             <ShieldCheck className="w-4 h-4" />
-            <span>PROYECTO DE AUDITORÍA CÍVICA NEUTRA Y TRANSPARENTE</span>
+            <span>OBSERVATORIO HISTÓRICO CÍVICO Y FISCAL INDEPENDIENTE (1946–ACTUALIDAD)</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
@@ -84,7 +169,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
-            Una plataforma independiente para entender cuánto te cobra el Estado, cómo impactan los impuestos en tu bolsillo y en los precios, cómo evolucionó la inflación, quién tomó cada decisión y en qué gastan Nación, provincias y municipios. También podés auditar presupuestos, ejecución, compras, proveedores, pauta oficial y el nivel de transparencia documental de cada jurisdicción.
+            Una plataforma independiente para reconstruir de dónde proviene el dinero público en Argentina, cómo se redistribuye entre Nación, provincias y municipios, en qué se gasta efectivamente, quiénes propusieron, votaron o ejecutaron cada medida, qué resultados verificables produjo y qué dijeron históricamente sus responsables.
           </p>
 
           <div className="max-w-2xl mx-auto relative mb-6">
@@ -92,9 +177,9 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
               <div className="flex-1 flex items-center gap-3 px-3 py-2 bg-slate-950/50 rounded-xl border border-slate-900">
                 <Search className="w-5 h-5 text-slate-500" />
                 <input
-                  aria-label="Buscar provincia, municipio, tributo, partido o autoridad"
+                  aria-label="Buscar provincia, municipio, tributo, expediente histórico, declaración o autoridad"
                   type="text"
-                  placeholder="Buscar provincia, municipio, tributo, partido o autoridad..."
+                  placeholder="Buscar tributo, expediente (YPF, SIPA, CONICET), provincia o funcionario..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none w-full font-sans"
@@ -113,7 +198,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
             </div>
 
             {query.length >= 2 && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-left font-sans text-xs max-h-[380px] overflow-y-auto space-y-4">
+              <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-left font-sans text-xs max-h-[420px] overflow-y-auto space-y-4">
                 {!hasMatches ? (
                   <div className="text-slate-500 text-center py-4 font-mono text-[11px]">
                     No se encontraron coincidencias directas para “{searchQuery}”. Presioná Buscar todo para ver el registro completo.
@@ -121,8 +206,23 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
                 ) : (
                   <div className="space-y-4">
                     <span className="text-[10px] text-slate-400 uppercase font-mono tracking-widest block font-bold border-b border-slate-800 pb-1">
-                      Resultados coincidentes
+                      Resultados en el Buscador Histórico Unificado
                     </span>
+
+                    {matchingDossiers.length > 0 && (
+                      <SearchGroup title="Expedientes Históricos (1946–2026)" tone="emerald">
+                        {matchingDossiers.map(d => (
+                          <ResultButton
+                            key={d.id}
+                            title={d.title}
+                            subtitle={`${d.code} · ${d.periodCovered}`}
+                            action="Abrir expediente"
+                            tone="emerald"
+                            onClick={() => onNavigate('observatorio', d.id)}
+                          />
+                        ))}
+                      </SearchGroup>
+                    )}
 
                     {matchingJurisdictions.length > 0 && (
                       <SearchGroup title="Jurisdicciones" tone="emerald">
@@ -171,6 +271,36 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
                         ))}
                       </SearchGroup>
                     )}
+
+                    {matchingStatements.length > 0 && (
+                      <SearchGroup title="Declaraciones y Comparador" tone="blue">
+                        {matchingStatements.map(s => (
+                          <ResultButton
+                            key={s.id}
+                            title={`${s.officialName} (${s.date})`}
+                            subtitle={s.topicLabel}
+                            action="Comparar"
+                            tone="blue"
+                            onClick={() => onNavigate('declaraciones')}
+                          />
+                        ))}
+                      </SearchGroup>
+                    )}
+
+                    {matchingAudits.length > 0 && (
+                      <SearchGroup title="Auditorías Temáticas" tone="purple">
+                        {matchingAudits.map(a => (
+                          <ResultButton
+                            key={a.id}
+                            title={a.title}
+                            subtitle={a.sector}
+                            action="Ver auditoría"
+                            tone="purple"
+                            onClick={() => onNavigate('auditorias', a.slug)}
+                          />
+                        ))}
+                      </SearchGroup>
+                    )}
                   </div>
                 )}
               </div>
@@ -179,7 +309,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
 
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
             <span>Sugeridos:</span>
-            {['La Matanza', 'IVA', 'Tasa Vial', 'Córdoba', 'Vicente López', 'Ganancias'].map(term => (
+            {['IVA', 'Ganancias', 'SIPA', 'YPF', 'CONICET', 'La Matanza'].map(term => (
               <button
                 key={term}
                 onClick={() => handleFeaturedSearch(term)}
@@ -192,31 +322,74 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
 
           <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
             <button
+              onClick={() => onNavigate('observatorio')}
+              className="w-full sm:w-auto px-6 py-3.5 bg-emerald-500 text-slate-950 font-extrabold text-sm tracking-wide rounded-xl hover:bg-emerald-400 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+            >
+              <History className="w-4 h-4" />
+              <span>Observatorio 1946–2026</span>
+            </button>
+            <button
+              onClick={() => onNavigate('declaraciones')}
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+            >
+              <MessageSquareQuote className="w-4 h-4 text-emerald-400" />
+              <span>Comparador de Declaraciones</span>
+            </button>
+            <button
+              onClick={() => onNavigate('auditorias')}
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+            >
+              <Microscope className="w-4 h-4 text-emerald-400" />
+              <span>Auditorías Sectoriales</span>
+            </button>
+            <button
               onClick={() => onNavigate('mapa')}
               className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all"
             >
               Explorar Mapa Nacional
             </button>
-            <button
-              onClick={() => onNavigate('gasto')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all"
-            >
-              Ver Gasto Público
-            </button>
-            <button
-              onClick={() => onNavigate('transparencia')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-emerald-500/10 text-emerald-300 font-bold text-sm tracking-wide rounded-xl border border-emerald-500/25 hover:bg-emerald-500/15 cursor-pointer transition-all"
-            >
-              Transparencia del Estado
-            </button>
-            <button
-              onClick={() => onNavigate('metodologia')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-transparent text-slate-300 font-bold text-sm tracking-wide rounded-xl hover:text-white hover:bg-slate-900/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>Ver Metodología</span>
-            </button>
           </div>
+        </div>
+      </section>
+
+      {/* Las 6 Preguntas Ciudadanas de Entrada (Estructura Central de 5 Dimensiones) */}
+      <section className="max-w-7xl mx-auto px-4 space-y-6" aria-labelledby="preguntas-ciudadanas-heading">
+        <div className="max-w-3xl">
+          <div className="flex items-center gap-2 text-emerald-400 font-mono text-[10px] uppercase tracking-[0.2em] font-black mb-1">
+            <HelpCircle className="w-4 h-4" />
+            <span>Navegación Guiada por Preguntas Ciudadanas</span>
+          </div>
+          <h2 id="preguntas-ciudadanas-heading" className="text-2xl font-extrabold text-white tracking-tight">
+            ¿Por qué pregunta querés empezar tu auditoría?
+          </h2>
+          <p className="text-sm text-slate-400 mt-1">
+            Conectamos las cinco dimensiones del Estado argentino (Origen, Distribución, Resultados, Responsables y Declaraciones) mediante leyes, expedientes, fechas y fuentes oficiales.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {CITIZEN_ENTRY_QUESTIONS.map((item, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => onNavigate(item.targetTab)}
+              className="p-5 bg-slate-900/50 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/40 rounded-2xl text-left transition cursor-pointer flex flex-col justify-between group"
+            >
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                  {item.dimension}
+                </span>
+                <h3 className="text-base font-extrabold text-white group-hover:text-emerald-300 transition">
+                  {item.question}
+                </h3>
+                <p className="text-xs text-slate-400 leading-relaxed">{item.description}</p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-emerald-400">
+                <span>Abrir sección</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+              </div>
+            </button>
+          ))}
         </div>
       </section>
 

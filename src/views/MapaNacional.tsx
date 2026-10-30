@@ -59,12 +59,12 @@ function provinceIdFromName(name: string) {
 }
 
 function jurisdictionFromName(name: string, level?: 'province' | 'municipality') {
-  const key = normalize(name.replace(/\s*\([^)]*\)/g, ''));
+  const key = normalize(name.replace(/^provincia de(l)?\s+/i, '').replace(/\s*\([^)]*\)/g, ''));
   return JURISDICTIONS.find(j => {
     if (j.isBaseDemo) return false;
     if (level === 'province' && !['province', 'city_autonoma'].includes(j.level)) return false;
     if (level === 'municipality' && j.level !== 'municipality') return false;
-    const jName = normalize(j.name.replace(/^provincia de\s+/i, '').replace(/\s*\([^)]*\)/g, ''));
+    const jName = normalize(j.name.replace(/^provincia de(l)?\s+/i, '').replace(/\s*\([^)]*\)/g, ''));
     return jName === key || jName.includes(key) || key.includes(jName);
   });
 }
@@ -134,12 +134,12 @@ export default function MapaNacional({ onNavigate, selectedJurisdictionId, setSe
     const selected = JURISDICTIONS.find(j => j.id === selectedJurisdictionId);
     if (!selected) return;
     if (selected.level === 'province' || selected.level === 'city_autonoma') {
-      const id = provinceIdFromName(selected.name.replace(/^Provincia de\s+/i, ''));
+      const id = provinceIdFromName(selected.name.replace(/^Provincia de(l)?\s+/i, ''));
       if (id) setSelectedProvinceId(id);
     } else if (selected.level === 'municipality' && selected.parentId) {
       const parent = JURISDICTIONS.find(j => j.id === selected.parentId);
       if (parent) {
-        const id = provinceIdFromName(parent.name.replace(/^Provincia de\s+/i, ''));
+        const id = provinceIdFromName(parent.name.replace(/^Provincia de(l)?\s+/i, ''));
         if (id) setSelectedProvinceId(id);
       }
     }
@@ -291,8 +291,20 @@ export default function MapaNacional({ onNavigate, selectedJurisdictionId, setSe
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
             <span className="text-[9px] uppercase font-mono text-slate-500">Selección fiscal</span>
             <strong className="text-sm text-white block">{selectedTaxJurisdiction?.name || 'Ninguna jurisdicción seleccionada'}</strong>
+            {selectedTaxJurisdiction && (
+              <div className="text-[10px] text-slate-400 space-y-1 pt-1 border-t border-slate-800/70">
+                <div><span className="text-slate-500">Autoridad:</span> <strong className="text-slate-200">{selectedTaxJurisdiction.authorityName}</strong> ({selectedTaxJurisdiction.authorityParty})</div>
+                <div><span className="text-slate-500">Mandato:</span> {selectedTaxJurisdiction.authorityPeriod}</div>
+                <p className="text-[10px] text-slate-500 leading-relaxed">{selectedTaxJurisdiction.summary}</p>
+              </div>
+            )}
             <span className="text-[10px] text-slate-500 block">Tributos verificados indexados: {selectedTaxCount}</span>
-            {selectedTaxJurisdiction && <button onClick={() => onNavigate('tributos', selectedTaxJurisdiction.id)} className="text-[10px] text-emerald-400 hover:underline">Abrir registro tributario →</button>}
+            {selectedTaxJurisdiction && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                <button onClick={() => onNavigate('tributos', selectedTaxJurisdiction.id)} className="text-[10px] text-emerald-400 hover:underline cursor-pointer">Abrir registro tributario →</button>
+                <button onClick={() => onNavigate('transparencia', selectedTaxJurisdiction.id)} className="text-[10px] text-sky-400 hover:underline cursor-pointer">Transparencia jurisdiccional →</button>
+              </div>
+            )}
           </div>
         </aside>
 
