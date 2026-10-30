@@ -23,6 +23,9 @@ const PropuestasContribucion = lazy(() => import('./views/PropuestasContribucion
 const MapaTributarioDashboard = lazy(() => import('./views/MapaTributarioDashboard'));
 const Inflacion = lazy(() => import('./views/Inflacion'));
 const ResponsabilidadPolitica = lazy(() => import('./views/ResponsabilidadPolitica'));
+const ObservatorioHistorico = lazy(() => import('./views/ObservatorioHistorico'));
+const DeclaracionesComparador = lazy(() => import('./views/DeclaracionesComparador'));
+const AuditoriasTematicas = lazy(() => import('./views/AuditoriasTematicas'));
 
 export default function App() {
   return (
@@ -37,7 +40,9 @@ export function AppContent() {
   const location = useLocation();
 
   const [selectedJurisdictionId, setSelectedJurisdictionId] = useState<string | undefined>('nacion');
-  const [selectedPoliticianId, setSelectedPoliticianId] = useState<string | undefined>('axel_kicillof');
+  const [_selectedPoliticianId, setSelectedPoliticianId] = useState<string | undefined>('axel_kicillof');
+  const [selectedDossierId, setSelectedDossierId] = useState<string | undefined>(undefined);
+  const [selectedAuditSlug, setSelectedAuditSlug] = useState<string | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [visits, setVisits] = useState<number | null>(null);
 
@@ -68,6 +73,9 @@ export function AppContent() {
     let title = 'Impuestos y gasto público en Argentina | Con La Tuya, Contribuyente';
     const path = location.pathname;
     if (path.startsWith('/mapa-tributario')) title = 'Mapa Tributario | Con La Tuya, Contribuyente';
+    else if (path === '/observatorio' || path === '/expedientes') title = 'Observatorio Histórico (1946–2026) | Con La Tuya, Contribuyente';
+    else if (path === '/declaraciones') title = 'Archivo de Declaraciones y Comparador | Con La Tuya, Contribuyente';
+    else if (path === '/auditorias') title = 'Auditorías Temáticas Sectoriales | Con La Tuya, Contribuyente';
     else if (path === '/mapa') title = 'Mapa Nacional | Con La Tuya, Contribuyente';
     else if (path === '/tributos') title = 'Registro Tributario | Con La Tuya, Contribuyente';
     else if (path === '/inflacion') title = 'Inflación Histórica | Con La Tuya, Contribuyente';
@@ -79,7 +87,7 @@ export function AppContent() {
     else if (path === '/gasto') title = 'Gasto Público | Con La Tuya, Contribuyente';
     else if (path === '/transparencia') title = 'Transparencia del Estado | Con La Tuya, Contribuyente';
     else if (path === '/metodologia') title = 'Metodología | Con La Tuya, Contribuyente';
-    else if (path === '/contribucion') title = 'Propuestas y Gobernanza | Con La Tuya, Contribuyente';
+    else if (path === '/contribucion' || path === '/consultas') title = 'Consultas Ciudadanas y Gobernanza | Con La Tuya, Contribuyente';
     else if (path === '/donacion') title = 'Sostener la Plataforma | Con La Tuya, Contribuyente';
     document.title = title;
   }, [location.pathname]);
@@ -88,6 +96,8 @@ export function AppContent() {
     navigate(tab === 'landing' ? '/' : `/${tab}`);
     if (param) {
       if (tab === 'politicos') setSelectedPoliticianId(param);
+      else if (tab === 'observatorio' || tab === 'expedientes') setSelectedDossierId(param);
+      else if (tab === 'auditorias') setSelectedAuditSlug(param);
       else setSelectedJurisdictionId(param);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,6 +112,10 @@ export function AppContent() {
           <Suspense fallback={<p role="status" className="text-slate-300 py-8">Cargando sección…</p>}>
           <Routes>
             <Route path="/" element={<Landing onNavigate={handleNavigate} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
+            <Route path="/observatorio" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
+            <Route path="/expedientes" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
+            <Route path="/declaraciones" element={<DeclaracionesComparador />} />
+            <Route path="/auditorias" element={<AuditoriasTematicas onNavigate={handleNavigate} initialSlug={selectedAuditSlug} />} />
             <Route path="/mapa" element={<MapaNacional onNavigate={handleNavigate} selectedJurisdictionId={selectedJurisdictionId} setSelectedJurisdictionId={setSelectedJurisdictionId} />} />
             <Route path="/tributos" element={<RegistroTributosAuditado searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/inflacion" element={<Inflacion />} />
@@ -123,6 +137,7 @@ export function AppContent() {
             <Route path="/transparencia" element={<TransparenciaEstado />} />
             <Route path="/metodologia" element={<MethodologyPage />} />
             <Route path="/contribucion" element={<PropuestasContribucion />} />
+            <Route path="/consultas" element={<PropuestasContribucion />} />
             <Route path="/donacion" element={<Donaciones />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -137,8 +152,8 @@ export function AppContent() {
               <Landmark className="w-5 h-5 text-emerald-400" />
               <span className="font-extrabold text-white tracking-tight">Con La Tuya Contribuyente</span>
             </div>
-            <p className="text-slate-400 leading-relaxed max-w-xs">Portal cívico, fiscal e independiente para el libre acceso e interpretación de datos impositivos en Argentina. Sostenido por aportes ciudadanos voluntarios.</p>
-            <p className="text-[10px] text-slate-500 font-mono">Fase Actual: MVP 1.2 — Transparencia Radical Nacional</p>
+            <p className="text-slate-400 leading-relaxed max-w-xs">Observatorio histórico, cívico y fiscal independiente (1946–actualidad) para el libre acceso e interpretación de recursos, gastos y decisiones públicas en Argentina.</p>
+            <p className="text-[10px] text-slate-500 font-mono">Fase Actual: v0.2.0 — Observatorio Histórico 1946–2026</p>
             {visits !== null && (
               <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-mono bg-emerald-500/5 px-2.5 py-1 rounded-md border border-emerald-500/10 w-fit">
                 <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
@@ -155,8 +170,11 @@ export function AppContent() {
           <div className="space-y-3 font-mono text-[11px]">
             <span className="font-bold text-white uppercase tracking-wider block text-[10px]">Políticas y Gobernanza</span>
             <div className="flex flex-col gap-2">
+              <button onClick={() => handleNavigate('observatorio')} className="hover:text-white transition text-left cursor-pointer">Observatorio Histórico (1946–2026)</button>
+              <button onClick={() => handleNavigate('declaraciones')} className="hover:text-white transition text-left cursor-pointer">Comparador de Declaraciones</button>
+              <button onClick={() => handleNavigate('auditorias')} className="hover:text-white transition text-left cursor-pointer">Auditorías Sectoriales (CONICET, SPU, SIPA)</button>
               <button onClick={() => handleNavigate('metodologia')} className="hover:text-white transition text-left cursor-pointer">Manual de Neutralidad Partidaria</button>
-              <button onClick={() => handleNavigate('contribucion')} className="hover:text-white transition text-left cursor-pointer">Gobernanza y Envío de Propuestas</button>
+              <button onClick={() => handleNavigate('contribucion')} className="hover:text-white transition text-left cursor-pointer">Consultas Ley 27.275 y Correcciones</button>
               <button onClick={() => handleNavigate('donacion')} className="flex items-center gap-1.5 hover:text-white transition text-left cursor-pointer text-emerald-400"><Heart className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400/20" /><span>Donar para Servidores</span></button>
             </div>
             <div className="pt-3 border-t border-slate-900/60 flex items-center gap-4 text-slate-600">
