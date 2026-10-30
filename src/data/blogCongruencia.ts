@@ -262,5 +262,40 @@ export const CONGRUENCE_BLOG_ENTRIES: CongruenceBlogEntry[] = [
     ],
     crossCriticismAnalysis: 'En septiembre de 2023 votó en contra de la baja de Ganancias calificando la medida de electoralista y sin financiamiento, y en junio de 2024 votó a favor de restituir el gravamen sobre los trabajadores en relación de dependencia pese al compromiso televisivo de no aumentar la presión impositiva.',
     institutionalContextAndDefense: 'El bloque PRO sostuvo que su voto de 2023 y su voto de 2024 respondieron al mismo criterio de responsabilidad fiscal y defensa de los recursos coparticipables de las provincias gobernadas por Juntos por el Cambio.'
+  },
+  {
+    id: 'congruencia-jorge-macri-abl-patentes-caba',
+    slug: 'jorge-macri-alivio-fiscal-tv-vs-subas-abl-y-reliquidacion-patentes-caba',
+    publishedAt: '2026-10-30',
+    lastVerified: '2026-10-30',
+    politicianId: 'jorge_macri',
+    politicianName: 'Jorge Macri',
+    currentRole: 'Jefe de Gobierno de la Ciudad Autónoma de Buenos Aires',
+    currentParty: 'PRO',
+    title: 'Discurso televisivo de baja de impuestos en LN+ / TN vs. actualización de ABL por encima del promedio en zona Norte/Centro y boletas de Patentes que debieron reliquidarse',
+    topic: 'Impuestos y Presión Fiscal',
+    congruencePattern: 'discurso_vs_voto_o_firma',
+    tvYoutubeClips: [
+      {
+        id: 'clip-jorge-macri-lnmas-patentes',
+        channel: 'LN+ (La Nación+)',
+        programOrContext: 'Entrevistas en LN+ (con Esteban Trebucq) y TN sobre presión impositiva porteña, Patentes y ABL',
+        broadcastDate: '2024-02-20',
+        roleAtTime: 'Jefe de Gobierno de la Ciudad Autónoma de Buenos Aires',
+        exactQuoteOrPosition: 'Sostuvo en campaña y entrevistas que su gestión aliviaría la carga fiscal sobre la clase media porteña; ante la emisión de boletas de Patentes con subas superiores al 100% por cambios en valuaciones de AGIP, debió recomendar en vivo en LN+ a los contribuyentes «no pagar la boleta» hasta que el propio Ejecutivo porteño corrigiera el tope.',
+        youtubeArchiveUrl: 'https://www.youtube.com/results?search_query=LN%2B+Jorge+Macri+patentes+ABL+Trebucq'
+      }
+    ],
+    counterActions: [
+      {
+        date: '2024-12-12',
+        instrument: 'Leyes Tarifarias y Presupuesto CABA 2024–2025 (AGIP)',
+        roleAtAction: 'Jefe de Gobierno de CABA',
+        whatTheyActuallyDid: 'Impulsó el esquema de actualización mensual indexada de ABL con coeficientes geográficos diferenciales y liquidaciones de Patentes automotor sobre valuaciones actualizadas que requirieron rectificación administrativa y proyectos de tope en la Legislatura porteña.',
+        officialDocumentUrl: 'https://boletinoficial.buenosaires.gob.ar'
+      }
+    ],
+    crossCriticismAnalysis: 'Cuestionó en entrevistas televisivas la presión tributaria nacional y provincial, mientras la AGIP emitió liquidaciones de Patentes y actualizaciones de ABL que superaron la variación salarial y forzaron una reliquidación pública.',
+    institutionalContextAndDefense: 'El Gobierno de CABA atribuyó el salto en las boletas de Patentes a un desfasaje técnico en la tabla de valuaciones de ACARA/DNRPA, suspendió el vencimiento, aplicó un tope equivalente a la inflación e instrumentó planes de moratoria y devolución de Ingresos Brutos para monotributistas.'
   }
 ];
