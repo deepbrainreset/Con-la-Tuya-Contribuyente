@@ -22,6 +22,7 @@ import { VOTING_SESSIONS } from '../src/data/votacionesParlamentarias';
 import { CALCULADORA_NORMATIVE_SOURCES } from '../src/data/parametrosCalculadoraFiscal';
 import { EVIDENCE_VS_NARRATIVE_REPORTS } from '../src/data/contrasteEvidencia';
 import { CONGRUENCE_BLOG_ENTRIES } from '../src/data/blogCongruencia';
+import { CONCEPTUAL_SERVICE_BILLS, HISTORICAL_SUBSIDY_SERIES_2001_2026 } from '../src/data/facturasServiciosSubsidios';
 import {
   PRESIDENTIAL_PERIODS_1946_2026,
   HISTORICAL_FISCAL_SERIES,
@@ -234,6 +235,18 @@ runTest('Blog de Congruencia Audiovisual (Archivos TV/YouTube vs. Votos, Firmas 
     assert.ok(entry.counterActions[0].officialDocumentUrl.startsWith('https://'), `Entrada ${entry.slug} sin URL de documento oficial`);
   }
   return `${CONGRUENCE_BLOG_ENTRIES.length} entradas del Blog de Congruencia en ${parties.size} fuerzas políticas con clips de TV/YouTube y actos oficiales verificados`;
+});
+
+// 14. Boletas Conceptuales de Servicios, Efecto Cascada (IIBB/Cheque) y Serie de Subsidios 2001–2026
+runTest('Boletas conceptuales (Luz, Agua, ABL), contador de efecto cascada (IIBB) y subsidios históricos 2001–2026', () => {
+  assert.equal(CONCEPTUAL_SERVICE_BILLS.length, 3, 'Deben existir las 3 radiografías de boletas (Luz, Agua, ABL/Inmobiliario)');
+  for (const bill of CONCEPTUAL_SERVICE_BILLS) {
+    assert.ok(bill.realFullMonthlyCostArs > 0, `Boleta ${bill.id} sin costo real puro`);
+    assert.ok(bill.cascadeStages.length >= 2, `Boleta ${bill.id} sin etapas de efecto cascada`);
+    assert.ok(bill.taxLinesByRegion.caba.some(l => l.timesChargedInChain > 1), `Boleta ${bill.id} debe cuantificar impuestos cobrados múltiples veces`);
+  }
+  assert.ok(HISTORICAL_SUBSIDY_SERIES_2001_2026.length >= 8, 'Serie histórica de subsidios debe cubrir al menos 8 hitos entre 2001 y 2026');
+  return `${CONCEPTUAL_SERVICE_BILLS.length} boletas conceptuales en 4 jurisdicciones y ${HISTORICAL_SUBSIDY_SERIES_2001_2026.length} hitos históricos de subsidios (2001–2026) verificados`;
 });
 
 const failed = results.filter(r => !r.passed);

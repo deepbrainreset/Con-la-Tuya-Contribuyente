@@ -55,6 +55,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     defaultTab: 'tributos',
     items: [
       { id: 'tributos', label: 'Recaudación e Impuestos', description: 'Tributos nacionales, provinciales y tasas municipales', icon: FileText },
+      { id: 'boletas-y-subsidios', label: 'Boletas de Luz, Agua, ABL y Cascada IIBB', description: 'Costo real, cuántas veces te cobran IIBB y subsidios', icon: Layers },
       { id: 'mapa-tributario', label: 'Mapa Tributario Auditado', description: 'Explorador de normas, alícuotas y hechos imponibles', icon: Layers },
       { id: 'gasto', label: 'Presupuesto, Gasto y Compras', description: 'Ejecución presupuestaria, contrataciones y pauta', icon: TrendingUp },
       { id: 'mapa', label: 'Distribución Territorial', description: 'Mapa nacional de jurisdicciones y presupuestos', icon: Award },
@@ -92,6 +93,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     defaultTab: 'auditorias',
     items: [
       { id: 'evidencia-vs-relato', label: 'Relato vs. Proceso Administrativo', description: 'Informes de contraste entre narrativas y auditorías SIGEN/AGN', icon: ShieldCheck },
+      { id: 'boletas-y-subsidios', label: 'Servicios (Luz/Agua/ABL) y Subsidios', description: 'Costo real, múltiple imposición y subsidios AMBA vs. Interior', icon: TrendingUp },
       { id: 'auditorias', param: 'jubilaciones-pensiones', label: 'Jubilaciones y Sistema Previsional', description: 'SIPA, FGS, moratorias y sostenibilidad', icon: Landmark },
       { id: 'auditorias', param: 'universidades-publicas', label: 'Universidades Públicas', description: 'Transferencias SPU, matrícula, egresados y AGN', icon: BookOpen },
       { id: 'auditorias', param: 'ciencia-conicet', label: 'Ciencia y CONICET (1958–2026)', description: 'Investigadores, becas, proyectos y repositorio abierto', icon: Microscope },

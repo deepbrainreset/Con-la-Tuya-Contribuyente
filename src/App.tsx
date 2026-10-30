@@ -28,6 +28,7 @@ const DeclaracionesComparador = lazy(() => import('./views/DeclaracionesComparad
 const AuditoriasTematicas = lazy(() => import('./views/AuditoriasTematicas'));
 const ContrasteEvidencia = lazy(() => import('./views/ContrasteEvidencia'));
 const BlogCongruencia = lazy(() => import('./views/BlogCongruencia'));
+const FacturasServiciosSubsidios = lazy(() => import('./views/FacturasServiciosSubsidios'));
 
 export default function App() {
   return (
@@ -110,8 +111,11 @@ export function AppContent() {
       title = 'Calculadora de Presión Fiscal | Con La Tuya, Contribuyente';
       description = 'Simulador de carga tributaria directa, previsional e indirecta sobre el ingreso mensual con referencias normativas verificadas.';
     } else if (path === '/simulador') {
-      title = 'Simulador de Precio Final | Con La Tuya, Contribuyente';
-      description = 'Desglose de impuestos nacionales, provinciales y tasas municipales contenidos en bienes y servicios de consumo en Argentina.';
+      title = 'Simulador de Precio Final y Boletas | Con La Tuya, Contribuyente';
+      description = 'Desglose de impuestos nacionales, provinciales y tasas municipales contenidos en bienes de consumo y boletas de servicios en Argentina.';
+    } else if (path === '/boletas-y-subsidios') {
+      title = 'Boletas de Luz, Agua, ABL, Cascada IIBB y Subsidios | Con La Tuya, Contribuyente';
+      description = 'Radiografía de facturas de servicios públicos, efecto cascada de Ingresos Brutos e Impuesto al Cheque y subsidios históricos AMBA vs. Interior (2001–2026).';
     } else if (path === '/politicos') {
       title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
       description = 'Fichas de autoridades ejecutivas y legislativas de las 24 jurisdicciones con fuentes oficiales, patrimonio y acciones fiscales.';
@@ -187,6 +191,7 @@ export function AppContent() {
             <Route path="/responsabilidad-politica" element={<ResponsabilidadPolitica />} />
             <Route path="/calculadora" element={<CalculadoraFiscal />} />
             <Route path="/simulador" element={<SimuladorPrecios />} />
+            <Route path="/boletas-y-subsidios" element={<FacturasServiciosSubsidios />} />
             <Route path="/politicos" element={<RegistroPolitico onNavigate={handleNavigate} initialPoliticianId={_selectedPoliticianId} />} />
             <Route path="/partidos" element={<IntegridadPartidaria />} />
             <Route path="/mapa-tributario" element={<MapaTributarioDashboard />} />
