@@ -26,6 +26,7 @@ import { EXECUTIVE_AUTHORITIES_2026 } from '../data/autoridadesEjecutivas2026';
 import { HISTORICAL_DOSSIERS } from '../data/observatorioHistorico';
 import { PUBLIC_STATEMENTS_ARCHIVE } from '../data/declaracionesHistoricas';
 import { THEMATIC_AUDITS } from '../data/auditoriasTematicas';
+import { EVIDENCE_VS_NARRATIVE_REPORTS } from '../data/contrasteEvidencia';
 
 const HERO_IMAGE = 'https://res.cloudinary.com/dw4k14vmn/image/upload/v1785234604/file_000000004ae0820e906b8ffaf57779d9_kvjwew.png';
 
@@ -136,13 +137,22 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
       ).slice(0, 2)
     : [];
 
+  const matchingContrasts = query.length >= 2
+    ? EVIDENCE_VS_NARRATIVE_REPORTS.filter(c =>
+        c.title.toLowerCase().includes(query) ||
+        c.category.toLowerCase().includes(query) ||
+        c.summary.toLowerCase().includes(query)
+      ).slice(0, 2)
+    : [];
+
   const hasMatches =
     matchingJurisdictions.length > 0 ||
     matchingTributos.length > 0 ||
     matchingPoliticians.length > 0 ||
     matchingDossiers.length > 0 ||
     matchingStatements.length > 0 ||
-    matchingAudits.length > 0;
+    matchingAudits.length > 0 ||
+    matchingContrasts.length > 0;
 
   return (
     <div className="space-y-16 py-6 sm:py-8" id="landing-view">
@@ -297,6 +307,21 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
                             action="Ver auditoría"
                             tone="purple"
                             onClick={() => onNavigate('auditorias', a.slug)}
+                          />
+                        ))}
+                      </SearchGroup>
+                    )}
+
+                    {matchingContrasts.length > 0 && (
+                      <SearchGroup title="Relato Mediático vs. Proceso Administrativo" tone="emerald">
+                        {matchingContrasts.map(c => (
+                          <ResultButton
+                            key={c.id}
+                            title={c.title}
+                            subtitle={c.category}
+                            action="Ver contraste"
+                            tone="emerald"
+                            onClick={() => onNavigate('evidencia-vs-relato', c.slug)}
                           />
                         ))}
                       </SearchGroup>

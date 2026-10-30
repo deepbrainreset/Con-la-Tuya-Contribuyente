@@ -26,6 +26,7 @@ const ResponsabilidadPolitica = lazy(() => import('./views/ResponsabilidadPoliti
 const ObservatorioHistorico = lazy(() => import('./views/ObservatorioHistorico'));
 const DeclaracionesComparador = lazy(() => import('./views/DeclaracionesComparador'));
 const AuditoriasTematicas = lazy(() => import('./views/AuditoriasTematicas'));
+const ContrasteEvidencia = lazy(() => import('./views/ContrasteEvidencia'));
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export function AppContent() {
   const [_selectedPoliticianId, setSelectedPoliticianId] = useState<string | undefined>('axel_kicillof');
   const [selectedDossierId, setSelectedDossierId] = useState<string | undefined>(undefined);
   const [selectedAuditSlug, setSelectedAuditSlug] = useState<string | undefined>(undefined);
+  const [selectedContrastSlug, setSelectedContrastSlug] = useState<string | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [visits, setVisits] = useState<number | null>(null);
 
@@ -85,6 +87,9 @@ export function AppContent() {
     } else if (path === '/auditorias') {
       title = 'Auditorías Temáticas Sectoriales | Con La Tuya, Contribuyente';
       description = 'Auditorías sectoriales de jubilaciones (SIPA), universidades nacionales, ciencia y CONICET, educación, salud, subsidios y contrataciones públicas.';
+    } else if (path === '/evidencia-vs-relato') {
+      title = 'Relato Mediático vs. Proceso Administrativo y Evidencia | Con La Tuya, Contribuyente';
+      description = 'Contraste diario independiente entre narrativas instaladas en medios o discursos políticos y el proceso legal, contable y administrativo real del Estado argentino.';
     } else if (path === '/mapa') {
       title = 'Mapa Nacional | Con La Tuya, Contribuyente';
       description = 'Mapa interactivo de las 24 jurisdicciones provinciales, localidades censales y municipios con geometrías oficiales IGN/Georef.';
@@ -145,6 +150,7 @@ export function AppContent() {
       if (tab === 'politicos') setSelectedPoliticianId(param);
       else if (tab === 'observatorio' || tab === 'expedientes') setSelectedDossierId(param);
       else if (tab === 'auditorias') setSelectedAuditSlug(param);
+      else if (tab === 'evidencia-vs-relato') setSelectedContrastSlug(param);
       else setSelectedJurisdictionId(param);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -169,6 +175,7 @@ export function AppContent() {
             <Route path="/expedientes" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
             <Route path="/declaraciones" element={<DeclaracionesComparador />} />
             <Route path="/auditorias" element={<AuditoriasTematicas onNavigate={handleNavigate} initialSlug={selectedAuditSlug} />} />
+            <Route path="/evidencia-vs-relato" element={<ContrasteEvidencia onNavigate={handleNavigate} initialSlug={selectedContrastSlug} />} />
             <Route path="/mapa" element={<MapaNacional onNavigate={handleNavigate} selectedJurisdictionId={selectedJurisdictionId} setSelectedJurisdictionId={setSelectedJurisdictionId} />} />
             <Route path="/tributos" element={<RegistroTributosAuditado searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/inflacion" element={<Inflacion />} />

@@ -17,6 +17,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { THEMATIC_AUDITS } from '../data/auditoriasTematicas';
+import { EVIDENCE_VS_NARRATIVE_REPORTS } from '../data/contrasteEvidencia';
 import type { ThematicAuditRecord } from '../types/observatorio';
 
 interface AuditoriasTematicasProps {
@@ -221,12 +222,53 @@ export default function AuditoriasTematicas({ onNavigate, initialSlug }: Auditor
           </div>
         </div>
 
+        {/* Informes de Contraste Relato vs. Proceso Administrativo vinculados a este sector */}
+        {(() => {
+          const linkedContrasts = EVIDENCE_VS_NARRATIVE_REPORTS.filter(r =>
+            r.relatedRoutes.some(rt => rt.auditSlug === activeAudit.slug)
+          );
+          if (linkedContrasts.length === 0) return null;
+          return (
+            <div className="bg-emerald-950/15 border border-emerald-500/30 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-mono uppercase text-emerald-300 font-bold">
+                  Contraste Vinculado: Narrativa Mediática vs. Proceso Administrativo Real
+                </span>
+                {onNavigate && (
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('evidencia-vs-relato', linkedContrasts[0].slug)}
+                    className="text-xs font-bold text-emerald-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Abrir informe completo</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+              {linkedContrasts.map(item => (
+                <div key={item.id} className="bg-slate-950/90 border border-slate-800 rounded-lg p-3.5 space-y-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-white">{item.title}</h4>
+                  <p className="text-xs text-slate-300 leading-relaxed">{item.summary}</p>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
+
         {onNavigate && (
           <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
             <span className="text-xs text-slate-400">
-              Explorá los expedientes normativos detallados o el desglose presupuestario completo.
+              Explorá los expedientes normativos detallados, el contraste de narrativas o el desglose presupuestario completo.
             </span>
             <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => onNavigate('evidencia-vs-relato')}
+                className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-emerald-500/40 text-xs font-bold text-emerald-300 inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Ver Relato vs. Proceso Administrativo</span>
+                <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
+              </button>
               <button
                 type="button"
                 onClick={() => onNavigate('observatorio')}

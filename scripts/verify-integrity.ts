@@ -20,6 +20,7 @@ import { EXECUTIVE_AUTHORITIES_2026 } from '../src/data/autoridadesEjecutivas202
 import { PRODUCTS } from '../src/data/productos';
 import { VOTING_SESSIONS } from '../src/data/votacionesParlamentarias';
 import { CALCULADORA_NORMATIVE_SOURCES } from '../src/data/parametrosCalculadoraFiscal';
+import { EVIDENCE_VS_NARRATIVE_REPORTS } from '../src/data/contrasteEvidencia';
 import {
   PRESIDENTIAL_PERIODS_1946_2026,
   HISTORICAL_FISCAL_SERIES,
@@ -205,6 +206,19 @@ runTest('Archivo de votaciones nominales parlamentarias y parámetros normativos
     assert.ok(p.sourceUrl.startsWith('https://'), `Parámetro ${p.id} sin URL normativa`);
   }
   return `${VOTING_SESSIONS.length} sesiones nominales parlamentarias y ${CALCULADORA_NORMATIVE_SOURCES.length} parámetros normativos de calculadora verificados`;
+});
+
+// 12. Informes de Contraste Relato Mediático vs. Proceso Administrativo y Evidencia
+runTest('Informes de contraste Relato Mediático vs. Proceso Administrativo y Evidencia Oficial', () => {
+  assert.ok(EVIDENCE_VS_NARRATIVE_REPORTS.length >= 4, 'Deben existir al menos 4 informes de contraste proceso vs. relato');
+  const uniReport = EVIDENCE_VS_NARRATIVE_REPORTS.find(r => r.slug === 'universidades-publicas-auditorias-sigen-agn');
+  assert.ok(uniReport, 'Debe existir el informe sobre auditorías universitarias SIGEN/AGN y Ley 24.521');
+  for (const rep of EVIDENCE_VS_NARRATIVE_REPORTS) {
+    assert.ok(rep.narrativesAnalyzed.length > 0, `Informe ${rep.slug} sin narrativas analizadas`);
+    assert.ok(rep.administrativeProcess.length > 0, `Informe ${rep.slug} sin etapas del proceso administrativo`);
+    assert.ok(rep.officialSources.length > 0 && rep.officialSources[0].url.startsWith('https://'), `Informe ${rep.slug} sin fuentes HTTPS`);
+  }
+  return `${EVIDENCE_VS_NARRATIVE_REPORTS.length} informes de contraste entre narrativa mediática y expediente administrativo verificados`;
 });
 
 const failed = results.filter(r => !r.passed);

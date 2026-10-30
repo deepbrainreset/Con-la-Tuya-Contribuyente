@@ -69,6 +69,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     items: [
       { id: 'observatorio', label: 'Línea Temporal y Series (1946–2026)', description: 'Gobiernos, presión fiscal, monedas y coparticipación', icon: History },
       { id: 'observatorio', param: 'dossier-previsional-2008', label: 'Expedientes Interactivos', description: 'SIPA 2008, YPF 1992/2012, Moratorias, Ganancias 2024', icon: FileText },
+      { id: 'evidencia-vs-relato', label: 'Relato Mediático vs. Proceso Estatal', description: 'Qué se intenta instalar vs. actos administrativos reales', icon: ShieldCheck },
       { id: 'inflacion', label: 'Inflación Histórica (1983–2026)', description: 'Serie anual y mensual del IPC oficial y alternativo', icon: LineChart }
     ]
   },
@@ -80,7 +81,8 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
       { id: 'politicos', label: 'Funcionarios y Mandatos', description: 'Fichas históricas, cargos, DDJJ y patrimonio', icon: Users },
       { id: 'responsabilidad-politica', label: 'Votaciones Nominales', description: 'Trazabilidad de quién propuso, votó y promulgó', icon: Vote },
       { id: 'partidos', label: 'Partidos y Alianzas', description: 'Registro CNE, coaliciones y cobertura desde 1983', icon: Scale },
-      { id: 'declaraciones', label: 'Declaraciones y Comparador', description: 'Contraste documental de posiciones históricas', icon: MessageSquareQuote }
+      { id: 'declaraciones', label: 'Declaraciones y Comparador', description: 'Contraste documental de posiciones históricas', icon: MessageSquareQuote },
+      { id: 'evidencia-vs-relato', label: 'Dichos en Medios vs. Expediente Real', description: 'Contraste diario entre discursos y normas/auditorías', icon: ShieldCheck }
     ]
   },
   {
@@ -88,6 +90,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     label: '4. Auditorías Temáticas',
     defaultTab: 'auditorias',
     items: [
+      { id: 'evidencia-vs-relato', label: 'Relato vs. Proceso Administrativo', description: 'Informes de contraste entre narrativas y auditorías SIGEN/AGN', icon: ShieldCheck },
       { id: 'auditorias', param: 'jubilaciones-pensiones', label: 'Jubilaciones y Sistema Previsional', description: 'SIPA, FGS, moratorias y sostenibilidad', icon: Landmark },
       { id: 'auditorias', param: 'universidades-publicas', label: 'Universidades Públicas', description: 'Transferencias SPU, matrícula, egresados y AGN', icon: BookOpen },
       { id: 'auditorias', param: 'ciencia-conicet', label: 'Ciencia y CONICET (1958–2026)', description: 'Investigadores, becas, proyectos y repositorio abierto', icon: Microscope },
