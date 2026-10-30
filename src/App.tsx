@@ -27,6 +27,7 @@ const ObservatorioHistorico = lazy(() => import('./views/ObservatorioHistorico')
 const DeclaracionesComparador = lazy(() => import('./views/DeclaracionesComparador'));
 const AuditoriasTematicas = lazy(() => import('./views/AuditoriasTematicas'));
 const ContrasteEvidencia = lazy(() => import('./views/ContrasteEvidencia'));
+const BlogCongruencia = lazy(() => import('./views/BlogCongruencia'));
 
 export default function App() {
   return (
@@ -84,6 +85,9 @@ export function AppContent() {
     } else if (path === '/declaraciones') {
       title = 'Archivo de Declaraciones y Comparador | Con La Tuya, Contribuyente';
       description = 'Comparador contextual de declaraciones históricas de funcionarios públicos argentinos contrastadas con leyes, decretos y votaciones nominales.';
+    } else if (path === '/congruencia') {
+      title = 'Blog de Congruencia: Archivo TV/YouTube vs. Votos y Actos | Con La Tuya, Contribuyente';
+      description = 'Escrutinio multipardidario diario de archivos televisivos y de YouTube (TN, LN+, C5N, Diputados TV, Senado TV) frente a votos nominales, firmas y críticas cruzadas.';
     } else if (path === '/auditorias') {
       title = 'Auditorías Temáticas Sectoriales | Con La Tuya, Contribuyente';
       description = 'Auditorías sectoriales de jubilaciones (SIPA), universidades nacionales, ciencia y CONICET, educación, salud, subsidios y contrataciones públicas.';
@@ -147,7 +151,7 @@ export function AppContent() {
   const handleNavigate = (tab: string, param?: string) => {
     navigate(tab === 'landing' ? '/' : `/${tab}`);
     if (param) {
-      if (tab === 'politicos') setSelectedPoliticianId(param);
+      if (tab === 'politicos' || tab === 'congruencia') setSelectedPoliticianId(param);
       else if (tab === 'observatorio' || tab === 'expedientes') setSelectedDossierId(param);
       else if (tab === 'auditorias') setSelectedAuditSlug(param);
       else if (tab === 'evidencia-vs-relato') setSelectedContrastSlug(param);
@@ -173,7 +177,8 @@ export function AppContent() {
             <Route path="/" element={<Landing onNavigate={handleNavigate} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/observatorio" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
             <Route path="/expedientes" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
-            <Route path="/declaraciones" element={<DeclaracionesComparador />} />
+            <Route path="/declaraciones" element={<DeclaracionesComparador onNavigate={handleNavigate} />} />
+            <Route path="/congruencia" element={<BlogCongruencia onNavigate={handleNavigate} initialPoliticianId={_selectedPoliticianId} />} />
             <Route path="/auditorias" element={<AuditoriasTematicas onNavigate={handleNavigate} initialSlug={selectedAuditSlug} />} />
             <Route path="/evidencia-vs-relato" element={<ContrasteEvidencia onNavigate={handleNavigate} initialSlug={selectedContrastSlug} />} />
             <Route path="/mapa" element={<MapaNacional onNavigate={handleNavigate} selectedJurisdictionId={selectedJurisdictionId} setSelectedJurisdictionId={setSelectedJurisdictionId} />} />
@@ -182,7 +187,7 @@ export function AppContent() {
             <Route path="/responsabilidad-politica" element={<ResponsabilidadPolitica />} />
             <Route path="/calculadora" element={<CalculadoraFiscal />} />
             <Route path="/simulador" element={<SimuladorPrecios />} />
-            <Route path="/politicos" element={<RegistroPolitico />} />
+            <Route path="/politicos" element={<RegistroPolitico onNavigate={handleNavigate} initialPoliticianId={_selectedPoliticianId} />} />
             <Route path="/partidos" element={<IntegridadPartidaria />} />
             <Route path="/mapa-tributario" element={<MapaTributarioDashboard />} />
             <Route path="/mapa-tributario/buscador" element={<MapaTributarioDashboard />} />

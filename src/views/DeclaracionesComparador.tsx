@@ -16,8 +16,13 @@ import {
   Info
 } from 'lucide-react';
 import { PUBLIC_STATEMENTS_ARCHIVE, STATEMENT_COMPARISONS } from '../data/declaracionesHistoricas';
+import BlogCongruencia from './BlogCongruencia';
 
-export default function DeclaracionesComparador() {
+interface DeclaracionesComparadorProps {
+  onNavigate?: (tab: string, param?: string) => void;
+}
+
+export default function DeclaracionesComparador({ onNavigate }: DeclaracionesComparadorProps) {
   const [selectedTopic, setSelectedTopic] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeComparisonId, setActiveComparisonId] = useState<string>(STATEMENT_COMPARISONS[0].id);
@@ -350,6 +355,30 @@ export default function DeclaracionesComparador() {
             </article>
           ))}
         </div>
+      </section>
+
+      {/* Sección 3: Blog de Congruencia (Archivos de TV / YouTube vs. Votos y Firmas) */}
+      <section className="pt-6 border-t border-slate-800 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-xl font-bold text-white">
+              3. Blog de Congruencia: Archivos de TV y YouTube (TN, LN+, C5N, Diputados TV, Senado TV) vs. Accionar Real
+            </h2>
+            <p className="text-xs text-slate-400 mt-1">
+              Revisión multipardidaria sobre funcionarios actualmente en ejercicio: lo que dijeron o criticaron en televisión frente a lo que votaron o firmaron.
+            </p>
+          </div>
+          {onNavigate && (
+            <button
+              type="button"
+              onClick={() => onNavigate('congruencia')}
+              className="px-3.5 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs font-mono text-emerald-300 font-bold cursor-pointer shrink-0"
+            >
+              Abrir Blog de Congruencia en pantalla completa →
+            </button>
+          )}
+        </div>
+        <BlogCongruencia embedded onNavigate={onNavigate} />
       </section>
     </div>
   );

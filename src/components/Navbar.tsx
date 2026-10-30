@@ -79,6 +79,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     defaultTab: 'politicos',
     items: [
       { id: 'politicos', label: 'Funcionarios y Mandatos', description: 'Fichas históricas, cargos, DDJJ y patrimonio', icon: Users },
+      { id: 'congruencia', label: 'Blog de Congruencia (TV / YouTube)', description: 'Archivos de TN, LN+, C5N, Diputados TV vs. votos y firmas', icon: MessageSquareQuote },
       { id: 'responsabilidad-politica', label: 'Votaciones Nominales', description: 'Trazabilidad de quién propuso, votó y promulgó', icon: Vote },
       { id: 'partidos', label: 'Partidos y Alianzas', description: 'Registro CNE, coaliciones y cobertura desde 1983', icon: Scale },
       { id: 'declaraciones', label: 'Declaraciones y Comparador', description: 'Contraste documental de posiciones históricas', icon: MessageSquareQuote },

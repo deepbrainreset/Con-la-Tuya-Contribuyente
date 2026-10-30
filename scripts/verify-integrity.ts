@@ -21,6 +21,7 @@ import { PRODUCTS } from '../src/data/productos';
 import { VOTING_SESSIONS } from '../src/data/votacionesParlamentarias';
 import { CALCULADORA_NORMATIVE_SOURCES } from '../src/data/parametrosCalculadoraFiscal';
 import { EVIDENCE_VS_NARRATIVE_REPORTS } from '../src/data/contrasteEvidencia';
+import { CONGRUENCE_BLOG_ENTRIES } from '../src/data/blogCongruencia';
 import {
   PRESIDENTIAL_PERIODS_1946_2026,
   HISTORICAL_FISCAL_SERIES,
@@ -219,6 +220,20 @@ runTest('Informes de contraste Relato Mediático vs. Proceso Administrativo y Ev
     assert.ok(rep.officialSources.length > 0 && rep.officialSources[0].url.startsWith('https://'), `Informe ${rep.slug} sin fuentes HTTPS`);
   }
   return `${EVIDENCE_VS_NARRATIVE_REPORTS.length} informes de contraste entre narrativa mediática y expediente administrativo verificados`;
+});
+
+// 13. Blog de Congruencia Audiovisual (TV / YouTube vs. Votos y Actos Oficiales)
+runTest('Blog de Congruencia Audiovisual (Archivos TV/YouTube vs. Votos, Firmas y Crítica Cruzada)', () => {
+  assert.ok(CONGRUENCE_BLOG_ENTRIES.length >= 5, 'Deben existir al menos 5 entradas multipardidarias en el Blog de Congruencia');
+  const parties = new Set(CONGRUENCE_BLOG_ENTRIES.map(e => e.currentParty));
+  assert.ok(parties.size >= 3, 'El escrutinio de congruencia debe cubrir al menos 3 fuerzas políticas distintas');
+  for (const entry of CONGRUENCE_BLOG_ENTRIES) {
+    assert.ok(entry.tvYoutubeClips.length > 0, `Entrada ${entry.slug} sin clips de archivo TV/YouTube`);
+    assert.ok(entry.counterActions.length > 0, `Entrada ${entry.slug} sin acto/voto oficial contrapuesto`);
+    assert.ok(entry.tvYoutubeClips[0].youtubeArchiveUrl.startsWith('https://'), `Entrada ${entry.slug} sin URL de archivo YouTube`);
+    assert.ok(entry.counterActions[0].officialDocumentUrl.startsWith('https://'), `Entrada ${entry.slug} sin URL de documento oficial`);
+  }
+  return `${CONGRUENCE_BLOG_ENTRIES.length} entradas del Blog de Congruencia en ${parties.size} fuerzas políticas con clips de TV/YouTube y actos oficiales verificados`;
 });
 
 const failed = results.filter(r => !r.passed);

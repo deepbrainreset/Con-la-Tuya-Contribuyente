@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, Search, Scale, Landmark, WalletCards, ReceiptText, AlertTriangle, ShieldCheck, Vote, Users, Image as ImageIcon } from 'lucide-react';
+import { ExternalLink, Search, Scale, Landmark, WalletCards, ReceiptText, AlertTriangle, ShieldCheck, Vote, Users, Image as ImageIcon, Youtube, ArrowRight } from 'lucide-react';
 import { POLITICAL_TRANSPARENCY, calculateAssetChange } from '../data/transparenciaPolitica';
 import { EXECUTIVE_AUTHORITIES_2026 } from '../data/autoridadesEjecutivas2026';
+import { CONGRUENCE_BLOG_ENTRIES, CONGRUENCE_PATTERN_LABELS } from '../data/blogCongruencia';
 
 const ALL_POLITICAL_RECORDS = [
   ...POLITICAL_TRANSPARENCY,
@@ -11,10 +12,19 @@ const ALL_POLITICAL_RECORDS = [
 const money = (value: number | null | undefined) => typeof value === 'number' ? `$${Math.round(value).toLocaleString('es-AR')}` : 'Sin datos oficiales verificados';
 const pct = (value: number | null | undefined) => typeof value === 'number' ? `${value.toFixed(2)}%` : 'No calculable';
 
-export default function RegistroPolitico() {
+interface RegistroPoliticoProps {
+  onNavigate?: (tab: string, param?: string) => void;
+  initialPoliticianId?: string;
+}
+
+export default function RegistroPolitico({ onNavigate, initialPoliticianId }: RegistroPoliticoProps) {
   const [query, setQuery] = useState('');
   const [level, setLevel] = useState('all');
-  const [selectedId, setSelectedId] = useState(ALL_POLITICAL_RECORDS[0]?.id || '');
+  const [selectedId, setSelectedId] = useState(initialPoliticianId || ALL_POLITICAL_RECORDS[0]?.id || '');
+
+  React.useEffect(() => {
+    if (initialPoliticianId) setSelectedId(initialPoliticianId);
+  }, [initialPoliticianId]);
 
   const filtered = useMemo(() => ALL_POLITICAL_RECORDS.filter(record => {
     const q = query.trim().toLowerCase();
@@ -100,6 +110,57 @@ export default function RegistroPolitico() {
 
           <Panel icon={<ReceiptText className="w-4 h-4 text-emerald-400"/>} title="Impuestos, tasas, decretos y votos vinculados">
             {selected.fiscalActions.length ? selected.fiscalActions.map((a, i) => <div key={i} className="border-t border-slate-800 first:border-t-0 py-3 first:pt-0"><div className="flex flex-wrap justify-between gap-2"><div><strong className="text-xs text-white block">{a.title}</strong><span className="text-[10px] text-slate-500">{a.taxOrFee} · {a.date} · {a.actionType}</span></div>{a.vote && <span className={`text-[9px] font-mono px-2 py-1 rounded ${a.vote === 'AFIRMATIVO' ? 'bg-emerald-500/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}><Vote className="w-3 h-3 inline mr-1"/>{a.vote}</span>}</div><p className="text-[10px] text-slate-400 mt-2"><strong>Rol:</strong> {a.role}. {a.outcome}</p><Source source={a.source}/></div>) : <Missing text="Sin decisión tributaria individual verificada cargada para esta ficha."/>}
+          </Panel>
+
+          <Panel icon={<Youtube className="w-4 h-4 text-rose-400"/>} title="Escrutinio de Congruencia (Archivo de TV / YouTube vs. Votos y Firmas)">
+            {(() => {
+              const congruenceEntries = CONGRUENCE_BLOG_ENTRIES.filter(
+                c => c.politicianId === selected.id || c.politicianName.toLowerCase() === selected.name.toLowerCase()
+              );
+              if (congruenceEntries.length === 0) {
+                return <Missing text="Sin entradas de contraste audiovisual TV/YouTube cargadas aún para esta autoridad. La revisión diaria incorpora archivos de TN, LN+, C5N, Crónica TV, Diputados TV y Senado TV a medida que se contrastan con actos oficiales." />;
+              }
+              return (
+                <div className="space-y-4">
+                  {congruenceEntries.map(entry => {
+                    const badge = CONGRUENCE_PATTERN_LABELS[entry.congruencePattern];
+                    return (
+                      <div key={entry.id} className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono border ${badge.badgeClass}`}>
+                            {badge.label}
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-400">Verificado: {entry.lastVerified}</span>
+                        </div>
+                        <strong className="text-xs sm:text-sm text-white block">{entry.title}</strong>
+                        <p className="text-xs text-slate-300 leading-relaxed">{entry.crossCriticismAnalysis}</p>
+                        <div className="flex flex-wrap gap-3 pt-1 text-[11px] font-mono">
+                          {entry.tvYoutubeClips[0] && (
+                            <a href={entry.tvYoutubeClips[0].youtubeArchiveUrl} target="_blank" rel="noreferrer" className="text-rose-300 hover:underline inline-flex items-center gap-1">
+                              <Youtube className="w-3.5 h-3.5" /> Archivo {entry.tvYoutubeClips[0].channel} <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                          {entry.counterActions[0] && (
+                            <a href={entry.counterActions[0].officialDocumentUrl} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline inline-flex items-center gap-1">
+                              Acto oficial ({entry.counterActions[0].instrument}) <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                          {onNavigate && (
+                            <button
+                              type="button"
+                              onClick={() => onNavigate('congruencia', entry.politicianId)}
+                              className="text-sky-300 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                            >
+                              Abrir en Blog de Congruencia <ArrowRight className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </Panel>
         </main>}
       </div>
