@@ -1,26 +1,55 @@
 # DAILY_CONGRUENCE_REPORT.md
-## Informe Diario de Escrutinio de Congruencia: Archivos de TV / YouTube vs. Votos, Firmas y Crítica Cruzada
+## Informe Diario de Congruencia Política (2003–2026): Archivos de X/Twitter, Diarios y TV/YouTube vs. Votos, Firmas y Contador de Contradicciones
 
-**Fecha del informe:** 2026-10-30 | **Huso horario:** `America/Argentina/Buenos_Aires` | **Rutas en plataforma:** `/#/congruencia`, `/#/declaraciones`, `/#/politicos`
-
----
-
-## 1. Metodología del Escrutinio Audiovisual Multipardidario
-
-Este informe diario examina los archivos televisivos y de YouTube (**TN, LN+, C5N, Crónica TV, A24, Diputados TV y Senado TV**) correspondientes a funcionarios actualmente en ejercicio de todos los signos políticos. Se clasifican tres patrones verificables con documentación primaria:
-1. **Discurso en TV vs. Voto o Firma Propia:** Promesas o rechazos categóricos en televisión contradichos por un voto nominal, proyecto remitido o decreto firmado por el mismo funcionario.
-2. **Crítica a Terceros por Medida que Antes Ejecutó:** Cuestionamientos en estudios de TV o recintos legislativos contra otro gobierno por aplicar medidas impositivas, previsionales o patrimoniales equivalentes a las que el propio funcionario votó o ejecutó.
-3. **Giro de 180° en Posición Pública Documentada:** Cambios sustanciales entre la postura registrada en el archivo audiovisual y la defendida en su función actual.
+**Fecha del relevamiento:** 2026-10-30 | **Cobertura histórica:** 2003–2026 | **Escrutinio multipardidario:** Poder Ejecutivo Nacional, Gobernadores, Jefe de Gobierno, Diputados y Senadores en funciones
 
 ---
 
-## 2. Casos Auditados en el Registro Activo (Todos los Partidos)
+## 1. Resumen de Contradicciones / Giros Contabilizados (2003–2026)
 
-| Funcionario en Ejercicio | Cargo / Fuerza Política | Canal / Archivo TV | Discurso o Crítica en TV / YouTube | Acto, Voto o Firma Contrapuesta | Patrón Detectado |
+| Funcionario en Ejercicio | Fuerza Política | Cuenta Pública X | Eje Auditado | Contradicciones / Giros Contabilizados | Archivos Contrastados (X + Diarios + TV/YT vs. Boletín Oficial / Congreso) |
 |---|---|---|---|---|---|
-| **Javier Gerardo Milei** | Presidente de la Nación (La Libertad Avanza) | `LN+` / `Diputados TV` (19/09/2023) | Votó como diputado la eliminación de Ganancias 4.ª categoría (Ley 27.725) y prometió en TV no subir ni crear impuestos. | Remitió al Congreso y promulgó la restitución de Ganancias 4.ª categoría en el Paquete Fiscal (**Ley 27.743**, 08/07/2024). | `discurso_vs_voto_o_firma` |
-| **Axel Kicillof** | Gobernador de PBA (Unión por la Patria) | `Senado TV` (17/04/2012) y `C5N` (2024) | En Senado TV afirmó que sería «estúpido» pagar según el estatuto de YPF; en C5N criticó el impacto de impuestos y tarifas nacionales sobre la clase media. | Emisión de USD 5.000 M en bonos (**Ley 26.932**) + fallo SDNY por USD 16.100 M por violar el Art. 7 del estatuto de YPF; promulgación de la **Ley Impositiva PBA 15.479** con subas de hasta 200%+ en Inmobiliario y Patentes. | `critica_a_terceros_por_medida_propia` |
-| **Máximo Carlos Kirchner** | Diputado Nacional (Unión por la Patria) | `Diputados TV` / `C5N` (2024) | Cuestionó la pérdida de poder adquisitivo de los jubilados y la presión impositiva sobre el consumo. | Votó e impulsó la suspensión de la movilidad en dic. 2019 y la creación del **Impuesto PAIS del 30% (Ley 27.541)**, además de la fórmula **Ley 27.609** sin indexación por IPC bajo la cual el haber cayó entre 2021 y 2023. | `critica_a_terceros_por_medida_propia` |
-| **Patricia Bullrich** | Ministra de Seguridad (La Libertad Avanza / ex PRO) | `TN (A Dos Voces)` / Debate Presidencial (08/10/2023) | Cuestionó severamente en TV el programa económico, previsional y de seguridad de Javier Milei durante la campaña 2023. | Asumió como Ministra de Seguridad (**Decreto 8/2023**) a las 72 hs de la primera vuelta; registra además la firma del **Decreto 896/2001** (recorte del 13% a haberes y jubilaciones en 2001). | `giro_intertemporal_180` |
-| **Cristian Ritondo** | Diputado Nacional — Pte. Bloque PRO (PRO) | `TN` / `LN+` (2021–2023) | Sostuvo en entrevistas televisivas el compromiso de no votar subas ni restituciones de impuestos sobre el trabajo. | Votó **AFIRMATIVO** en el **Acta HCDN 5274** (28/06/2024) para restituir el Impuesto a las Ganancias de 4.ª categoría sobre ~800.000 asalariados. | `discurso_vs_voto_o_firma` |
-| **Jorge Macri** | Jefe de Gobierno de CABA (PRO) | `LN+` / `TN` (20/02/2024) | Prometió alivio fiscal para la clase media porteña; ante subas mayores al 100% en boletas de Patentes debió pedir en vivo en LN+ «que no paguen las boletas» hasta reliquidarlas. | Actualización mensual indexada de ABL con recargos zonales y emisión de Patentes en AGIP que requirieron rectificación administrativa (**Leyes Tarifarias CABA 2024–2025**). | `discurso_vs_voto_o_firma` |
+| **Javier Gerardo Milei** | La Libertad Avanza | `@JMilei` | Impuestos (Ganancias y PAIS) | **3 giros** | Posteos en `@JMilei` y LN+ («antes de subir un impuesto me corto un brazo») → Voto afirmativo para eliminar Ganancias (Acta HCDN 4912, 19/09/2023) → Suba Impuesto PAIS al 17,5% (Decreto 29/2023) → Promulgación de restitución de Ganancias 4.ª categoría (Ley 27.743 / Decreto 593/2024). |
+| **Axel Kicillof** | Unión por la Patria | `@Kicillofok` | YPF, Impuestos PBA (ARBA) e IIBB | **3 giros** | Aval a gestión privada/Petersen (2003–2007) → Declaración en Senado TV de que respetar el Art. 7 del Estatuto de YPF «es de tarados» (17/04/2012) → Pago de USD 5.000 M en bonos a Repsol (Ley 26.932, 2014) + condena SDNY por USD 16.100 M → Críticas en `@Kicillofok` al ajuste impositivo mientras promulga subas de hasta 200%+ en Ley Impositiva PBA 15.479 e IIBB en cascada. |
+| **Máximo Carlos Kirchner** | Unión por la Patria | `@Diputados_UxP` | Jubilaciones (82% móvil y movilidad) e Impuesto PAIS | **3 giros** | Estatización de AFJP prometiendo solvencia previsional (Ley 26.425, 2008) → Veto total al 82% móvil (Decreto 1482/2010) → Voto para suspender la movilidad indexada por IPC (Ley 27.541 Art. 55, 2019) y aprobar fórmula sin cláusula de inflación (Ley 27.609, 2020) → Reclamo opositor en X y Diputados TV de indexación por IPC (2024–2026). |
+| **Patricia Bullrich** | La Libertad Avanza (ex PRO / CC / Alianza) | `@PatoBullrich` | Decreto 896/2001, Cambios de Bloque y Giro 2023 | **4 giros** | Firma del Decreto 896/2001 (-13% a haberes y jubilaciones en la Alianza) → Oposición en Coalición Cívica / PRO (2007–2015) → Acusaciones en `@PatoBullrich` y Debate Presidencial (octubre 2023) contra el programa de Milei → Alianza en 72 horas, designación por Decreto 8/2023 y afiliación a LLA. |
+| **Cristian Ritondo** | PRO (ex PJ 2003–2007) | `@cristianritondo` | Compromiso de No Subir Impuestos vs. Ganancias | **3 giros** | Diputado PJ acompañando prórrogas de impuestos de emergencia (2003–2007) → Compromiso firmado en `@cristianritondo` y TN de «no votar jamás una suba de impuestos» (2021) → Voto negativo a bajar Ganancias (Acta HCDN 4912, 2023) → Voto afirmativo para restituir Ganancias sobre 800.000 asalariados (Acta HCDN 5274, 28/06/2024). |
+| **Jorge Macri** | PRO | `@jorgemacri` | Alivio Fiscal en X vs. ABL Zonal y Patentes CABA | **3 giros** | Críticas en `@jorgemacri` a impuestos provinciales/nacionales manteniendo tasas municipales en Vicente López (2011–2021) → Promesa de campaña 2023 de bajar ABL y Patentes en CABA → Emisión de boletas de Patentes con subas >100% en febrero 2024 (pidiendo en LN+ «no pagar la boleta» hasta reliquidarla) → Indexación mensual de ABL con recargo zonal (2024–2025). |
+| **Martín Lousteau** | UCR (ex FpV / UNEN / Cambiemos) | `@GugaLusto` | Resolución 125/2008, Giros de Alianza y Presión Fiscal | **3 giros** | Firma de las retenciones móviles de la Resolución MEyP 125/2008 en el gobierno de Cristina Kirchner (11/03/2008) → Paso a la oposición en UNEN criticando las retenciones y presión fiscal (2013–2015) → Embajador de Mauricio Macri (Decreto 200/2015) y Senador JxC → Críticas en `@GugaLusto` a impuestos productivos y voto a mano alzada de dietas en el Senado (18/04/2024). |
+
+**Total acumulado en las 7 fichas troncales:** **22 contradicciones / giros documentados** con fuente primaria oficial entre **2003 y 2026**.
+
+---
+
+## 2. Plantillas de Interpelación Ciudadana Documentada en Redes Sociales Públicas
+
+Todas las fichas de [`src/views/BlogCongruencia.tsx`](file:///G:/Mi%20unidad/Proyectos/Con%20la%20tuya/src/views/BlogCongruencia.tsx) y [`src/views/RegistroPolitico.tsx`](file:///G:/Mi%20unidad/Proyectos/Con%20la%20tuya/src/views/RegistroPolitico.tsx) cuentan ahora con botones de **Copia en 1 clic** y **Envío directo en X (`https://x.com/intent/tweet`)** con enlace oficial adjunto:
+
+1. **Para `@JMilei`:**
+   ```text
+   @JMilei: El 19/09/2023 votó eximir a los asalariados de Ganancias (Acta HCDN 4912), pero el 08/07/2024 promulgó la Ley 27.743 restituyendo ese mismo impuesto (B.O. 310293). ¿En qué fecha enviará su derogación prometida? Fuente oficial: https://votaciones.hcdn.gob.ar/pdf/acta/4912
+   ```
+2. **Para `@Kicillofok`:**
+   ```text
+   @Kicillofok: En X cuestiona la presión sobre las familias, pero promulgó la Ley Impositiva PBA 15.479 con subas de hasta 200%+ en ARBA y mantiene Ingresos Brutos del 4%–5% en cascada sobre alimentos y luz. ¿Cuándo reducirá IIBB? Fuente: https://normas.gba.gob.ar/documentos/B3wX9i3x.html
+   ```
+3. **Para `@Diputados_UxP` (Dip. Máximo Kirchner):**
+   ```text
+   @Diputados_UxP (Dip. Máximo Kirchner): Hoy reclaman movilidad indexada por IPC, pero el 20/12/2019 votaron suspender la fórmula por IPC (Ley 27.541 Art. 55) y en 2020 quitaron la cláusula de inflación (Ley 27.609). ¿Por qué la quitaron cuando gobernaban? Fuente: https://servicios.infoleg.gob.ar/infolegInternet/anexos/330000-334999/333564/norma.htm
+   ```
+4. **Para `@PatoBullrich`:**
+   ```text
+   @PatoBullrich: En octubre de 2023 cuestionó en X y en el Debate Presidencial el programa fiscal y previsional de LLA, y en diciembre asumió por Decreto 8/2023 defendiéndolo, tras haber refrendado en 2001 el Decreto 896/2001 (-13%). ¿Qué cambió en 72 horas? Fuente: https://www.boletinoficial.gob.ar/detalleAviso/primera/300733/20231211
+   ```
+5. **Para `@cristianritondo`:**
+   ```text
+   @cristianritondo: En X se comprometió a no votar subas de impuestos, pero el 19/09/2023 votó contra bajar Ganancias (Acta 4912) y el 28/06/2024 votó AFIRMATIVO para restituirlo sobre 800.000 asalariados (Acta 5274). ¿Por qué incumplió ese compromiso? Fuente: https://votaciones.hcdn.gob.ar/pdf/acta/5274
+   ```
+6. **Para `@jorgemacri`:**
+   ```text
+   @jorgemacri: En campaña prometió en X aliviar la carga fiscal en CABA, pero la Ley Tarifaria mantiene indexación mensual de ABL con adicionales por zona e Ingresos Brutos en cascada sobre servicios. ¿Cuándo eliminará el recargo zonal del ABL? Fuente: https://boletinoficial.buenosaires.gob.ar
+   ```
+7. **Para `@GugaLusto`:**
+   ```text
+   @GugaLusto: En X cuestiona los impuestos a la producción y el uso de decretos, pero el 11/03/2008 firmó por resolución ministerial las retenciones móviles de la Res. 125/2008 sin pasar por el Congreso. ¿Reconoce que violaba el Art. 75 inc. 1 CN? Fuente: https://servicios.infoleg.gob.ar/infolegInternet/anexos/135000-139999/138567/norma.htm
+   ```

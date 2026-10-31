@@ -223,18 +223,25 @@ runTest('Informes de contraste Relato Mediático vs. Proceso Administrativo y Ev
   return `${EVIDENCE_VS_NARRATIVE_REPORTS.length} informes de contraste entre narrativa mediática y expediente administrativo verificados`;
 });
 
-// 13. Blog de Congruencia Audiovisual (TV / YouTube vs. Votos y Actos Oficiales)
-runTest('Blog de Congruencia Audiovisual (Archivos TV/YouTube vs. Votos, Firmas y Crítica Cruzada)', () => {
-  assert.ok(CONGRUENCE_BLOG_ENTRIES.length >= 5, 'Deben existir al menos 5 entradas multipardidarias en el Blog de Congruencia');
+// 13. Blog de Congruencia (2003–2026: X/Twitter, Diarios y TV/YouTube vs. Votos, Contador de Giros e Interpelación Ciudadana)
+runTest('Blog de Congruencia (Archivos X/Twitter, Diarios y TV/YouTube 2003–2026, Contador de Contradicciones e Interpelación Ciudadana)', () => {
+  assert.ok(CONGRUENCE_BLOG_ENTRIES.length >= 7, 'Deben existir al menos 7 entradas multipardidarias en el Blog de Congruencia');
   const parties = new Set(CONGRUENCE_BLOG_ENTRIES.map(e => e.currentParty));
-  assert.ok(parties.size >= 3, 'El escrutinio de congruencia debe cubrir al menos 3 fuerzas políticas distintas');
+  assert.ok(parties.size >= 4, 'El escrutinio de congruencia debe cubrir al menos 4 fuerzas políticas distintas');
+  let totalContradictions = 0;
   for (const entry of CONGRUENCE_BLOG_ENTRIES) {
+    assert.ok(entry.contradictionsCount >= 3, `Entrada ${entry.slug} debe contabilizar sus contradicciones/giros`);
+    assert.ok(entry.positionShiftsChain.length >= 4, `Entrada ${entry.slug} debe documentar la postura inicial y los giros sucesivos`);
+    assert.ok(entry.xTwitterAndPressArchives.length > 0, `Entrada ${entry.slug} sin archivo de X/Twitter o diarios`);
     assert.ok(entry.tvYoutubeClips.length > 0, `Entrada ${entry.slug} sin clips de archivo TV/YouTube`);
     assert.ok(entry.counterActions.length > 0, `Entrada ${entry.slug} sin acto/voto oficial contrapuesto`);
+    assert.ok(entry.citizenPublicInquiries.length > 0, `Entrada ${entry.slug} sin plantilla de interpelación ciudadana verificada`);
     assert.ok(entry.tvYoutubeClips[0].youtubeArchiveUrl.startsWith('https://'), `Entrada ${entry.slug} sin URL de archivo YouTube`);
     assert.ok(entry.counterActions[0].officialDocumentUrl.startsWith('https://'), `Entrada ${entry.slug} sin URL de documento oficial`);
+    assert.ok(entry.citizenPublicInquiries[0].evidenceOfficialUrl.startsWith('https://'), `Entrada ${entry.slug} sin fuente oficial en consulta ciudadana`);
+    totalContradictions += entry.contradictionsCount;
   }
-  return `${CONGRUENCE_BLOG_ENTRIES.length} entradas del Blog de Congruencia en ${parties.size} fuerzas políticas con clips de TV/YouTube y actos oficiales verificados`;
+  return `${CONGRUENCE_BLOG_ENTRIES.length} entradas en ${parties.size} fuerzas políticas, ${totalContradictions} contradicciones contabilizadas (2003–2026) y plantillas de interpelación en redes verificadas`;
 });
 
 // 14. Boletas Conceptuales de Servicios, Efecto Cascada (IIBB/Cheque) y Serie de Subsidios 2001–2026
