@@ -5,7 +5,7 @@
 
 import React, { lazy, Suspense, useState } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Landmark, Heart, Github, Mail } from 'lucide-react';
+import { Landmark, Heart, Github, Mail, ArrowUp } from 'lucide-react';
 
 import Navbar from './components/Navbar';
 import Landing from './views/Landing';
@@ -49,6 +49,15 @@ export function AppContent() {
   const [selectedContrastSlug, setSelectedContrastSlug] = useState<string | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [visits, setVisits] = useState<number | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    const onScroll = () => {
+      setShowBackToTop(window.scrollY > 420);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   React.useEffect(() => {
     const hasVisitedThisSession = sessionStorage.getItem('visited_session');
@@ -174,8 +183,8 @@ export function AppContent() {
       </a>
       <Navbar currentTab={currentTab} onNavigate={handleNavigate} visits={visits} />
 
-      <main id="main-content" className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="space-y-6">
+      <main id="main-content" className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 md:py-10 min-w-0">
+        <div className="space-y-6 min-w-0">
           <Suspense fallback={<p role="status" className="text-slate-300 py-8">Cargando sección…</p>}>
           <Routes>
             <Route path="/" element={<Landing onNavigate={handleNavigate} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
@@ -215,7 +224,19 @@ export function AppContent() {
         </div>
       </main>
 
-      <footer className="bg-slate-950 border-t border-slate-900 py-12 px-4 text-slate-500 mt-16" id="global-footer">
+      {showBackToTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Volver arriba"
+          className="fixed bottom-20 lg:bottom-6 right-4 z-30 p-3 rounded-full bg-emerald-500 text-slate-950 shadow-xl hover:bg-emerald-400 transition cursor-pointer flex items-center gap-1.5 text-xs font-extrabold"
+        >
+          <ArrowUp className="w-4 h-4" />
+          <span className="hidden sm:inline">Subir</span>
+        </button>
+      )}
+
+      <footer className="bg-slate-950 border-t border-slate-900 pt-10 pb-24 lg:pb-12 px-4 text-slate-500 mt-12" id="global-footer">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs text-left">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -239,9 +260,11 @@ export function AppContent() {
 
           <div className="space-y-3 font-mono text-[11px]">
             <span className="font-bold text-white uppercase tracking-wider block text-[10px]">Políticas y Gobernanza</span>
-            <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-2">
               <button onClick={() => handleNavigate('observatorio')} className="hover:text-white transition text-left cursor-pointer">Observatorio Histórico (1946–2026)</button>
-              <button onClick={() => handleNavigate('declaraciones')} className="hover:text-white transition text-left cursor-pointer">Comparador de Declaraciones</button>
+              <button onClick={() => handleNavigate('boletas-y-subsidios')} className="hover:text-white transition text-left cursor-pointer">Boletas, Cascada IIBB y Subsidios</button>
+              <button onClick={() => handleNavigate('evidencia-vs-relato')} className="hover:text-white transition text-left cursor-pointer">Evidencia vs. Relato Mediático</button>
+              <button onClick={() => handleNavigate('congruencia')} className="hover:text-white transition text-left cursor-pointer">Blog de Congruencia (TV / YouTube)</button>
               <button onClick={() => handleNavigate('auditorias')} className="hover:text-white transition text-left cursor-pointer">Auditorías Sectoriales (CONICET, SPU, SIPA)</button>
               <button onClick={() => handleNavigate('metodologia')} className="hover:text-white transition text-left cursor-pointer">Manual de Neutralidad Partidaria</button>
               <button onClick={() => handleNavigate('contribucion')} className="hover:text-white transition text-left cursor-pointer">Consultas Ley 27.275 y Correcciones</button>
@@ -249,11 +272,11 @@ export function AppContent() {
             </div>
             <div className="pt-3 border-t border-slate-900/60 flex items-center gap-4 text-slate-600">
               <a href="https://github.com/deepbrainreset/Con-la-Tuya-Contribuyente" target="_blank" rel="noreferrer" className="hover:text-slate-400 transition" aria-label="Github link"><Github className="w-4 h-4" /></a>
-              <a href="mailto:deepsynapsis@gmail.com" className="hover:text-slate-400 transition" aria-label="Mail link"><Mail className="w-4 h-4" /></a>
+              <a href="mailto:deepsynapsis@gmail.com" target="_blank" rel="noreferrer" className="hover:text-slate-400 transition" aria-label="Mail link"><Mail className="w-4 h-4" /></a>
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-slate-900/60 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-slate-600 font-mono">
+        <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-900/60 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-slate-600 font-mono text-center sm:text-left">
           <span>&copy; {new Date().getFullYear()} Con La Tuya Contribuyente. Licencia MIT de Código Libre.</span>
           <span>Desarrollado con fines pedagógicos y de auditoría pública.</span>
         </div>

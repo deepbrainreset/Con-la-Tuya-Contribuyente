@@ -58,7 +58,14 @@ export default function AuditoriasTematicas({ onNavigate, initialSlug }: Auditor
             <button
               key={audit.id}
               type="button"
-              onClick={() => setSelectedSlug(audit.slug)}
+              onClick={() => {
+                setSelectedSlug(audit.slug);
+                if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                  setTimeout(() => {
+                    document.getElementById('active-audit-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 60);
+                }
+              }}
               className={`text-left p-4 rounded-2xl border transition cursor-pointer ${
                 isSelected
                   ? 'bg-emerald-500/10 border-emerald-500/40 text-white'
@@ -74,7 +81,7 @@ export default function AuditoriasTematicas({ onNavigate, initialSlug }: Auditor
       </section>
 
       {/* Ficha de Auditoría Sectorial Activa */}
-      <section className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-6">
+      <section id="active-audit-detail" className="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-6 scroll-mt-28">
         <div className="border-b border-slate-800 pb-4 space-y-1">
           <div className="text-xs font-mono text-emerald-400 uppercase">{activeAudit.sector}</div>
           <h2 className="text-2xl font-extrabold text-white">{activeAudit.title}</h2>

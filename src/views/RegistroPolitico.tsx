@@ -63,11 +63,38 @@ export default function RegistroPolitico({ onNavigate, initialPoliticianId }: Re
             <select value={level} onChange={e => setLevel(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300">
               <option value="all">Todos los niveles</option><option value="Nacion">Nación</option><option value="Provincia">Provincia</option><option value="CABA">CABA</option><option value="Municipio">Municipio</option><option value="Legislativo">Legislativo</option>
             </select>
+            {/* Selector rápido directo para móviles y tablets */}
+            <div className="lg:hidden pt-1">
+              <label className="text-[10px] font-mono uppercase text-emerald-400 block mb-1">Salto directo a funcionario ({filtered.length}):</label>
+              <select
+                value={selected?.id || ''}
+                onChange={e => {
+                  setSelectedId(e.target.value);
+                  setTimeout(() => {
+                    document.getElementById('politician-detail-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 60);
+                }}
+                className="w-full bg-slate-950 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-white"
+              >
+                {filtered.map(record => (
+                  <option key={record.id} value={record.id}>
+                    {record.name} — {record.role} ({record.jurisdiction})
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="text-[10px] font-mono text-slate-500">{filtered.length} perfiles visibles · sólo hechos individualmente trazables se presentan como verificados.</div>
           </div>
 
-          <div className="space-y-2 max-h-[680px] overflow-y-auto pr-1">
-            {filtered.map(record => <button key={record.id} onClick={() => setSelectedId(record.id)} className={`w-full p-3.5 rounded-xl border text-left transition ${selected?.id === record.id ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}`}>
+          <div className="space-y-2 max-h-[260px] lg:max-h-[680px] overflow-y-auto pr-1">
+            {filtered.map(record => <button key={record.id} onClick={() => {
+              setSelectedId(record.id);
+              if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                setTimeout(() => {
+                  document.getElementById('politician-detail-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 60);
+              }
+            }} className={`w-full p-3.5 rounded-xl border text-left transition cursor-pointer ${selected?.id === record.id ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}`}>
               <strong className="text-xs text-white block">{record.name}</strong>
               <span className="text-[10px] text-slate-400 block mt-0.5">{record.role}</span>
               <span className="text-[9px] text-slate-600 font-mono block mt-1">{record.party} · {record.jurisdiction}</span>
@@ -75,7 +102,7 @@ export default function RegistroPolitico({ onNavigate, initialPoliticianId }: Re
           </div>
         </aside>
 
-        {selected && <main className="lg:col-span-8 space-y-5">
+        {selected && <main className="lg:col-span-8 space-y-5 scroll-mt-28" id="politician-detail-panel">
           <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div className="flex gap-4 items-start">

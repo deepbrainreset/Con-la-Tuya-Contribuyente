@@ -309,7 +309,7 @@ export default function MapaNacional({ onNavigate, selectedJurisdictionId, setSe
         </aside>
 
         <div className="lg:col-span-9 space-y-3">
-          <div className="relative h-[72vh] min-h-[560px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950">
+          <div className="relative h-[50vh] min-h-[340px] sm:h-[60vh] sm:min-h-[440px] lg:h-[72vh] lg:min-h-[560px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950">
             <MapContainer center={[-38.4161, -63.6167]} zoom={4} minZoom={3} maxZoom={13} scrollWheelZoom className="h-full w-full" attributionControl>
               <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <ZoomObserver onZoom={setZoom} />

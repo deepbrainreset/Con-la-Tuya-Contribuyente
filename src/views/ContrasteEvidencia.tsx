@@ -144,7 +144,14 @@ export default function ContrasteEvidencia({ onNavigate, initialSlug }: Contrast
               <button
                 key={report.id}
                 type="button"
-                onClick={() => setSelectedSlug(report.slug)}
+                onClick={() => {
+                  setSelectedSlug(report.slug);
+                  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                    setTimeout(() => {
+                      document.getElementById('active-contrast-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 60);
+                  }
+                }}
                 className={`text-left p-4 rounded-xl border transition cursor-pointer flex flex-col justify-between gap-2 ${
                   isSelected
                     ? 'bg-emerald-500/10 border-emerald-500/40 shadow-lg'
@@ -166,7 +173,7 @@ export default function ContrasteEvidencia({ onNavigate, initialSlug }: Contrast
       </section>
 
       {/* Active Report Detail */}
-      <article className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 sm:p-7 space-y-8">
+      <article id="active-contrast-detail" className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-7 space-y-8 scroll-mt-28">
         <div className="border-b border-slate-800 pb-5 space-y-3">
           <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono">
             <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 uppercase">

@@ -156,29 +156,29 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
 
   return (
     <div className="space-y-16 py-6 sm:py-8" id="landing-view">
-      <section className="relative max-w-6xl mx-auto px-4">
-        <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl shadow-black/30">
+      <section className="relative max-w-6xl mx-auto px-2 sm:px-4">
+        <div className="overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl shadow-black/30">
           <img
             src={HERO_IMAGE}
             alt="Con La Tuya Contribuyente — auditoría cívica, fiscal y de transparencia del Estado argentino"
-            className="block w-full h-auto max-h-[640px] object-cover object-center"
+            className="block w-full h-auto max-h-[220px] sm:max-h-[380px] lg:max-h-[540px] object-cover object-center"
             loading="eager"
             fetchPriority="high"
             decoding="async"
           />
         </div>
 
-        <div className="max-w-4xl mx-auto text-center mt-8 sm:mt-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/25 rounded-full text-emerald-400 text-xs font-mono mb-6">
-            <ShieldCheck className="w-4 h-4" />
+        <div className="max-w-4xl mx-auto text-center mt-6 sm:mt-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/25 rounded-full text-emerald-400 text-[10px] sm:text-xs font-mono mb-4 sm:mb-6">
+            <ShieldCheck className="w-4 h-4 shrink-0" />
             <span>OBSERVATORIO HISTÓRICO CÍVICO Y FISCAL INDEPENDIENTE (1946–ACTUALIDAD)</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4 sm:mb-6">
             Seguí la ruta de cada <span className="text-emerald-400">peso público</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-sm sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8">
             Una plataforma independiente para reconstruir de dónde proviene el dinero público en Argentina, cómo se redistribuye entre Nación, provincias y municipios, en qué se gasta efectivamente, quiénes propusieron, votaron o ejecutaron cada medida, qué resultados verificables produjo y qué dijeron históricamente sus responsables.
           </p>
 
@@ -345,33 +345,47 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-7">
             <button
               onClick={() => onNavigate('observatorio')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-emerald-500 text-slate-950 font-extrabold text-sm tracking-wide rounded-xl hover:bg-emerald-400 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              className="w-full lg:w-auto px-5 py-3 bg-emerald-500 text-slate-950 font-extrabold text-xs sm:text-sm tracking-wide rounded-xl hover:bg-emerald-400 cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
-              <History className="w-4 h-4" />
+              <History className="w-4 h-4 shrink-0" />
               <span>Observatorio 1946–2026</span>
             </button>
             <button
-              onClick={() => onNavigate('declaraciones')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              onClick={() => onNavigate('boletas-y-subsidios')}
+              className="w-full lg:w-auto px-5 py-3 bg-slate-900 text-white font-bold text-xs sm:text-sm tracking-wide rounded-xl border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
-              <MessageSquareQuote className="w-4 h-4 text-emerald-400" />
-              <span>Comparador de Declaraciones</span>
+              <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Boletas, Cascada IIBB y Subsidios</span>
+            </button>
+            <button
+              onClick={() => onNavigate('evidencia-vs-relato')}
+              className="w-full lg:w-auto px-5 py-3 bg-slate-900 text-white font-bold text-xs sm:text-sm tracking-wide rounded-xl border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Evidencia vs. Relato</span>
+            </button>
+            <button
+              onClick={() => onNavigate('congruencia')}
+              className="w-full lg:w-auto px-5 py-3 bg-slate-900 text-white font-bold text-xs sm:text-sm tracking-wide rounded-xl border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+            >
+              <MessageSquareQuote className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Congruencia TV / YouTube</span>
             </button>
             <button
               onClick={() => onNavigate('auditorias')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              className="w-full lg:w-auto px-5 py-3 bg-slate-900 text-white font-bold text-xs sm:text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
-              <Microscope className="w-4 h-4 text-emerald-400" />
+              <Microscope className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Auditorías Sectoriales</span>
             </button>
             <button
               onClick={() => onNavigate('mapa')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-slate-900 text-white font-bold text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-850 cursor-pointer transition-all"
+              className="w-full lg:w-auto px-5 py-3 bg-slate-900 text-white font-bold text-xs sm:text-sm tracking-wide rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
-              Explorar Mapa Nacional
+              <span>Explorar Mapa Nacional</span>
             </button>
           </div>
         </div>

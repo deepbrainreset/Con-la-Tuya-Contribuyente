@@ -146,7 +146,14 @@ export default function DeclaracionesComparador({ onNavigate }: DeclaracionesCom
               <button
                 key={comp.id}
                 type="button"
-                onClick={() => setActiveComparisonId(comp.id)}
+                onClick={() => {
+                  setActiveComparisonId(comp.id);
+                  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                    setTimeout(() => {
+                      document.getElementById('active-comparison-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 60);
+                  }
+                }}
                 className={`text-left p-4 rounded-xl border transition cursor-pointer ${
                   isSelected
                     ? 'bg-emerald-500/10 border-emerald-500/40 text-white'
@@ -163,7 +170,7 @@ export default function DeclaracionesComparador({ onNavigate }: DeclaracionesCom
 
         {/* Vista Lado a Lado del Dossier Seleccionado */}
         {activeComparison && (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-6">
+          <div id="active-comparison-detail" className="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-6 scroll-mt-28">
             <div className="border-b border-slate-800 pb-4 space-y-1">
               <div className="text-xs font-mono text-emerald-400">{activeComparison.partyOrCoalitionHistory}</div>
               <h3 className="text-xl font-extrabold text-white">{activeComparison.title}</h3>

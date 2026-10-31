@@ -259,6 +259,9 @@ export default function ObservatorioHistorico({ onNavigate, initialDossierId }: 
         </div>
 
         {/* Tabla de Puntos Históricos con Etapa Presupuestaria */}
+        <div className="md:hidden text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+          <span>↔ Deslizá la tabla horizontalmente para consultar todas las columnas</span>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <caption className="sr-only">
@@ -456,7 +459,14 @@ export default function ObservatorioHistorico({ onNavigate, initialDossierId }: 
               <button
                 key={dossier.id}
                 type="button"
-                onClick={() => setActiveDossierId(dossier.id)}
+                onClick={() => {
+                  setActiveDossierId(dossier.id);
+                  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                    setTimeout(() => {
+                      document.getElementById('active-dossier-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 60);
+                  }
+                }}
                 className={`text-left p-4 rounded-xl border transition cursor-pointer ${
                   isSelected
                     ? 'bg-emerald-500/10 border-emerald-500/40 text-white'
@@ -474,7 +484,7 @@ export default function ObservatorioHistorico({ onNavigate, initialDossierId }: 
         </div>
 
         {/* Detalle del Expediente Activo */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-6">
+        <div id="active-dossier-detail" className="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-6 scroll-mt-28">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 pb-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">

@@ -8,6 +8,8 @@
 
 html {
   color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -17,6 +19,26 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #020617;
+}
+
+@media (max-width: 767px) {
+  .overflow-x-auto > table {
+    min-width: 640px;
+  }
 }
 
 /* Global accessibility/readability pass for the dark interface.

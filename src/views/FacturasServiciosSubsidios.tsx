@@ -126,7 +126,7 @@ export default function FacturasServiciosSubsidios() {
             <span className="text-[10px] font-mono uppercase text-slate-400 block">
               1. Seleccioná el Servicio / Boleta
             </span>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {[
                 { id: 'electricidad', label: 'Luz (350 kWh)', icon: Zap },
                 { id: 'agua', label: 'Agua y Cloacas', icon: Droplets },
@@ -139,13 +139,13 @@ export default function FacturasServiciosSubsidios() {
                     key={item.id}
                     type="button"
                     onClick={() => setSelectedServiceId(item.id as any)}
-                    className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
+                    className={`p-3 rounded-xl border text-xs font-bold flex flex-row sm:flex-col items-center justify-center gap-2 sm:gap-1.5 transition cursor-pointer ${
                       active
                         ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-4 h-4 shrink-0" />
                     <span className="text-center leading-tight">{item.label}</span>
                   </button>
                 );
@@ -447,6 +447,10 @@ export default function FacturasServiciosSubsidios() {
           <p className="text-xs text-slate-300 max-w-4xl leading-relaxed">
             Durante más de 15 años, las facturas residenciales de electricidad y agua (AySA) en CABA y el Gran Buenos Aires reflejaron entre el <strong className="text-white">14% y el 25% del costo real del servicio</strong>. El 75% a 86% restante no era «gratis»: fue pagado por terceros desde las 24 jurisdicciones mediante impuestos nacionales (IVA, Ganancias, Retenciones, Impuesto al Cheque) y emisión monetaria inflacionaria.
           </p>
+        </div>
+
+        <div className="md:hidden text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+          <span>↔ Deslizá la tabla horizontalmente para consultar todas las columnas</span>
         </div>
 
         <div className="overflow-x-auto">

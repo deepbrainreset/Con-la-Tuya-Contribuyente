@@ -152,16 +152,22 @@ export default function BlogCongruencia({
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           {politiciansSummary.map(p => {
             const active = selectedPolitician === p.politicianId;
             return (
               <button
                 key={p.politicianId}
                 type="button"
-                onClick={() =>
-                  setSelectedPolitician(active ? 'all' : p.politicianId)
-                }
+                onClick={() => {
+                  const next = active ? 'all' : p.politicianId;
+                  setSelectedPolitician(next);
+                  if (next !== 'all' && typeof window !== 'undefined' && window.innerWidth < 1024) {
+                    setTimeout(() => {
+                      document.getElementById('blog-congruencia-entries')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 60);
+                  }
+                }}
                 className={`text-left p-3.5 rounded-xl border transition cursor-pointer flex flex-col justify-between gap-2 ${
                   active
                     ? 'bg-emerald-500/15 border-emerald-500/40'
@@ -240,7 +246,7 @@ export default function BlogCongruencia({
       </section>
 
       {/* Entradas tipo Blog */}
-      <section className="space-y-6">
+      <section className="space-y-6 scroll-mt-28" id="blog-congruencia-entries">
         {filteredEntries.map(entry => {
           const patternInfo = CONGRUENCE_PATTERN_LABELS[entry.congruencePattern];
           return (
