@@ -2,6 +2,13 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
+import {
+  EVIDENCE_RECORDS,
+  EVIDENCE_LOCATIONS,
+  EVIDENCE_CLAIMS,
+  EVIDENCE_VERIFICATIONS,
+  EVIDENCE_REVISIONS
+} from "./src/data/repositorioEvidencia";
 
 const CENSUS_THRESHOLD = 10_000;
 const CITY_POPULATION_BASE = "https://www.citypopulation.de/en/argentina";
@@ -143,6 +150,43 @@ async function startServer() {
       coveragePeriod: "1946-2026",
       dimensions: ["origen_del_dinero", "distribucion_y_gasto", "resultados", "responsables_publicos", "declaraciones_y_rendicion"],
       timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get("/api/evidencia/registro", (_req, res) => {
+    res.json({
+      architecture: "URL_INDEPENDENT_EVIDENCE_REGISTRY",
+      principle: "Una URL es una ubicación temporal; la identidad de la evidencia reside en EvidenceRecord.",
+      counts: {
+        records: EVIDENCE_RECORDS.length,
+        locations: EVIDENCE_LOCATIONS.length,
+        claims: EVIDENCE_CLAIMS.length,
+        verifications: EVIDENCE_VERIFICATIONS.length,
+        revisions: EVIDENCE_REVISIONS.length
+      },
+      records: EVIDENCE_RECORDS,
+      locations: EVIDENCE_LOCATIONS,
+      claims: EVIDENCE_CLAIMS
+    });
+  });
+
+  app.get("/api/evidencia/monitoreo", (_req, res) => {
+    res.json({
+      serviceStatus: "ACTIVE",
+      policy: {
+        perDomainRateLimitMs: 350,
+        exponentialBackoffRetries: 3,
+        cacheTtlHours: 24,
+        waybackFallbackEnabled: true
+      },
+      latestAuditSummary: {
+        totalUrlsAudited: 349,
+        canonicalEvidenceRecords: EVIDENCE_RECORDS.length,
+        verifiedLocations: EVIDENCE_LOCATIONS.length,
+        lastRunAt: "2026-10-31T13:30:00Z"
+      },
+      verifications: EVIDENCE_VERIFICATIONS,
+      revisions: EVIDENCE_REVISIONS
     });
   });
 

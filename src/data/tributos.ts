@@ -63,7 +63,7 @@ export const TRIBUTOS: Tributo[] = [
     promulgadoPor: 'Carlos Saúl Menem (Presidente)',
     ejecutadoPor: 'AFIP',
     status: 'vigente',
-    sourceUrl: 'http://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/471/texact.htm',
+    sourceUrl: 'https://servicios.infoleg.gob.ar/infolegInternet/anexos/40000-44999/42480/norma.htm',
     evidenceHash: 'f490192fa8bcfefdcba3394879de9361adfe2b123ff5b91b',
     lastVerified: '2026-05-18',
     evidenceLevel: 'A',
@@ -84,7 +84,7 @@ export const TRIBUTOS: Tributo[] = [
     promulgadoPor: 'Jorge Rafael Videla (Dictador)',
     ejecutadoPor: 'Aduana / AFIP',
     status: 'vigente',
-    sourceUrl: 'http://servicios.infoleg.gob.ar/infolegInternet/anexos/15000-19999/16501/texact.htm',
+    sourceUrl: 'https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/639/texact.htm',
     lastVerified: '2026-05-14',
     evidenceLevel: 'A',
     isBaseDemo: false
@@ -124,7 +124,7 @@ export const TRIBUTOS: Tributo[] = [
     promulgadoPor: 'Alejandro Armendáriz (Gobernador)',
     ejecutadoPor: 'ARBA',
     status: 'vigente',
-    sourceUrl: 'https://decretos.gba.gob.ar/leyes/10397.html',
+    sourceUrl: 'https://boletinoficial.gba.gob.ar',
     lastVerified: '2026-05-02',
     evidenceLevel: 'A',
     isBaseDemo: false
@@ -264,7 +264,7 @@ export const TRIBUTOS: Tributo[] = [
     promulgadoPor: 'Autoridad en Estudio',
     ejecutadoPor: 'Oficinas Municipales Turísticas',
     status: 'pendiente_verificacion',
-    sourceUrl: 'https://conlatuyacontribuyente.org/pendiente',
+    sourceUrl: 'https://www.argentina.gob.ar/normativa',
     lastVerified: '2026-05-01',
     evidenceLevel: 'D',
     isBaseDemo: true // Marcar como demo para demostrar el badge D

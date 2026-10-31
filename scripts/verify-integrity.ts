@@ -32,6 +32,19 @@ import {
 } from '../src/data/observatorioHistorico';
 import { PUBLIC_STATEMENTS_ARCHIVE, STATEMENT_COMPARISONS } from '../src/data/declaracionesHistoricas';
 import { THEMATIC_AUDITS } from '../src/data/auditoriasTematicas';
+import {
+  EVIDENCE_RECORDS,
+  EVIDENCE_LOCATIONS,
+  EVIDENCE_CLAIMS,
+  EVIDENCE_VERIFICATIONS,
+  EVIDENCE_REVISIONS,
+  PROBATIVE_NATURE_METADATA
+} from '../src/data/repositorioEvidencia';
+import {
+  HISTORICAL_EVENTS_1946_2026,
+  HISTORICAL_EVENT_RELATIONS,
+  HEMEROTECA_ARCHIVAL_SOURCES
+} from '../src/data/archivoHistoricoContexto';
 import { NAVIGATION_PILLARS } from '../src/components/Navbar';
 import { AppContent } from '../src/App';
 
@@ -254,6 +267,52 @@ runTest('Boletas conceptuales (Luz, Agua, ABL), contador de efecto cascada (IIBB
   }
   assert.ok(HISTORICAL_SUBSIDY_SERIES_2001_2026.length >= 8, 'Serie histórica de subsidios debe cubrir al menos 8 hitos entre 2001 y 2026');
   return `${CONCEPTUAL_SERVICE_BILLS.length} boletas conceptuales en 4 jurisdicciones y ${HISTORICAL_SUBSIDY_SERIES_2001_2026.length} hitos históricos de subsidios (2001–2026) verificados`;
+});
+
+// 15. Arquitectura de Evidencia Independiente de URL (EvidenceRecord + EvidenceLocation + EvidenceClaim)
+runTest('Arquitectura de Evidencia Independiente de URL (EvidenceRecord, EvidenceLocation, EvidenceClaim, SHA-256 y Multi-Espejo)', () => {
+  assert.ok(EVIDENCE_RECORDS.length >= 12, 'Deben existir al menos 12 registros canónicos de evidencia (1946–2026)');
+  assert.ok(EVIDENCE_LOCATIONS.length >= 20, 'Deben existir al menos 20 ubicaciones multi-espejo asociadas');
+  assert.ok(EVIDENCE_CLAIMS.length >= 4, 'Deben existir afirmaciones fácticas trazadas a EvidenceRecord');
+  assert.equal(EVIDENCE_VERIFICATIONS.length, EVIDENCE_LOCATIONS.length, 'Cada ubicación debe poseer su registro de verificación');
+  assert.ok(EVIDENCE_REVISIONS.length >= 2, 'Debe existir historial de revisiones inmutable');
+  assert.equal(Object.keys(PROBATIVE_NATURE_METADATA).length, 8, 'Deben existir las 8 categorías de naturaleza probatoria');
+
+  for (const rec of EVIDENCE_RECORDS) {
+    assert.ok(rec.sha256Fingerprint.length >= 32, `EvidenceRecord ${rec.id} sin huella criptográfica válida`);
+    assert.ok(rec.verbatimExcerpt.length > 20, `EvidenceRecord ${rec.id} sin extracto literal preservado`);
+    const locs = EVIDENCE_LOCATIONS.filter(l => l.evidenceId === rec.id);
+    assert.ok(locs.length >= 1, `EvidenceRecord ${rec.id} carece de ubicaciones asociadas`);
+    for (const loc of locs) {
+      assert.ok(loc.url.startsWith('https://'), `EvidenceLocation ${loc.id} debe usar HTTPS`);
+      assert.ok(loc.archiveUrl && loc.archiveUrl.includes('web.archive.org'), `EvidenceLocation ${loc.id} debe incluir espejo en Wayback Machine`);
+    }
+  }
+  return `${EVIDENCE_RECORDS.length} EvidenceRecords, ${EVIDENCE_LOCATIONS.length} EvidenceLocations con espejo Wayback y ${EVIDENCE_CLAIMS.length} EvidenceClaims verificados`;
+});
+
+// 16. Línea de Tiempo Histórica Unificada (1946–2026), Hemeroteca Digital y Matriz Antes/Después/Acción
+runTest('Línea de Tiempo Histórica Unificada (1946–2026), Hemeroteca de Portadas y Relaciones Causales', () => {
+  assert.ok(HISTORICAL_EVENTS_1946_2026.length >= 9, 'Deben existir al menos 9 hitos históricos multidimensionales entre 1946 y 2026');
+  assert.ok(HISTORICAL_EVENT_RELATIONS.length >= 6, 'Deben existir relaciones causales y normativas entre eventos');
+  assert.ok(HEMEROTECA_ARCHIVAL_SOURCES.length >= 4, 'Deben existir al menos 4 repositorios hemerográficos oficiales');
+
+  let totalFrontPages = 0;
+  let totalComparisons = 0;
+  for (const evt of HISTORICAL_EVENTS_1946_2026) {
+    assert.ok(evt.year >= 1946 && evt.year <= 2026, `Evento ${evt.id} fuera de rango histórico 1946–2026`);
+    assert.ok(evt.normativeInstruments.length > 0, `Evento ${evt.id} sin instrumentos normativos`);
+    assert.ok(evt.pressFrontPages.length >= 2, `Evento ${evt.id} debe contar con al menos 2 portadas periodísticas de época`);
+    assert.ok(evt.opinionAndSurveys.length > 0, `Evento ${evt.id} sin registro de clima social o estudio demoscópico`);
+    assert.ok(evt.socialRepercussions.length > 0, `Evento ${evt.id} sin registro de repercusión pública`);
+    assert.ok(evt.beforeAfterComparisons.length > 0, `Evento ${evt.id} sin matriz Antes decía → Después dijo → Después hizo`);
+    for (const fp of evt.pressFrontPages) {
+      assert.ok(fp.rightsNotice.includes('Ley 11.723'), `Portada ${fp.id} debe incluir aviso legal de derecho de cita Ley 11.723`);
+    }
+    totalFrontPages += evt.pressFrontPages.length;
+    totalComparisons += evt.beforeAfterComparisons.length;
+  }
+  return `${HISTORICAL_EVENTS_1946_2026.length} hitos (1946–2026), ${totalFrontPages} portadas históricas de diarios, ${totalComparisons} matrices Antes/Después/Acción y ${HISTORICAL_EVENT_RELATIONS.length} relaciones históricas verificadas`;
 });
 
 const failed = results.filter(r => !r.passed);

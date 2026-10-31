@@ -82,6 +82,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     defaultTab: 'observatorio',
     items: [
       { id: 'observatorio', label: 'Línea Temporal y Series (1946–2026)', shortLabel: 'Series 1946–2026', description: 'Gobiernos, presión fiscal, monedas y coparticipación', icon: History },
+      { id: 'archivo-historico', label: 'Archivo Histórico, Hemeroteca y Contexto Social', shortLabel: 'Archivo y Hemeroteca', description: 'Tapas de diarios (1946–2026), clima social y evidencia multi-espejo', icon: BookOpen },
       { id: 'observatorio', param: 'dossier-previsional-2008', label: 'Expedientes Interactivos', shortLabel: 'Expedientes', description: 'SIPA 2008, YPF 1992/2012, Moratorias, Ganancias 2024', icon: FileText },
       { id: 'evidencia-vs-relato', label: 'Relato Mediático vs. Proceso Estatal', shortLabel: 'Evidencia vs. Relato', description: 'Qué se intenta instalar vs. actos administrativos reales', icon: ShieldCheck },
       { id: 'inflacion', label: 'Inflación Histórica (1983–2026)', shortLabel: 'Inflación 1983–2026', description: 'Serie anual y mensual del IPC oficial y alternativo', icon: LineChart }

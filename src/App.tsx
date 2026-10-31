@@ -29,6 +29,7 @@ const AuditoriasTematicas = lazy(() => import('./views/AuditoriasTematicas'));
 const ContrasteEvidencia = lazy(() => import('./views/ContrasteEvidencia'));
 const BlogCongruencia = lazy(() => import('./views/BlogCongruencia'));
 const FacturasServiciosSubsidios = lazy(() => import('./views/FacturasServiciosSubsidios'));
+const ArchivoHistoricoContexto = lazy(() => import('./views/ArchivoHistoricoContexto'));
 
 export default function App() {
   return (
@@ -92,6 +93,9 @@ export function AppContent() {
     } else if (path === '/observatorio' || path === '/expedientes') {
       title = 'Observatorio Histórico (1946–2026) | Con La Tuya, Contribuyente';
       description = 'Línea temporal fiscal y política 1946–2026, regímenes monetarios históricos y expedientes interactivos auditados con fuentes primarias.';
+    } else if (path === '/archivo-historico') {
+      title = 'Archivo Histórico, Hemeroteca y Contexto Social (1946–2026) | Con La Tuya, Contribuyente';
+      description = 'Línea de tiempo histórica unificada (1946–2026), portadas de diarios de época (Hemeroteca BNMM), matriz Antes decía → Después dijo → Después hizo y repositorio de evidencia independiente de URL.';
     } else if (path === '/declaraciones') {
       title = 'Archivo de Declaraciones y Comparador | Con La Tuya, Contribuyente';
       description = 'Comparador contextual de declaraciones históricas de funcionarios públicos argentinos contrastadas con leyes, decretos y votaciones nominales.';
@@ -190,6 +194,7 @@ export function AppContent() {
             <Route path="/" element={<Landing onNavigate={handleNavigate} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
             <Route path="/observatorio" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
             <Route path="/expedientes" element={<ObservatorioHistorico onNavigate={handleNavigate} initialDossierId={selectedDossierId} />} />
+            <Route path="/archivo-historico" element={<ArchivoHistoricoContexto />} />
             <Route path="/declaraciones" element={<DeclaracionesComparador onNavigate={handleNavigate} />} />
             <Route path="/congruencia" element={<BlogCongruencia onNavigate={handleNavigate} initialPoliticianId={_selectedPoliticianId} />} />
             <Route path="/auditorias" element={<AuditoriasTematicas onNavigate={handleNavigate} initialSlug={selectedAuditSlug} />} />
