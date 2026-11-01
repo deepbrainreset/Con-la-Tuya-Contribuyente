@@ -41,7 +41,7 @@ export const SPENDING_JURISDICTIONS: SpendingJurisdiction[] = [
     id: 'buenos_aires', name: 'Provincia de Buenos Aires', level: 'Provincia', period: '2026', approvedBudget: 43_021_244_867_935, executedBudget: null, executedAsOf: 'II trimestre 2026', categories: [],
     evidenceNote: 'El presupuesto 2026 surge de la Ley 15.557. La Provincia publica informes trimestrales de ejecución; los rubros individuales sólo se completan cuando la fuente permite asignarlos sin mezclar clasificaciones.',
     sources: [
-      { label: 'Ley 15.557 — Presupuesto PBA 2026', url: 'https://www.argentina.gob.ar/normativa/provincial/ley-15557-123456789-0abc-defg-755-5100bvorpyel/actualizacion', official: true, retrievedAt: '2026-09-13' },
+      { label: 'Ley 15.557 — Presupuesto PBA 2026', url: 'https://normas.gba.gob.ar/ar-b/ley/2025/15557/554023', official: true, retrievedAt: '2026-09-13' },
       { label: 'PBA — ejecución presupuestaria 2026', url: 'https://www.gba.gob.ar/economia/direccion_provincial_de_presupuesto_publico/ejecucion_presupuestaria', official: true, retrievedAt: '2026-09-13' }
     ]
   },
