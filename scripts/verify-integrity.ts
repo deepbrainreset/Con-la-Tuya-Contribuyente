@@ -6,6 +6,9 @@
  */
 
 import assert from 'node:assert/strict';
+import ServiciosVerificados, { SERVICE_CASES } from '../src/components/ServiciosVerificados';
+import { VIDEO_SERVICE_CLAIMS } from '../src/data/afirmacionesVideoServicios';
+import FacturasServiciosSubsidios from '../src/views/FacturasServiciosSubsidios';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
@@ -66,6 +69,35 @@ function runTest(name: string, fn: () => string) {
     console.error(`❌ FAIL: ${name} — ${error?.message || error}`);
   }
 }
+
+runTest('Servicios: cobertura normativa y límites editoriales visibles', () => {
+  const html = renderToString(React.createElement(ServiciosVerificados));
+  for (const id of ['luz', 'gas', 'agua', 'abl', 'facturacion']) {
+    const item = SERVICE_CASES.find(entry => entry.id === id);
+    assert.ok(item, `Falta cobertura de ${id}`);
+    assert.ok(html.includes(item.title), `Caso no visible: ${id}`);
+    const url = new URL(item.url);
+    assert.equal(url.protocol, 'https:');
+    assert.ok(['www.argentina.gob.ar', 'www.boletinoficial.gov.ar', 'www.boletinoficial.gob.ar', 'imagenes.agip.gob.ar', 'www.aysa.com.ar'].includes(url.hostname));
+  }
+  assert.ok(html.includes('transcripción automática'));
+  assert.equal(VIDEO_SERVICE_CLAIMS.length, 8);
+  assert.equal(new Set(VIDEO_SERVICE_CLAIMS.map(item => item.seconds)).size, 8);
+  for (const item of VIDEO_SERVICE_CLAIMS) {
+    assert.ok(html.includes(item.claim));
+    assert.ok(html.includes(item.status));
+    assert.equal(new URL(item.url).protocol, 'https:');
+    assert.ok(html.includes(`t=${item.seconds}`));
+  }
+  assert.ok(html.includes('no demuestra automáticamente ilegalidad'));
+  assert.ok(html.includes('No se publica como hecho probado'));
+  const page = renderToString(React.createElement(FacturasServiciosSubsidios));
+  assert.ok(page.includes('Cómo documentar un posible cobro duplicado'));
+  assert.ok(!page.includes('FACTURA CONCEPTUAL AUDITADA'));
+  assert.ok(!page.includes('14% y el 25%'));
+  assert.ok(!page.includes('<table'));
+  return 'Cinco casos y ocho contrastes del video accesibles; cifras sin respaldo retiradas de la vista pública.';
+});
 
 // 1. Tributos y Fuentes Oficiales
 runTest('Tributos auditados con fuente oficial y fecha de verificación', () => {
@@ -258,7 +290,7 @@ runTest('Blog de Congruencia (Archivos X/Twitter, Diarios y TV/YouTube 2003–20
 });
 
 // 14. Boletas Conceptuales de Servicios, Efecto Cascada (IIBB/Cheque) y Serie de Subsidios 2001–2026
-runTest('Boletas conceptuales (Luz, Agua, ABL), contador de efecto cascada (IIBB) y subsidios históricos 2001–2026', () => {
+runTest('Archivo de ejemplos de boletas y subsidios: estructura interna, sin certificar fuentes', () => {
   assert.equal(CONCEPTUAL_SERVICE_BILLS.length, 3, 'Deben existir las 3 radiografías de boletas (Luz, Agua, ABL/Inmobiliario)');
   for (const bill of CONCEPTUAL_SERVICE_BILLS) {
     assert.ok(bill.realFullMonthlyCostArs > 0, `Boleta ${bill.id} sin costo real puro`);
@@ -266,7 +298,7 @@ runTest('Boletas conceptuales (Luz, Agua, ABL), contador de efecto cascada (IIBB
     assert.ok(bill.taxLinesByRegion.caba.some(l => l.timesChargedInChain > 1), `Boleta ${bill.id} debe cuantificar impuestos cobrados múltiples veces`);
   }
   assert.ok(HISTORICAL_SUBSIDY_SERIES_2001_2026.length >= 8, 'Serie histórica de subsidios debe cubrir al menos 8 hitos entre 2001 y 2026');
-  return `${CONCEPTUAL_SERVICE_BILLS.length} boletas conceptuales en 4 jurisdicciones y ${HISTORICAL_SUBSIDY_SERIES_2001_2026.length} hitos históricos de subsidios (2001–2026) verificados`;
+  return `${CONCEPTUAL_SERVICE_BILLS.length} ejemplos y ${HISTORICAL_SUBSIDY_SERIES_2001_2026.length} puntos conservados en archivo; este control no verifica su exactitud documental`;
 });
 
 // 15. Arquitectura de Evidencia Independiente de URL (EvidenceRecord + EvidenceLocation + EvidenceClaim)

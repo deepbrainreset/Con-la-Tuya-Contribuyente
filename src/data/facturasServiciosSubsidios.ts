@@ -5,6 +5,10 @@
  * Radiografía de Facturas de Servicios Públicos (Luz, Agua, Gas, ABL),
  * Efecto Cascada / Múltiple Imposición (IIBB, Cheque, Tasas Municipales)
  * y Subsidios Cruzados Históricos AMBA/CABA vs. Interior del País (2001–2026).
+ *
+ * ARCHIVO PENDIENTE DE AUDITORÍA DOCUMENTAL: no importar en la vista pública.
+ * Las cifras y notas heredadas no constituyen casos verificados ni tarifas actuales.
+ * Publicación documental vigente en afirmacionesVideoServicios.ts y ServiciosVerificados.tsx.
  */
 
 export interface RepeatedTaxLayer {
@@ -551,7 +555,7 @@ export const CONCEPTUAL_SERVICE_BILLS: ConceptualServiceBill[] = [
           percentageOfNetBill: 15.0,
           timesChargedInChain: 3,
           legalNorm: 'Convenios Ley 10.740 PBA (restringidos por Resolución 267/2024)',
-          constitutionalOrLegalNote: 'Doble imposición directa cuando el vecino abona simultáneamente la Tasa de Alumbrado, Barrido y Limpieza (ABL) al municipio y un cargo adicional por «Alumbrado Público» en la factura eléctrica.'
+          constitutionalOrLegalNote: 'Posible superposición a investigar: requiere cotejar ordenanza, boletas del mismo período e imputaciones. La coexistencia de conceptos no prueba por sí sola duplicación ni ilegalidad.'
         }
       ],
       cordoba: [
@@ -623,7 +627,7 @@ export const CONCEPTUAL_SERVICE_BILLS: ConceptualServiceBill[] = [
     ],
     federalDisparitySummary: 'Un mismo inmueble urbano en Argentina puede ser gravado hasta 4 veces por distintos niveles del Estado: (1) Bienes Personales (Nación), (2) Impuesto Inmobiliario (Provincia), (3) Tasa de Servicios Generales / ABL (Municipio) y (4) Contribución por Alumbrado Público incluida dentro de la factura de electricidad.',
     officialSources: [
-      { label: 'Ley 23.548 de Coparticipación Federal — Art. 9 inc. b) (Prohibición de doble imposición y requisito de tasas retributivas)', url: 'https://servicios.infoleg.gob.ar/infolegInternet/anexos/20000-24999/21108/texact.htm' },
+      { label: 'Ley 23.548 — Art. 9 inc. b): límites a gravámenes análogos, excepciones y tasas retributivas', url: 'https://www.argentina.gob.ar/normativa/nacional/ley-23548-21108/actualizacion' },
       { label: 'Resolución 267/2024 — Prohibición de incluir tasas municipales ajenas en boletas de servicios públicos', url: 'https://www.boletinoficial.gob.ar/detalleAviso/primera/313698/20240911' }
     ]
   }

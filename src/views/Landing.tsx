@@ -358,7 +358,7 @@ export default function Landing({ onNavigate, searchQuery, setSearchQuery }: Lan
               className="w-full lg:w-auto px-5 py-3 bg-slate-900 text-white font-bold text-xs sm:text-sm tracking-wide rounded-xl border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-all flex items-center justify-center gap-1.5"
             >
               <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Boletas, Cascada IIBB y Subsidios</span>
+              <span>Impuestos en Servicios</span>
             </button>
             <button
               onClick={() => onNavigate('evidencia-vs-relato')}

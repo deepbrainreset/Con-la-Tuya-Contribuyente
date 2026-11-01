@@ -1096,6 +1096,17 @@ export const CITIZEN_INQUIRY_TEMPLATES: CitizenInquiryTemplate[] = [
 
 export const CORRECTION_LOG_HISTORY: CorrectionLogEntry[] = [
   {
+    id: 'corr-2026-servicios-1101',
+    date: '2026-11-01',
+    moduleAffected: 'Boletas y subsidios / Servicios',
+    entityId: 'servicios-verificados',
+    previousStateSummary: 'La vista afirmaba ilegalidad general de la múltiple imposición y duplicación de alumbrado sin prueba individual.',
+    correctedStateSummary: 'Se publican cinco casos documentales y ocho contrastes temporizados del video; se retiran de la vista las cifras de boletas y subsidios sin respaldo específico, conservadas en archivo para auditoría.',
+    reasonAndEvidence: 'Transcripción automática recuperada y contraste con SIyC 267/2024, ENRE 708/2024, ENARGAS 625/2024, Ley 23.548 y boletines municipales. Se corrige la referencia a DNU y la generalización del 10 %. Fallos de Quilmes, leyenda de boleta, duplicación individual y causalidad entre bajas nacionales y subas locales no acreditados.',
+    sourceUrl: 'https://www.boletinoficial.gov.ar/detalleAviso/primera/313712/20240911',
+    verifiedBy: 'Revisión documental de fuentes oficiales; alcance y pendientes en docs/SERVICIOS_VERIFICACION.md'
+  },
+  {
     id: 'corr-2026-01',
     date: '2026-09-13',
     moduleAffected: 'Responsabilidad Política / Votaciones Nominales',
