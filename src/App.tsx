@@ -127,8 +127,8 @@ export function AppContent() {
       title = 'Simulador de Precio Final y Boletas | Con La Tuya, Contribuyente';
       description = 'Desglose de impuestos nacionales, provinciales y tasas municipales contenidos en bienes de consumo y boletas de servicios en Argentina.';
     } else if (path === '/boletas-y-subsidios') {
-      title = 'Boletas de Luz, Agua, ABL, Cascada IIBB y Subsidios | Con La Tuya, Contribuyente';
-      description = 'Radiografía de facturas de servicios públicos, efecto cascada de Ingresos Brutos e Impuesto al Cheque y subsidios históricos AMBA vs. Interior (2001–2026).';
+      title = 'Impuestos en Luz, Gas, Agua y ABL | Con La Tuya, Contribuyente';
+      description = 'Casos documentados de tributos en servicios públicos, fuentes oficiales y criterios para distinguir acumulación económica, cobros duplicados e ilegalidad.';
     } else if (path === '/politicos') {
       title = 'Registro Político y Patrimonial | Con La Tuya, Contribuyente';
       description = 'Fichas de autoridades ejecutivas y legislativas de las 24 jurisdicciones con fuentes oficiales, patrimonio y acciones fiscales.';
@@ -267,7 +267,7 @@ export function AppContent() {
             <span className="font-bold text-white uppercase tracking-wider block text-[10px]">Políticas y Gobernanza</span>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-2">
               <button onClick={() => handleNavigate('observatorio')} className="hover:text-white transition text-left cursor-pointer">Observatorio Histórico (1946–2026)</button>
-              <button onClick={() => handleNavigate('boletas-y-subsidios')} className="hover:text-white transition text-left cursor-pointer">Boletas, Cascada IIBB y Subsidios</button>
+              <button onClick={() => handleNavigate('boletas-y-subsidios')} className="hover:text-white transition text-left cursor-pointer">Impuestos en Servicios</button>
               <button onClick={() => handleNavigate('evidencia-vs-relato')} className="hover:text-white transition text-left cursor-pointer">Evidencia vs. Relato Mediático</button>
               <button onClick={() => handleNavigate('congruencia')} className="hover:text-white transition text-left cursor-pointer">Blog de Congruencia (TV / YouTube)</button>
               <button onClick={() => handleNavigate('auditorias')} className="hover:text-white transition text-left cursor-pointer">Auditorías Sectoriales (CONICET, SPU, SIPA)</button>

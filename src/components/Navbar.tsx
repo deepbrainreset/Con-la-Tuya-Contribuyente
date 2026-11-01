@@ -65,7 +65,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     defaultTab: 'tributos',
     items: [
       { id: 'tributos', label: 'Recaudación e Impuestos', shortLabel: 'Impuestos', description: 'Tributos nacionales, provinciales y tasas municipales', icon: FileText },
-      { id: 'boletas-y-subsidios', label: 'Boletas de Luz, Agua, ABL y Cascada IIBB', shortLabel: 'Boletas y Subsidios', description: 'Costo real, cuántas veces te cobran IIBB y subsidios', icon: Layers },
+      { id: 'boletas-y-subsidios', label: 'Impuestos en Luz, Gas, Agua y ABL', shortLabel: 'Impuestos en Servicios', description: 'Casos documentados, fuentes y posibles cobros duplicados', icon: Layers },
       { id: 'mapa-tributario', label: 'Mapa Tributario Auditado', shortLabel: 'Mapa Tributario', description: 'Explorador de normas, alícuotas y hechos imponibles', icon: Layers },
       { id: 'gasto', label: 'Presupuesto, Gasto y Compras', shortLabel: 'Gasto y Compras', description: 'Ejecución presupuestaria, contrataciones y pauta', icon: TrendingUp },
       { id: 'mapa', label: 'Distribución Territorial', shortLabel: 'Mapa Nacional', description: 'Mapa nacional de jurisdicciones y presupuestos', icon: Award },
@@ -113,7 +113,7 @@ export const NAVIGATION_PILLARS: NavPillar[] = [
     defaultTab: 'auditorias',
     items: [
       { id: 'evidencia-vs-relato', label: 'Relato vs. Proceso Administrativo', shortLabel: 'Evidencia vs. Relato', description: 'Informes de contraste entre narrativas y auditorías SIGEN/AGN', icon: ShieldCheck },
-      { id: 'boletas-y-subsidios', label: 'Servicios (Luz/Agua/ABL) y Subsidios', shortLabel: 'Boletas y Subsidios', description: 'Costo real, múltiple imposición y subsidios AMBA vs. Interior', icon: TrendingUp },
+      { id: 'boletas-y-subsidios', label: 'Impuestos en Luz, Gas, Agua y ABL', shortLabel: 'Impuestos en Servicios', description: 'Normativa, competencias y evidencia en servicios', icon: TrendingUp },
       { id: 'auditorias', param: 'jubilaciones-pensiones', label: 'Jubilaciones y Sistema Previsional', shortLabel: 'Jubilaciones (SIPA)', description: 'SIPA, FGS, moratorias y sostenibilidad', icon: Landmark },
       { id: 'auditorias', param: 'universidades-publicas', label: 'Universidades Públicas', shortLabel: 'Universidades', description: 'Transferencias SPU, matrícula, egresados y AGN', icon: BookOpen },
       { id: 'auditorias', param: 'ciencia-conicet', label: 'Ciencia y CONICET (1958–2026)', shortLabel: 'CONICET', description: 'Investigadores, becas, proyectos y repositorio abierto', icon: Microscope },
@@ -421,7 +421,7 @@ export default function Navbar({ currentTab, onNavigate, visits }: NavbarProps) 
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                 {[
-                  { id: 'boletas-y-subsidios', label: 'Boletas y Subsidios', icon: Layers },
+                  { id: 'boletas-y-subsidios', label: 'Impuestos en Servicios', icon: Layers },
                   { id: 'evidencia-vs-relato', label: 'Evidencia vs. Relato', icon: ShieldCheck },
                   { id: 'congruencia', label: 'Congruencia TV/YT', icon: MessageSquareQuote },
                   { id: 'observatorio', label: 'Histórico 1946–2026', icon: History },
